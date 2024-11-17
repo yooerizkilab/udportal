@@ -21,8 +21,8 @@
                     <h6 class="m-0 font-weight-bold text-primary">Vehicles Insurances</h6>
                 </div>
                 <div class="card-body">
-                    <!-- image vehicle -->
                     <div class="row">
+                        <!-- image vehicle -->
                         <div class="col-6">
                             <img src="{{ asset('img/vehicle.png') }}" class="img-fluid" alt="vehicle">
                         </div>
@@ -30,7 +30,7 @@
                         <div class="col-6">
                             <form action="" method="POST">
                                 @csrf
-                                
+
                                 <div class="form-group">
                                     <label for="insurance_number">Insurance Number</label>
                                     <input type="text" class="form-control" id="insurance_number" name="insurance_number" placeholder="Enter Insurance Number">
