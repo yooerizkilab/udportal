@@ -14,9 +14,24 @@ class VehicleTypesSeeder extends Seeder
     public function run(): void
     {
         VehicleType::insert([
-            ['type_name' => 'Car', 'description' => 'Passenger cars', 'created_at' => now(), 'updated_at' => now()],
-            ['type_name' => 'Truck', 'description' => 'Heavy-duty trucks', 'created_at' => now(), 'updated_at' => now()],
-            ['type_name' => 'Motorbike', 'description' => 'Two-wheeled motor vehicles', 'created_at' => now(), 'updated_at' => now()],
+            [
+                'type_name' => 'Car',
+                'description' => 'Passenger cars',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'type_name' => 'Truck',
+                'description' => 'Heavy-duty trucks',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'type_name' => 'Motorbike',
+                'description' => 'Two-wheeled motor vehicles',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

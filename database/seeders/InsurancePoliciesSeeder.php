@@ -15,7 +15,7 @@ class InsurancePoliciesSeeder extends Seeder
     {
         VehicleInsurance::insert([
             [
-                'id' => 1, // Assuming vehicle with ID 1 exists
+                'vehicle_id' => 1, // Assuming vehicle with ID 1 exists
                 'insurance_provider' => 'ABC Insurance',
                 'policy_number' => 'INS123456',
                 'coverage_start' => '2020-01-01',
@@ -25,7 +25,7 @@ class InsurancePoliciesSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'id' => 2, // Assuming vehicle with ID 2 exists
+                'vehicle_id' => 2, // Assuming vehicle with ID 2 exists
                 'insurance_provider' => 'XYZ Insurance',
                 'policy_number' => 'INS654321',
                 'coverage_start' => '2019-05-20',
@@ -33,7 +33,17 @@ class InsurancePoliciesSeeder extends Seeder
                 'premium' => 2000000,
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
+            [
+                'vehicle_id' => 3, // Assuming vehicle with ID 3 exists
+                'insurance_provider' => 'XYZ Insurance',
+                'policy_number' => 'INS654321',
+                'coverage_start' => '2019-05-20',
+                'coverage_end' => '2022-05-20',
+                'premium' => 2000000,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

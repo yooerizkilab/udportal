@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('branch', function (Blueprint $table) {
             $table->id();
-            $table->string('code_branch')->unique();
-            $table->string('name_branch');
-            $table->string('address');
-            $table->string('phone');
+            $table->string('code', 10)->unique();
+            $table->string('name', 50);
+            $table->string('address', 100);
+            $table->string('phone', 20);
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->text('description')->nullable();
             $table->string('photo')->nullable();

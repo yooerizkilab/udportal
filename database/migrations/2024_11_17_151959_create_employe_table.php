@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('employe', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->references('id')->on('department')->onDelete('cascade');
-            $table->string('employe_code')->unique();
-            $table->string('nik')->unique();
-            $table->string('full_name');
-            $table->string('gender');
-            $table->string('phone');
-            $table->string('address');
-            $table->string('position');
+            $table->foreignId('department_id')->references('id')->on('department');
+            $table->string('code', 20)->unique();
+            $table->string('nik', 20)->unique();
+            $table->string('full_name', 50);
+            $table->string('gender', 10);
+            $table->string('phone', 20);
+            $table->string('address', 100);
+            $table->string('position', 50);
             $table->string('age');
             $table->enum('status', ['Active', 'Inactive', 'Retired'])->default('Active');
             $table->string('photo')->nullable();

@@ -93,6 +93,17 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'sapb1' => [
+            'driver' => 'HDBODBC',  // or 'odbc' depending on your setup
+            'host' => env('SAP_DB_HOST'),
+            'port' => env('SAP_DB_PORT'),
+            'database' => env('SAP_DB_DATABASE'),
+            'username' => env('SAP_DB_USERNAME'),
+            'password' => 'Password#01',
+            'charset' => 'utf8',
+            'prefix' => '',
+        ],
+
     ],
 
     /*
@@ -125,7 +136,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

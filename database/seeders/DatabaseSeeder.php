@@ -3,6 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Company;
+use App\Models\Tools;
+use App\Models\ToolsMaintenance;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,15 +25,22 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
+            VehicleOwnershipsSeeder::class,
             VehicleTypesSeeder::class,
             VehicleSeeder::class,
-            VehicleOwnershipsSeeder::class,
             MaintenanceRecordsSeeder::class,
             AssignmentsSeeder::class,
             InsurancePoliciesSeeder::class,
             DepartmentSeeder::class,
+            CompanySeeder::class,
             EmployeSeeder::class,
-            BranchSeeder::class
+            BranchSeeder::class,
+            ToolsCategorieSeeder::class,
+            ToolsStockSeeder::class,
+            ToolsTransactionSeeder::class,
+            ToolsMaintenanceSeeder::class,
+            ToolsOwnersSeeder::class,
+            ToolsSeeder::class,
         ]);
     }
 }

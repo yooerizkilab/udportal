@@ -24,7 +24,10 @@
                     <div class="row">
                         <!-- image vehicle -->
                         <div class="col-6">
-                            <img src="{{ asset('img/vehicle.png') }}" class="img-fluid" alt="vehicle">
+                            {{-- <img src="{{ asset('img/vehicle.png') }}" class="img-fluid" alt="vehicle"> --}}
+                            <div class="border p-3">
+                                <img src="https://imgcdn.oto.com/medium/gallery/exterior/38/2707/toyota-innova-zenix-hybrid-ev-front-angle-low-view-239610.jpg" class="img-fluid" style="width: 100%" alt="vehicle">
+                            </div>
                         </div>
                         <!-- form add vehicle insurance -->
                         <div class="col-6">

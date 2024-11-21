@@ -21,7 +21,7 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Type List Vehicles</h6>
                         <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#addVehiclesTypeModal">
-                            <i class="fas fa-list fa-md white-50"></i> Add Types
+                            <i class="fas fa-list fa-md white-50"></i>
                         </button>
                     </div>
                     <div class="card-body">
@@ -41,10 +41,16 @@
                                             <td>{{ $vehiclesType->type_name }}</td>
                                             <td class="text-center">
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle" data-toggle="modal" data-target="#editVehiclesTypeModal">
+                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle"
+                                                        data-toggle="modal"
+                                                        data-id="{{ $vehiclesType->id }}"
+                                                        data-name="{{ $vehiclesType->type_name }}"
+                                                        data-target="#editVehiclesTypeModal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <form action="" method="post" id="deleteVehiclesTypeForm" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
                                                         <button type="button" class="btn btn-danger btn-sm btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
@@ -70,7 +76,7 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Owners List Vehicles</h6>
                         <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#addOwnerVehiclesModal">
-                            <i class="fas fa-list fa-md white-50"></i> Add Owners
+                            <i class="fas fa-user-plus fa-md white-50"></i>
                         </button>
                     </div>
                     <div class="card-body">
@@ -84,29 +90,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Owner 1</td>
-                                        <td class="text-center">
-                                            <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle" data-toggle="modal" data-target="#editVehiclesOwnerModal">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="" method="post" id="deleteVehiclesOwnerForm" class="d-inline">
-                                                    <button type="button" class="btn btn-danger btn-sm btn-circle">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {{-- @forelse ($vehicleOwners as $vehicleOwner)
+                                    @forelse ($vehicleOwnerships as $vehicleOwner)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $vehicleOwner->owner_name }}</td>
                                             <td class="text-center">
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle" data-toggle="modal" data-target="#editVehiclesOwnerModal">
+                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle"
+                                                        data-toggle="modal"
+                                                        data-id="{{ $vehicleOwner->id }}"
+                                                        data-name="{{ $vehicleOwner->owner_name }}"
+                                                        data-target="#editVehiclesOwnerModal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <form action="" method="post" id="deleteVehiclesOwnerForm" class="d-inline">
@@ -123,7 +117,7 @@
                                         <tr>
                                             <td colspan="3" class="text-center">No Data</td>
                                         </tr>
-                                    @endforelse --}}
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>                    
@@ -147,7 +141,6 @@
                             <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
                                 <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                             </button>
-
                             <!-- Dropdown Filter -->
                             <div class="dropdown ml-2 mb-2">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -159,7 +152,6 @@
                                     <a class="dropdown-item" href="#">Something else here</a>
                                 </div>
                             </div>
-                            
                             <!-- Tombol Import Data -->
                             <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importVehiclesModal">
                                 <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
@@ -197,9 +189,16 @@
                                             <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
                                             <td>
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-info btn-sm mr-1 btn-circle" 
-                                                        
-                                                        data-toggle="modal" data-target="#viewVehiclesModal">
+                                                    <button type="button" class="btn btn-info btn-sm mr-1 btn-circle"
+                                                        data-toggle="modal"
+                                                        data-id="{{ $vehicle->id }}"
+                                                        data-code="{{ $vehicle->vehicle_code }}"
+                                                        data-brand="{{ $vehicle->brand }}"
+                                                        data-model="{{ $vehicle->model }}"
+                                                        data-year="{{ $vehicle->year }}"
+                                                        data-license_plate="{{ $vehicle->license_plate }}"
+                                                        data-status="{{ $vehicle->status }}"
+                                                        data-target="#viewVehiclesModal">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
 
@@ -265,7 +264,7 @@
 
     <!-- Modal Add Vehicles -->
     <div class="modal fade" id="addVehiclesModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">Modal Add Vehicles</h5>
@@ -274,37 +273,94 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="addVehiclesForm" method="post">
+                    <form action="{{ route('vehicles.store') }}" id="addVehiclesForm" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="vehicle_code">Vehicle Code</label>
                             <input type="text" name="vehicle_code" id="vehicle_code" class="form-control" value="{{ $defaultCode }}" readonly required>
                         </div>
-                        <div class="form-group">
-                            <label for="brand">Brand</label>
-                            <input type="text" name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="brand">Brand</label>
+                                    <input type="text" name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="model">Model</label>
+                                    <input type="text" name="model" id="model" class="form-control @error('model') is-invalid @enderror" required>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="model">Model</label>
-                            <input type="text" name="model" id="model" class="form-control @error('model') is-invalid @enderror" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="year">Year</label>
-                            <input type="date" name="year" id="year" class="form-control @error('year') is-invalid @enderror" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="license_plate">License Plate</label>
-                            <input type="text" name="license_plate" id="license_plate @error('license_plate') is-invalid @enderror" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="vehicle_type">Vehicle Type</label>
-                            <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
-                                <option value="" disabled selected>Select Vehicle Type</option>
-                                @foreach ($vehicleTypes as $vehicleType)
-                                    <option value="{{ $vehicleType->id }}">{{ $vehicleType->type_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                                            <option value="" disabled selected>Select Status</option>
+                                            <option value="Active">Active</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <label for="vehicle_type">Vehicle Type</label>
+                                    <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Vehicle Type</option>
+                                        @foreach ($vehicleTypes as $vehicleType)
+                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->type_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="license_plate">License Plate</label>
+                                    <input type="text" name="license_plate" id="license_plate @error('license_plate') is-invalid @enderror" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="year">Year</label>
+                                    <input type="date" name="year" id="year" class="form-control @error('year') is-invalid @enderror" required>
+                                </div>
+                            </div> 
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ownership">Ownership</label>
+                                    <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Ownership</option>
+                                        @foreach ($vehicleOwnerships as $ownership)
+                                            <option value="{{ $ownership->id }}">{{ $ownership->owner_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price</label>
+                                    <input type="text" name="purchase_price" id="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchase_date">Purchase Date</label>
+                                    <input type="date" name="purchase_date" id="purchase_date" class="form-control @error('purchase_date') is-invalid @enderror" required>
+                                </div>
+                                
+                            </div> 
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="tax_year">Tax Year</label>
+                                    <input type="date" name="tax_year" id="tax_year" class="form-control @error('tax_year') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tax_five_years">Tax Five Years</label>
+                                    <input type="date" name="tax_five_years" id="tax_five_years" class="form-control @error('tax_five_years') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inspected">Inspected</label>
+                                    <input type="date" name="inspected" id="inspected" class="form-control @error('inspected') is-invalid @enderror" required>
+                                </div>
+                                {{-- <div class="form-group">
+                                    <label for="image">Image</label>
+                                    <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" required>
+                                </div> --}}
+                            </div>
+                        </div>   
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -585,5 +641,50 @@
     $(document).ready(function() {
         $('#dataTable2').DataTable();
     });
+</script>
+<script>
+    function confirmAddVehicles() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, add it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#addVehiclesForm').submit();
+            }
+        })
+    }
+
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ session('error') }}',
+            showConfirmButton: true
+        })
+    @endif
+
+    @if ($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ $errors->first() }}',
+            showConfirmButton: true,
+        })
+    @endif
 </script>
 @endpush

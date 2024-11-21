@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vehicle_assignment', function (Blueprint $table) {
-            // $table->id();
-            $table->foreignId('id')->references('id')->on('vehicle')->onDelete('cascade');
-            $table->string('assigned_to'); // Can be a person or a department
+            $table->id();
+            $table->string('assigned_to', 50); // Can be a person or a department
             $table->date('assignment_date');
             $table->date('return_date')->nullable();
             $table->timestamps();

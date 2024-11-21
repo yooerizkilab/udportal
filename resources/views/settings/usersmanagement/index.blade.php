@@ -44,6 +44,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th width="5%">No</th>
                                 <th>Name</th>
                                 <th>Last Name</th>
                                 <th>Email</th>
@@ -54,6 +55,7 @@
                         <tbody>
                             @forelse ($users as $user)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->last_name }}</td>
                                     <td>{{ $user->email }}</td>

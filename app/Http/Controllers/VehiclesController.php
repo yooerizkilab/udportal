@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\VehicleOwnership;
 
 class VehiclesController extends Controller
 {
@@ -17,7 +19,8 @@ class VehiclesController extends Controller
         $defaultCode = 'A' . date('Ym') . sprintf('%04d', Vehicle::count() + 1);
         $vehicles = Vehicle::all();
         $vehicleTypes = VehicleType::all();
-        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'defaultCode'));
+        $vehicleOwnerships = VehicleOwnership::all();
+        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'defaultCode'));
     }
 
     /**
@@ -33,7 +36,59 @@ class VehiclesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the form data
+        $request->validate([
+            'vehicle_code' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'status' => 'required|in:Active,Maintenance,Inactive',
+            'vehicle_type' => 'required|exists:vehicle_type,id',
+            'license_plate' => 'required|string|max:255|unique:vehicle,license_plate',
+            'year' => 'required|date',
+            'ownership' => 'required|exists:vehicle_ownership,id',
+            'purchase_price' => 'required|numeric|min:0',
+            'purchase_date' => 'required|date',
+            'tax_year' => 'required|date',
+            'tax_five_years' => 'required|date',
+            'inspected' => 'required|date',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+        ]);
+
+        // Proses upload gambar
+        // if ($request->hasFile('image')) {
+        //     $image = $request->file('image');
+        //     $imagePath = $image->store('vehicles', 'public'); // Simpan di storage/public/vehicles
+        // }
+
+        $data = [
+            'owner_id' => $request->ownership,
+            'type_id' => $request->vehicle_type,
+            'vehicle_code' => $request->vehicle_code,
+            'brand' => $request->brand,
+            'status' => $request->status,
+            'model' => $request->model,
+            'year' => date('Y', strtotime($request->year)),
+            'license_plate' => $request->license_plate,
+            'tax_year' => $request->tax_year,
+            'tax_five_year' => $request->tax_five_year,
+            'inspected' => $request->inspected,
+            'purchase_date' => $request->purchase_date,
+            'purchase_price' => $request->purchase_price,
+            'status' => $request->status,
+            // 'image' => $imagePath,
+        ];
+
+        // return $data;
+
+        DB::beginTransaction();
+        try {
+            $vehicle = Vehicle::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Vehicle' . $vehicle->model . ' created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error creating vehicle: ' . $e->getMessage());
+        }
     }
 
     /**

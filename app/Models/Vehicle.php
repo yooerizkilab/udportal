@@ -14,11 +14,18 @@ class Vehicle extends Model
     protected $appends = ['badgeClass'];
 
     protected $fillable = [
+        'owner_id',
+        'type_id',
         'vehicle_code',
         'brand',
         'model',
         'year',
         'license_plate',
+        'tax_year',
+        'tax_five_years',
+        'inspected',
+        'purchase_price',
+        'purchase_date',
         'status',
     ];
 

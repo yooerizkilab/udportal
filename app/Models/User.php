@@ -6,7 +6,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -73,7 +72,6 @@ class User extends Authenticatable
     //     $this->attributes['password'] = Hash::make($value);
     // }
 
-
     public function getBadgeClassAttribute()
     {
         $statusColor = [
@@ -85,5 +83,10 @@ class User extends Authenticatable
 
         // Berikan warna default jika status tidak ditemukan
         return $statusColor[$this->getRoleNames()[0]] ?? 'secondary';
+    }
+
+    public function employe()
+    {
+        return $this->hasOne(Employe::class);
     }
 }

@@ -15,7 +15,7 @@ class MaintenanceRecordsSeeder extends Seeder
     {
         VehicleMaintenance::insert([
             [
-                'id' => 1, // Assuming vehicle with ID 1 exists
+                'vehicle_id' => 1, // Assuming vehicle with ID 1 exists
                 'maintenance_date' => '2022-02-15',
                 'description' => 'Oil Change',
                 'cost' => 500000,
@@ -24,7 +24,7 @@ class MaintenanceRecordsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'id' => 2, // Assuming vehicle with ID 2 exists
+                'vehicle_id' => 2, // Assuming vehicle with ID 2 exists
                 'maintenance_date' => '2022-08-10',
                 'description' => 'Brake Replacement',
                 'cost' => 1000000,

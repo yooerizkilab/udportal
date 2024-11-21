@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vehicle_insurance_policie', function (Blueprint $table) {
-            // $table->id();
-            $table->foreignId('id')->references('id')->on('vehicle')->onDelete('cascade');
-            $table->string('insurance_provider');
-            $table->string('policy_number');
+            $table->id();
+            $table->string('insurance_provider', 100);
+            $table->string('policy_number', 50);
             $table->date('coverage_start');
             $table->date('coverage_end');
             $table->decimal('premium', 15, 2);

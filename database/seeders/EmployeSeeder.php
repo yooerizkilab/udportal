@@ -15,6 +15,7 @@ class EmployeSeeder extends Seeder
     {
         Employe::insert([
             [
+                'company_id' => 1, // Assuming company with ID 1 exists
                 'department_id' => 1,
                 'employe_code' => 'A001',
                 'nik' => '1234567890',
@@ -30,6 +31,7 @@ class EmployeSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 1, // Assuming company with ID 1 exists
                 'department_id' => 2,
                 'employe_code' => 'A002',
                 'nik' => '9876543210',
@@ -45,6 +47,7 @@ class EmployeSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 2, // Assuming company with ID 2 exists
                 'department_id' => 3,
                 'employe_code' => 'A003',
                 'nik' => '5555555555',
@@ -60,6 +63,7 @@ class EmployeSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 2, // Assuming company with ID 2 exists
                 'department_id' => 4,
                 'employe_code' => 'A004',
                 'nik' => '1111111111',
@@ -75,6 +79,7 @@ class EmployeSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 2, // Assuming company with ID 2 exists
                 'department_id' => 5,
                 'employe_code' => 'A005',
                 'nik' => '2222222222',

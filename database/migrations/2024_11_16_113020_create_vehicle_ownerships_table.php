@@ -13,10 +13,7 @@ return new class extends Migration
     {
         Schema::create('vehicle_ownership', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('owner_id')->references('id')->on('vehicle')->onDelete('cascade');
-            $table->string('owner');
-            $table->date('purchase_date');
-            $table->decimal('purchase_price', 15, 2);
+            $table->string('name', 50);
             $table->timestamps();
         });
     }
