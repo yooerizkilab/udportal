@@ -23,8 +23,8 @@
 </head>
 <body>
     <h1 style="text-align: center;">Scan QR Code DN Transport</h1>
-    <label for="">Id Pegawai</label>
-    <input type="text" name="id_pegawai" id="id_pegawai">
+    <label for="">Code Pegawai</label>
+    <input type="text" name="code" id="code">
     <label for="">From</label>
     <input type="text" name="from" id="from">
     <label for="">To</label>

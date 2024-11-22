@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use App\Services\SAPServices;
 use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ContractExport;
+use App\Imports\ContractImport;
+use App\Models\Contract;
+use Carbon\Carbon;
 
 class ContractController extends Controller
 {
@@ -15,12 +19,9 @@ class ContractController extends Controller
      * 
      * @return void
      * */
-    protected $SAPServices;
-
-    public function __construct(SAPServices $SAPServices)
+    public function __construct()
     {
         $this->middleware('auth');
-        $this->SAPServices = $SAPServices;
     }
 
     /**
@@ -28,53 +29,8 @@ class ContractController extends Controller
      */
     public function index()
     {
-
-        $cacheKey = 'hr_contracts_data';
-        $cacheDuration = 60;
-        // Cek apakah data ada di cache sebelum operasi
-        $isCached = Cache::has($cacheKey);
-
-        try {
-            $response = Cache::remember($cacheKey, $cacheDuration, function () use ($cacheKey) {
-                Log::info("Mengambil data dari API karena cache '$cacheKey' kosong");
-
-                $endpoint = 'U_HR_KONTRAK';
-                $apiResponse = $this->SAPServices->get($endpoint);
-
-                if (!$apiResponse->successful()) {
-                    throw new Exception('Failed to fetch data from SAP');
-                }
-
-                $data = $apiResponse->json()['value'] ?? [];
-
-                // Log ketika data berhasil disimpan ke cache
-                Log::info("Data berhasil disimpan ke cache '$cacheKey'", [
-                    'data_count' => count($data)
-                ]);
-
-                return $data;
-            });
-
-            // Log status cache setelah operasi
-            $statusMessage = $isCached ? 'Data diambil dari cache' : 'Data baru disimpan ke cache';
-            Log::info($statusMessage, [
-                'cache_key' => $cacheKey,
-                'data_count' => count($response)
-            ]);
-
-            return view('contracts.index', [
-                'response' => $response,
-                'fromCache' => $isCached
-            ]);
-        } catch (Exception $e) {
-            Cache::forget($cacheKey);
-            Log::error('Error fetching contracts data: ' . $e->getMessage());
-
-            return view('contracts.index', [
-                'response' => [],
-                'error' => 'Unable to fetch contracts data. Please try again later.'
-            ]);
-        }
+        $contracts = Contract::all();
+        return view('contracts.index', compact('contracts'));
     }
 
     /**
@@ -90,48 +46,48 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
+        // Validasi input
         $request->validate([
-            'code' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'name_company' => 'required|string|max:255',
-            'worker_project' => 'required|string|max:255',
-            'type_contract' => 'required|string|max:50',
-            'currency' => 'required|string|max:3',
-            'start_date' => 'required|date',
-            'owned_contract' => 'required|string|max:255',
-            'type_work' => 'required|string|max:50',
-            'price' => 'required|numeric',
-            'end_date' => 'required|date',
-            'status' => 'required|string|max:50',
-            'description' => 'nullable|string',
-            'memo' => 'nullable|string',
+            'code' => 'required|string|unique:contract,code',
+            'name' => 'required|string',
         ]);
 
-        // Data request
         $data = [
-            'Code' => $request->code,
-            'Name' => $request->name,
-            'U_CardName' => $request->name_company,
-            'U_PrjName' => $request->worker_project,
-            'U_ContrSts' => $request->type_contract,
-            'U_JobTyp' => $request->type_work,
-            'U_PrjSts' => $request->status,
-            'U_ContrCurr' => $request->currency,
-            'U_ContrAmt' => $request->price,
-            'U_ContrStart' => $request->start_date,
-            'U_ValidPrd' => $request->end_date,
-            'U_Company' => $request->owned_contract,
-            'U_Remark' => $request->description,
-            'U_Memo' => $request->memo
+            'code' => $request->code,
+            'name' => $request->name,
+            'nama_perusahaan' => $request->nama_perusahaan,
+            'nama_pekerjaan' => $request->nama_pekerjaan,
+            'status_kontrak' => $request->stattus_kontrak,
+            'jenis_pekerjaan' => $request->jenis_pekerjaan,
+            'nominal_kontrak' => $request->nominal_kontrak,
+            'tanggal_kontrak' => $request->tanggal_kontrak,
+            'masa_berlaku' => $request->masa_berlaku,
+            'status_proyek' => $request->status_proyek,
+            'retensi' => $request->retensi,
+            'masa_retensi' => $request->masa_retensi,
+            'status_retensi' => $request->status_retensi,
+            'pic_sales' => $request->pic_sales,
+            'pic_pc' => $request->pic_pc,
+            'pic_customer' => $request->pic_customer,
+            'mata_uang' => $request->mata_uang,
+            'bast_1' => $request->bast_1,
+            'bast_1_nomor' => $request->bast_1_nomor,
+            'bast_2' => $request->bast_2,
+            'bast_2_nomor' => $request->bast_2_nomor,
+            'overall_status' => $request->overall_status,
+            'kontrak_milik' => $request->kontrak_milik,
+            'keterangan' => $request->keterangan,
+            'memo' => $request->memo,
         ];
 
+        DB::beginTransaction();
         try {
-            $endpoint = 'U_HR_KONTRAK';
-            $response = $this->SAPServices->post($endpoint, $data);
-            return redirect()->back()->with('success', 'Contract ' . $response['Code'] . ' created successfully.');
-        } catch (\Exception $e) {
-            redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while creating the contract.');
+            $contracts = Contract::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Data ' . $contracts->name . ' berhasil disimpan.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal disimpan.');
         }
     }
 
@@ -140,10 +96,8 @@ class ContractController extends Controller
      */
     public function show($id)
     {
-        $originalID = str_replace(' ', '/', $id);
-        $endpoint = 'U_HR_KONTRAK';
-        $response = $this->SAPServices->getById($endpoint, $originalID)->json();
-        return view('contracts.show', compact('response'));
+        $contract = Contract::findOrFail($id);
+        return view('contracts.show', compact('contract'));
     }
 
     /**
@@ -159,51 +113,51 @@ class ContractController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Get the original ID
-        $originalID = str_replace(' ', '/', $id);
+        // Cari kontrak berdasarkan ID
+        $contract = Contract::findOrFail($id);
 
-        // Validate the request
+        // Validasi input
         $request->validate([
-            'code' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'name_company' => 'required|string|max:255',
-            'worker_project' => 'required|string|max:255',
-            'type_contract' => 'required|string|max:50',
-            'currency' => 'required|string|max:3',
-            'start_date' => 'required|date',
-            'owned_contract' => 'required|string|max:255',
-            'type_work' => 'required|string|max:50',
-            'price' => 'required|numeric',
-            'end_date' => 'required|date',
-            'status' => 'required|string|max:50',
-            'description' => 'nullable|string',
-            'memo' => 'nullable|string',
+            // 'code' => 'required|string|unique:contract,code',
+            'name' => 'required|string',
         ]);
 
-        // Data request
         $data = [
-            'Code' => $request->code,
-            'Name' => $request->name,
-            'U_CardName' => $request->name_company,
-            'U_PrjName' => $request->worker_project,
-            'U_ContrSts' => $request->type_contract,
-            'U_JobTyp' => $request->type_work,
-            'U_PrjSts' => $request->status,
-            'U_ContrCurr' => $request->currency,
-            'U_ContrAmt' => $request->price,
-            'U_ContrStart' => $request->start_date,
-            'U_ValidPrd' => $request->end_date,
-            'U_Company' => $request->owned_contract,
-            'U_Remark' => $request->description,
-            'U_Memo' => $request->memo
+            // 'code' => $request->code,
+            'name' => $request->name,
+            'nama_perusahaan' => $request->nama_perusahaan,
+            'nama_pekerjaan' => $request->nama_pekerjaan,
+            'status_kontrak' => $request->stattus_kontrak,
+            'jenis_pekerjaan' => $request->jenis_pekerjaan,
+            'nominal_kontrak' => $request->nominal_kontrak,
+            'tanggal_kontrak' => $request->tanggal_kontrak,
+            'masa_berlaku' => $request->masa_berlaku,
+            'status_proyek' => $request->status_proyek,
+            'retensi' => $request->retensi,
+            'masa_retensi' => $request->masa_retensi,
+            'status_retensi' => $request->status_retensi,
+            'pic_sales' => $request->pic_sales,
+            'pic_pc' => $request->pic_pc,
+            'pic_customer' => $request->pic_customer,
+            'mata_uang' => $request->mata_uang,
+            'bast_1' => $request->bast_1,
+            'bast_1_nomor' => $request->bast_1_nomor,
+            'bast_2' => $request->bast_2,
+            'bast_2_nomor' => $request->bast_2_nomor,
+            'overall_status' => $request->overall_status,
+            'kontrak_milik' => $request->kontrak_milik,
+            'keterangan' => $request->keterangan,
+            'memo' => $request->memo,
         ];
 
+        DB::beginTransaction();
         try {
-            $endpoint = 'U_HR_KONTRAK';
-            $response = $this->SAPServices->patch($endpoint, $originalID, $data);
-            return redirect()->back()->with('success', 'Contract ' . $response['Code'] . ' updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error ' . $e->getMessage() . ' occurred while updating the contract.');
+            $contract->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Data ' . $contract->name . ' berhasil diperbarui.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal diperbarui.');
         }
     }
 
@@ -212,16 +166,74 @@ class ContractController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $contract = Contract::findOrFail($id);
+            $contract->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Data ' . $contract->name . ' berhasil dihapus.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal dihapus.');
+        }
     }
 
-    public function someMethod(SAPServices $sapService)
+    public function exportPdf(Request $request)
     {
-        try {
-            $result = $sapService->callStoredProcedure('SomeProcedureName', ['param1', 'param2']);
-            return response()->json($result);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        $startDate = Carbon::parse($request->start_date)->startOfDay();
+        $endDate = Carbon::parse($request->end_date)->endOfDay();
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->withErrors(['error' => 'Start date and end date are required.']);
         }
+
+        // Fetch data sesuai kebutuhan
+        $contracts = Contract::whereBetween('created_at', [$startDate, $endDate])->get();
+
+        // Data untuk PDF
+        $data = [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'contracts' => $contracts,
+        ];
+
+        // return $data;
+        // Generate PDF
+        $pdf = PDF::loadView('contracts.pdf', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream('contracts.pdf');
+        // return $pdf->download('contracts.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Validasi parameter
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->withErrors(['error' => 'Start date and end date are required.']);
+        }
+
+        return Excel::download(new ContractExport($startDate, $endDate), 'contracts.xlsx');
+    }
+
+    public function importContract(Request $request)
+    {
+        $file = $request->file('file');
+        if (!$file) {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+        Excel::import(new ContractImport, $file);
+
+        return redirect()->back()->with('success', 'Data berhasil diimport.');
+    }
+
+    public function filterExport(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $contracts = Contract::whereBetween('created_at', [$startDate, $endDate])->get();
+        $pdf = PDF::loadView('contracts.pdf', compact('contracts'));
+        return $pdf->download('contracts.pdf');
     }
 }

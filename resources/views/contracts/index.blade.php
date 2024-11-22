@@ -12,7 +12,7 @@
     <h1 class="h3 mb-2 text-gray-800">Contracts Management</h1>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.
+            href="{{ route('contract.exportPdf') }}">official DataTables documentation</a>.
     </p>
 
     <!-- DataTales Example -->
@@ -22,13 +22,12 @@
                 <h6 class="m-0 font-weight-bold text-primary">List Contracts</h6>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
+                    <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    <!-- Tombol PDF dengan AJAX -->
-                    <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
+                    <button type="button" onclick="exportPDF()" class="btn btn-info btn-md ml-2 mb-2">
                         <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
                     </button>
-                    <!-- Tombol Excel dengan AJAX -->
-                    <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
+                    <button type="button" onclick="exportExcel()" class="btn btn-success btn-md ml-2 mb-2">
                         <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                     </button>
                     <!-- Dropdown Filter -->
@@ -37,9 +36,9 @@
                             <i class="fas fa-filter fa-md white-50"></i> Filter
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="">Action</a>
+                            <a class="dropdown-item" href="">Another action</a>
+                            <a class="dropdown-item" href="">Something else here</a>
                         </div>
                     </div>
                     <!-- Tombol Import Data Contracts -->
@@ -57,71 +56,61 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th width="5%" class="text-center">No</th>
                                 <th>Code</th>
                                 <th>Name</th>
-                                <th>Name Company</th>
-                                {{-- <th>Worker/Project Name</th>
-                                <th>Type Contract</th>
-                                <th>Type of Work</th>
-
-                                <th>Status</th>
-                                <th>Currency</th>
-                                <th>Price</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Owned Contract</th>
-                                <th>Description</th>
-                                <th>Memo</th> --}}
+                                <th>Name Perusahaan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($response as $contract)
+                            @forelse ($contracts as $contract)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $contract['Code'] }}</td>
-                                    <td>{{ $contract['Name'] }}</td>
-                                    <td>{{ $contract['U_CardName'] }}</td>
-                                    {{-- <td>{{ $contract['U_PrjName'] }}</td>
-                                    <td>{{ $contract['U_ContrSts'] }}</td>
-                                    <td>{{ $contract['U_JobTyp'] }}</td>
-                                    <td>{{ $contract['U_PrjSts'] }}</td>
-                                    <td>{{ $contract['U_ContrCurr'] }}</td>
-                                    <td>{{ $contract['U_ContrAmt'] }}</td>
-                                    <td>{{ $contract['U_ContrStart'] }}</td>
-                                    <td>{{ $contract['U_ValidPrd'] }}</td>
-                                    <td>{{ $contract['U_Company'] }}</td>
-                                    <td>{{ $contract['U_Remark'] }}</td>
-                                    <td>{{ $contract['U_Memo'] }}</td> --}}
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $contract->code }}</td>
+                                    <td>{{ $contract->name }}</td>
+                                    <td>{{ $contract->nama_perusahaan }}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
-                                            <a href="{{ route('contract.show', str_replace('/', '%20', $contract['Code'])) }}" class="btn btn-info btn-sm mr-2 btn-circle"><i class="fas fa-eye"></i></a>
-                                            <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle" 
-                                                data-code="{{ $contract['Code'] }}"
-                                                data-name="{{ $contract['Name'] }}"
-                                                data-company="{{ $contract['U_CardName'] }}"
-                                                data-project="{{ $contract['U_PrjName'] }}"
-                                                data-status="{{ $contract['U_ContrSts'] }}"
-                                                data-type="{{ $contract['U_JobTyp'] }}"
-                                                data-projectstatus="{{ $contract['U_PrjSts'] }}"
-                                                data-currency="{{ $contract['U_ContrCurr'] }}"
-                                                data-price="{{ $contract['U_ContrAmt'] }}"
-                                                data-startdate="{{ $contract['U_ContrStart'] }}"
-                                                data-enddate="{{ $contract['U_ValidPrd'] }}"
-                                                data-ownedcontract="{{ $contract['U_Company'] }}"
-                                                data-description="{{ $contract['U_Remark'] }}"
-                                                data-memo="{{ $contract['U_Memo'] }}"
-                                                data-toggle="modal" 
+                                            <a href="{{ route('contract.show', $contract->id) }}" class="btn btn-info mr-2 btn-circle">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-warning btn-circle" data-toggle="modal"
+                                                data-id="{{ $contract->id }}"
+                                                data-code="{{ $contract->code }}"
+                                                data-name="{{ $contract->name }}"
+                                                data-nama_perusahaan="{{ $contract->nama_perusahaan }}"
+                                                data-nama_pekerjaan="{{ $contract->nama_pekerjaan }}"
+                                                data-status_kontrak="{{ $contract->status_kontrak }}"
+                                                data-jenis_pekerjaan="{{ $contract->jenis_pekerjaan }}"
+                                                data-nominal_kontrak="{{ $contract->nominal_kontrak }}"
+                                                data-tanggal_kontrak="{{ $contract->tanggal_kontrak }}"
+                                                data-masa_berlaku="{{ $contract->masa_berlaku }}"
+                                                data-status_proyek="{{ $contract->status_proyek }}"
+                                                data-retensi="{{ $contract->retensi }}"
+                                                data-masa_retensi="{{ $contract->masa_retensi }}"
+                                                data-status_retensi="{{ $contract->status_retensi }}"
+                                                data-pic_sales="{{ $contract->pic_sales }}"
+                                                data-pic_pc="{{ $contract->pic_pc  }}"
+                                                data-pic_customer="{{ $contract->pic_customer }}"
+                                                data-mata_uang="{{ $contract->mata_uang }}"
+                                                data-bast_1="{{ $contract->bast_1 }}"
+                                                data-bast_1_nomor="{{ $contract->bast_1_nomor }}"
+                                                data-bast_2="{{ $contract->bast_2 }}"
+                                                data-bast_2_nomor="{{ $contract->bast_2_nomor }}"
+                                                data-overall_status="{{ $contract->overall_status }}"
+                                                data-kontrak_milik="{{ $contract->kontrak_milik }}"
+                                                data-keterangan="{{ $contract->keterangan }}"
+                                                data-memo="{{ $contract->memo }}"
                                                 data-target="#editContractsModal">
                                                 <i class="fas fa-edit"></i>
-                                            </button>
+                                            </button> 
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="16" class="text-center">No Data</td>
+                                    <td colspan="5" class="text-center">No data available</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -133,10 +122,10 @@
 
     <!--- Modal Add Contracts --->
     <div class="modal fade" id="addContractsModal" tabindex="-1" role="dialog" aria-labelledby="addContractsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addContractsModalLabel">Modal Add Contracts</h5>
+                    <h5 class="modal-title font-weight-bold text-primary" id="addContractsModalLabel">Modal Add Contracts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -144,109 +133,159 @@
                 <div class="modal-body">
                     <form action="{{ route('contract.store') }}" method="post" id="addContractsForm">
                         @csrf
-                        <div class="form-group">
-                            <label for="code">Code</label>
-                            <input type="text" name="code" id="code" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="name_company">Name Company</label>
-                            <input type="text" name="name_company" id="name_company" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="worker_project">Worker / Project Name</label>
-                            <input type="text" name="worker_project" id="worker_project" class="form-control" required>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="type_contract">Type Contract</label>
-                                    <select name="type_contract" id="type_contract" class="form-control">
-                                        <option value="" disabled selected>Select Type Contract</option>
-                                        <option value="DO">DO</option>
-                                        <option value="PO">PO</option>
-                                        <option value="SPB">SPB</option>
-                                        <option value="SPK">SPK</option>
-                                        <option value="MOU">MOU</option>
-                                        <option value="NDA">NDA</option>
-                                        <option value="ADD-1">ADD-1</option>
-                                        <option value="ADD-2">ADD-2</option>
-                                        <option value="ADD-3">ADD-3</option>
-                                        <option value="ADDENDUM-1">ADDENDUM-1</option>
-                                        <option value="ADDENDUM-2">ADDENDUM-2</option>
-                                        <option value="ADDENDUM-3">ADDENDUM-3</option>
-                                        <option value="CONTRACT">CONTRACT</option>
-                                    </select>
+                                    <label for="code">Code</label>
+                                    <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="currency">Currency</label>
-                                    <select name="currency" id="currency" class="form-control" required>
-                                        <option value="" disabled selected>Select Currency</option>
-                                        <option value="USD">USD</option>
-                                        <option value="IDR">IDR</option>
-                                        <option value="EUR">EUR</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="start_date">Start Date</label>
-                                    <input type="date" name="start_date" id="start_date" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="owned_contract">Owned Contract</label>
-                                    <input type="text" name="owned_contract" id="owned_contract" class="form-control" required>
+                                    <label for="nama_perusahaan">Nama Perusahaan</label>
+                                    <input type="text" class="form-control @error('nama_perusahaan') is-invalid @enderror" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="type_work">Type of Work</label>
-                                    <select name="type_work" id="type_work" class="form-control">
-                                        <option value="" disabled selected>Select Type of Work</option>
-                                        <option value="PENGADAAN">PENGADAAN</option>
-                                        <option value="PEMASANGAN">PEMASANGAN</option>
-                                        <option value="KONSULTASI">KONSULTASI</option>
-                                        <option value="PERBAIKAN">PERBAIKAN</option>
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama_pekerjaan">Nama Pekerjaan / Proyek</label>
+                                    <input type="text" class="form-control @error('nama_pekerjaan') is-invalid @enderror" id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="status_kontrak">Status Kontrak</label>
+                                    <input type="text" class="form-control" id="status_kontrak" name="status_kontrak" value="{{ old('status_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggal_kontrak">Tanngal Kontrak</label>
+                                    <input type="date" class="form-control" id="tanggal_kontrak" name="tanggal_kontrak" value="{{ old('tanggal_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nominal_kontrak">Nominal Kontrak</label>
+                                    <input type="number" class="form-control" id="nominal_kontrak" name="nominal_kontrak" value="{{ old('nominal_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pic_sales">PIC Sales</label>
+                                    <input type="text" class="form-control" id="pic_sales" name="pic_sales" value="{{ old('pic_sales') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_1">BAST-1 Tgl</label>
+                                    <input type="date" class="form-control" id="bast_1" name="bast_1" value="{{ old('bast_1') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_1_nomor">BAST-1 Nomor</label>
+                                    <input type="text" class="form-control" id="bast_1_nomor" name="bast_1_nomor" value="{{ old('bast_1_nomor') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="keterangan">Keterangan</label>
+                                    <textarea class="form-control" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
+                                </div>             
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="jenis_pekerjaan">Jenis Pekerjaan</label>
+                                    <select name="jenis_pekerjaan" id="jenis_pekerjaan" class="form-control @error('jenis_pekerjaan') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Jenis Pekerjaan</option>
+                                        <option value="-">-</option>
+                                        <option value="CO LICENSING">CO LICENSING</option>
+                                        <option value="DISTRIBUTOR">DISTRIBUTOR</option>
+                                        <option value="IZIN">IZIN</option>
                                         <option value="JASA">JASA</option> 
                                         <option value="SEWA">SEWA</option>
+                                        <option value="KEMITRAAN">KEMITRAAN</option>
                                         <option value="KERJASAMA">KERJASAMA</option>
+                                        <option value="KONSULTASI">KONSULTASI</option>
+                                        <option value="PENGADAAN">PENGADAAN</option>
+                                        <option value="PEMASANGAN">PEMASANGAN</option>
+                                        <option value="LAYANAN JASA">LAYANAN JASA</option>
+                                        <option value="PERJANJIAN">PERJANJIAN</option>
+                                        <option value="SERTIFIKASI">SERTIFIKASI</option>
+                                        <option value="PENGAMANAN">PENGAMANAN</option>
+                                        <option value="PERBAIKAN">PERBAIKAN</option>
                                         <option value="LAINNYA">LAINNYA</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="price">Price</label>
-                                    <input type="number" name="price" id="price" class="form-control" required>
+                                    <label for="masa_berlaku">Masa Berlaku</label>
+                                    <input type="date" class="form-control" id="masa_berlaku" name="masa_berlaku" value="{{ old('masa_berlaku') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="end_date">End Date</label>
-                                    <input type="date" name="end_date" id="end_date" class="form-control" required>
+                                    <label for="mata_uang">Mata Uang</label>
+                                    <select name="mata_uang" id="mata_uang" class="form-control @error('mata_uang') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Mata Uang</option>
+                                        <option value="-">-</option>
+                                        <option value="IDR">IDR</option>
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control">
-                                        <option value="" disabled selected>Select Status</option>
+                                    <label for="pic_pc">PIC PC</label>
+                                    <input type="text" class="form-control" id="pic_pc" name="pic_pc" value="{{ old('pic_pc') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_2">BAST-2 Tgl</label>
+                                    <input type="date" class="form-control" id="bast_2" name="bast_2" value="{{ old('bast_2') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_2_nomor">B AST-2 Nomor</label>
+                                    <input type="text" class="form-control" id="bast_2_nomor" name="bast_2_nomor" value="{{ old('bast_2_nomor') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="overall_status">Overall Status</label>
+                                    <input type="text" class="form-control" id="overall_status" name="overall_status" value="{{ old('overall_status') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="kontrak_milik">Kontrak Milik</label>
+                                    <input type="text" class="form-control" id="kontrak_milik" name="kontrak_milik" value="{{ old('kontrak_milik') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="status_proyek">Status Proyek</label>
+                                    <select name="status_proyek" id="status_proyek" class="form-control @error('status_proyek') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Status Proyek</option>
+                                        <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
                                         <option value="CLOSED">CLOSSED</option>
                                         <option value="PENDING">PENDING</option>
                                         <option value="CANCELLED">CANCELLED</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="pic_customer">PIC Customer</label>
+                                    <input type="text" class="form-control" id="pic_customer" name="pic_customer" value="{{ old('pic_customer') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="retensi">Retensi</label>
+                                    <input type="number" class="form-control" id="retensi" name="retensi" value="{{ old('retensi') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="masa_retensi">Masa Retensi</label>
+                                    <input type="date" class="form-control" id="masa_retensi" name="masa_retensi" value="{{ old('masa_retensi') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="status_retensi">Status Retensi</label>
+                                    <select name="status_retensi" id="status_retensi" class="form-control @error('status_retensi') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Status Retensi</option>
+                                        <option value="-">-</option>
+                                        <option value="OPEN">OPEN</option>
+                                        <option value="CLOSED">CLOSSED</option>
+                                        <option value="PENDING">PENDING</option>
+                                        <option value="CANCELLED">CANCELLED</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo">Memo</label>
+                                    <textarea class="form-control" id="memo" name="memo">{{ old('memo') }}</textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" cols="30" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="memo">Memo</label>
-                            <textarea name="memo" id="memo" class="form-control" cols="30" rows="5"></textarea>
-                        </div>
-                        {{-- <div class="form-group">
-                            <label for="file">File</label>
-                            <input type="file" name="file" id="file" class="form-control">
-                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -259,10 +298,10 @@
 
     <!-- Modal Edit Contracts -->
     <div class="modal fade" id="editContractsModal" tabindex="-1" role="dialog" aria-labelledby="editContractsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editContractsModalLabel">Modal Edit Contracts</h5>
+                    <h5 class="modal-title font-weight-bold text-primary" id="editContractsModalLabel">Modal Edit Contracts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -271,111 +310,159 @@
                     <form action="{{ route('contract.update', ':id') }}" method="post" id="updateContractsForm">
                         @csrf
                         @method('PUT')
-                        <div class="form-group">
-                            <label for="code">Code</label>
-                            <input type="text" name="code" id="codeEdit" class="form-control @error('code') is-invalid @enderror" required readonly>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="nameEdit" class="form-control @error('name') is-invalid @enderror" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="name_company">Name Company</label>
-                            <input type="text" name="name_company" id="name_companyEdit" class="form-control @error('name_company') is-invalid @enderror" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="worker_project">Worker / Project Name</label>
-                            <input type="text" name="worker_project" id="worker_projectEdit" class="form-control @error('worker_project') is-invalid @enderror" required>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="type_contract">Type Contract</label>
-                                    <select name="type_contract" id="type_contractEdit" class="form-control @error('type_contract') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Type Contract</option>
-                                        <option value="DO">DO</option>
-                                        <option value="PO">PO</option>
-                                        <option value="SPB">SPB</option>
-                                        <option value="SPK">SPK</option>
-                                        <option value="MOU">MOU</option>
-                                        <option value="NDA">NDA</option>
-                                        <option value="ADD-1">ADD-1</option>
-                                        <option value="ADD-2">ADD-2</option>
-                                        <option value="ADD-3">ADD-3</option>
-                                        <option value="ADDENDUM-1">ADDENDUM-1</option>
-                                        <option value="ADDENDUM-2">ADDENDUM-2</option>
-                                        <option value="ADDENDUM-3">ADDENDUM-3</option>
-                                        <option value="KONTRAK">KONTRAK</option>
-                                    </select>
+                                    <label for="code">Code</label>
+                                    <input type="text" class="form-control @error('code') is-invalid @enderror" id="codeEdit" name="code" value="{{ old('code') }}" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="currency">Currency</label>
-                                    <select name="currency" id="currencyEdit" class="form-control @error('currency') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Currency</option>
-                                        <option value="USD">USD</option>
-                                        <option value="IDR">IDR</option>
-                                        <option value="EUR">EUR</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="start_date">Start Date</label>
-                                    <input type="date" name="start_date" id="start_dateEdit" class="form-control @error('start_date') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="owned_contract">Owned Contract</label>
-                                    <input type="text" name="owned_contract" id="owned_contractEdit" class="form-control @error('owned_contract') is-invalid @enderror" required>
+                                    <label for="nama_perusahaan">Nama Perusahaan</label>
+                                    <input type="text" class="form-control @error('nama_perusahaan') is-invalid @enderror" id="nama_perusahaanEdit" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="type_work">Type of Work</label>
-                                    <select name="type_work" id="type_workEdit" class="form-control @error('type_work') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Type of Work</option>
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEdit" name="name" value="{{ old('name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama_pekerjaan">Nama Pekerjaan / Proyek</label>
+                                    <input type="text" class="form-control @error('nama_pekerjaan') is-invalid @enderror" id="nama_pekerjaanEdit" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="status_kontrak">Status Kontrak</label>
+                                    <input type="text" class="form-control" id="status_kontrakEdit" name="status_kontrak" value="{{ old('status_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggal_kontrak">Tanngal Kontrak</label>
+                                    <input type="date" class="form-control" id="tanggal_kontrakEdit" name="tanggal_kontrak" value="{{ old('tanggal_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nominal_kontrak">Nominal Kontrak</label>
+                                    <input type="number" class="form-control" id="nominal_kontrakEdit" name="nominal_kontrak" value="{{ old('nominal_kontrak') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pic_sales">PIC Sales</label>
+                                    <input type="text" class="form-control" id="pic_salesEdit" name="pic_sales" value="{{ old('pic_sales') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_1">BAST-1 Tgl</label>
+                                    <input type="date" class="form-control" id="bast_1Edit" name="bast_1" value="{{ old('bast_1') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_1_nomor">BAST-1 Nomor</label>
+                                    <input type="text" class="form-control" id="bast_1_nomorEdit" name="bast_1_nomor" value="{{ old('bast_1_nomor') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="keterangan">Keterangan</label>
+                                    <textarea class="form-control" id="keteranganEdit" name="keterangan">{{ old('keterangan') }}</textarea>
+                                </div>           
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="jenis_pekerjaan">Jenis Pekerjaan</label>
+                                    <select name="jenis_pekerjaan" id="jenis_pekerjaanEdit" class="form-control @error('jenis_pekerjaan') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Jenis Pekerjaan</option>
                                         <option value="-">-</option>
-                                        <option value="PENGADAAN">PENGADAAN</option>
-                                        <option value="PEMASANGAN">PEMASANGAN</option>
-                                        <option value="KONSULTASI">KONSULTASI</option>
-                                        <option value="PERBAIKAN">PERBAIKAN</option>
+                                        <option value="CO LICENSING">CO LICENSING</option>
+                                        <option value="DISTRIBUTOR">DISTRIBUTOR</option>
+                                        <option value="IZIN">IZIN</option>
                                         <option value="JASA">JASA</option> 
                                         <option value="SEWA">SEWA</option>
+                                        <option value="KEMITRAAN">KEMITRAAN</option>
                                         <option value="KERJASAMA">KERJASAMA</option>
-                                        <option value="CO LICENSING">CO LICENSING</option>
+                                        <option value="KONSULTASI">KONSULTASI</option>
+                                        <option value="PENGADAAN">PENGADAAN</option>
+                                        <option value="PEMASANGAN">PEMASANGAN</option>
+                                        <option value="LAYANAN JASA">LAYANAN JASA</option>
+                                        <option value="PERJANJIAN">PERJANJIAN</option>
+                                        <option value="SERTIFIKASI">SERTIFIKASI</option>
+                                        <option value="PENGAMANAN">PENGAMANAN</option>
+                                        <option value="PERBAIKAN">PERBAIKAN</option>
                                         <option value="LAINNYA">LAINNYA</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="price">Price</label>
-                                    <input type="number" name="price" id="priceEdit" class="form-control @error('price') is-invalid @enderror" required>
+                                    <label for="masa_berlaku">Masa Berlaku</label>
+                                    <input type="date" class="form-control" id="masa_berlakuEdit" name="masa_berlaku" value="{{ old('masa_berlaku') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="end_date">End Date</label>
-                                    <input type="date" name="end_date" id="end_dateEdit" class="form-control @error('end_date') is-invalid @enderror" required>
+                                    <label for="mata_uang">Mata Uang</label>
+                                    <select name="mata_uang" id="mata_uangEdit" class="form-control @error('mata_uang') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Mata Uang</option>
+                                        <option value="-">-</option>
+                                        <option value="IDR">IDR</option>
+                                        <option value="USD">USD</option>
+                                        <option value="EUR">EUR</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="statusEdit" class="form-control @error('status') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Status</option>
+                                    <label for="pic_pc">PIC PC</label>
+                                    <input type="text" class="form-control" id="pic_pcEdit" name="pic_pc" value="{{ old('pic_pc') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_2">BAST-2 Tgl</label>
+                                    <input type="date" class="form-control" id="bast_2Edit" name="bast_2" value="{{ old('bast_2') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bast_2_nomor">B AST-2 Nomor</label>
+                                    <input type="text" class="form-control" id="bast_2_nomorEdit" name="bast_2_nomor" value="{{ old('bast_2_nomor') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="overall_status">Overall Status</label>
+                                    <input type="text" class="form-control" id="overall_statusEdit" name="overall_status" value="{{ old('overall_status') }}">
+                                </div>                       
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="kontrak_milik">Kontrak Milik</label>
+                                    <input type="text" class="form-control" id="kontrak_milikEdit" name="kontrak_milik" value="{{ old('kontrak_milik') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="status_proyek">Status Proyek</label>
+                                    <select name="status_proyek" id="status_proyekEdit" class="form-control @error('status_proyek') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Status Proyek</option>
+                                        <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
                                         <option value="CLOSED">CLOSSED</option>
                                         <option value="PENDING">PENDING</option>
                                         <option value="CANCELLED">CANCELLED</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="pic_customer">PIC Customer</label>
+                                    <input type="text" class="form-control" id="pic_customerEdit" name="pic_customer" value="{{ old('pic_customer') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="retensi">Retensi</label>
+                                    <input type="number" class="form-control" id="retensiEdit" name="retensi" value="{{ old('retensi') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="masa_retensi">Masa Retensi</label>
+                                    <input type="date" class="form-control" id="masa_retensiEdit" name="masa_retensi" value="{{ old('masa_retensi') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="status_retensi">Status Retensi</label>
+                                    <select name="status_retensi" id="status_retensiEdit" class="form-control @error('status_retensi') is-invalid @enderror">
+                                        <option value="" disabled selected>Select Status Retensi</option>
+                                        <option value="-">-</option>
+                                        <option value="OPEN">OPEN</option>
+                                        <option value="CLOSED">CLOSSED</option>
+                                        <option value="PENDING">PENDING</option>
+                                        <option value="CANCELLED">CANCELLED</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo">Memo</label>
+                                    <textarea class="form-control" id="memoEdit" name="memo">{{ old('memo') }}</textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" id="descriptionEdit" class="form-control" cols="30" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="memo">Memo</label>
-                            <textarea name="memo" id="memoEdit" class="form-control" cols="30" rows="5"></textarea>
-                        </div>
-                        {{-- <div class="form-group">
-                            <label for="file">File</label>
-                            <input type="file" name="file" id="file" class="form-control">
-                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -397,7 +484,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form action="{{ route('contract.importContract') }}" method="post" enctype="multipart/form-data" id="importContractsForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="file">File Excel</label>
+                            <input type="file" class="form-control" id="file" name="file">
+                            <p class="text-danger">*Format file .xlsx .xls .csv</p>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
@@ -409,181 +503,227 @@
 @endsection
 
 @push('scripts')
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#dataTable').DataTable(
-                {
-                    "order": [[ 0, "asc" ]]
-                }
-            );
-        });
-    </script>
+<!-- Page level plugins -->
+<script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable(
+            {
+                "order": [[ 0, "asc" ]]
+            }
+        );
+    });
+</script>
+<script>
+    function confirmAddContracts() {
+        // Konfirmasi pengguna sebelum menyimpan data
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('addContractsForm').submit();
+            } else {
+                return false;
+            }
+        })
+    }   
 
-    <script>
+    $('#editContractsModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var contractId = button.data('id')
+        var contractCode = button.data('code');
+        var contractName = button.data('name');
+        var contractNamaPerusahaan = button.data('nama_perusahaan');
+        var contractNamaPekerjaan = button.data('nama_pekerjaan');
+        var contractStatusKontrak = button.data('status_kontrak');
+        var contractJenisPekerjaan = button.data('jenis_pekerjaan');
+        var contractNominalKontrak = button.data('nominal_kontrak');
+        var contractTanggalKontrak = button.data('tanggal_kontrak');
+        var contractMasaBerlaku = button.data('masa_berlaku');
+        var contractStatusProyek = button.data('status_proyek');
+        var contractRetensi = button.data('retensi');
+        var contractMasaRetensi = button.data('masa_retensi');
+        var contractStatusRetensi = button.data('status_retensi');
+        var contractPicSales = button.data('pic_sales');
+        var contractPicPc = button.data('pic_pc');
+        var contractPicCustomer = button.data('pic_customer');
+        var contractMataUang = button.data('mata_uang');
+        var contractBast1 = button.data('bast_1');
+        var contractBast1No = button.data('bast_1_nomor');
+        var contractBast2 = button.data('bast_2');
+        var contractBast2No = button.data('bast_2_nomor');
+        var contractOverallStatus = button.data('overall_status');
+        var contractKontrakMilik = button.data('kontrak_milik');
+        var contractKeterangan = button.data('keterangan');
+        var contractMemo = button.data('memo');
 
-        function confirmAddContracts() {
-            // Konfirmasi pengguna sebelum menyimpan data
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('addContractsForm').submit();
-                } else {
-                    return false;
-                }
-            })
-        }
+        var modal = $(this);
+            
+        document.getElementById('codeEdit').value = contractCode
+        document.getElementById('nameEdit').value = contractName
+        document.getElementById('nama_perusahaanEdit').value = contractNamaPerusahaan
+        document.getElementById('nama_pekerjaanEdit').value = contractNamaPekerjaan
+        document.getElementById('status_kontrakEdit').value = contractStatusKontrak
 
-        function confirmUpdateContracts() {
-            // Konfirmasi pengguna sebelum menyimpan data
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('updateContractsForm').submit();
-                } else {
-                    return false;
-                }
-            })
-        }
-
-        $('#editContractsModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var contractCode = button.data('code');
-            var contractName = button.data('name');
-            var contractNameCompany = button.data('company');
-            var contractWorkerProject = button.data('project');
-            var contractStatus = button.data('status');
-            var contractTypeWork = button.data('type');
-            var contractProjetStatus = button.data('projectstatus');
-            var contractCurrency = button.data('currency');
-            var contractAmount = button.data('price');
-            var contractStartDate = button.data('startdate');
-            var contractEndDate = button.data('enddate');
-            var contractOwnedContract = button.data('ownedcontract');
-            var contractDescription = button.data('description');
-            var contractMemo = button.data('memo');
-
-            var modal = $(this);
-            document.getElementById('codeEdit').value = contractCode;
-            document.getElementById('nameEdit').value = contractName;
-            document.getElementById('name_companyEdit').value = contractNameCompany;
-            document.getElementById('worker_projectEdit').value = contractWorkerProject;
-
-            var select = document.getElementById('type_contractEdit');
+        var select = document.getElementById('jenis_pekerjaanEdit');
             for (var i = 0; i < select.options.length; i++) {
-                if (select.options[i].value == contractStatus) {
+                if (select.options[i].value == contractJenisPekerjaan) {
                     select.options[i].selected = true;
                 }
             }
 
-            // select option selected
-            var select1 = document.getElementById('statusEdit');
+        document.getElementById('kontrak_milikEdit').value = contractKontrakMilik
+        document.getElementById('tanggal_kontrakEdit').value = contractTanggalKontrak
+        document.getElementById('masa_berlakuEdit').value = contractMasaBerlaku
+
+        var select1 = document.getElementById('status_proyekEdit');
             for (var i = 0; i < select1.options.length; i++) {
-                if (select1.options[i].value == contractProjetStatus) {
+                if (select1.options[i].value == contractStatusProyek) {
                     select1.options[i].selected = true;
                 }
             }
-   
-            // select option selected
-            var select3 = document.getElementById('type_workEdit');
-            for (var i = 0; i < select3.options.length; i++) {
-                if (select3.options[i].value == contractTypeWork) {
-                    select3.options[i].selected = true;
-                }
-            }
 
-            // select option selected
-            var select2 = document.getElementById('currencyEdit');
+        document.getElementById('nominal_kontrakEdit').value = contractNominalKontrak
+
+        var select2 = document.getElementById('mata_uangEdit');
             for (var i = 0; i < select2.options.length; i++) {
-                if (select2.options[i].value == contractCurrency) {
+                if (select2.options[i].value == contractMataUang) {
                     select2.options[i].selected = true;
                 }
             }
 
-            document.getElementById('priceEdit').value = contractAmount;
-            document.getElementById('start_dateEdit').value = contractStartDate;
-            document.getElementById('end_dateEdit').value = contractEndDate;
-            document.getElementById('owned_contractEdit').value = contractOwnedContract;
-            document.getElementById('descriptionEdit').value = contractDescription;
-            document.getElementById('memoEdit').value = contractMemo;
-
-            // condition if contractCode contains '/' 
-            if (typeof contractCode === "string" && contractCode.includes('/')) {
-                // Replace the contractCode
-                var id = contractCode.replace(/\//g, '%20');
-            } else {
-                var id = contractCode; // Jika tidak ada '/', id tetap sama
-            }
-            // Ubah action form agar sesuai dengan id yang akan diupdate
-            var formAction = '{{ route("contract.update", ":id") }}';
-            formAction = formAction.replace(':id', id);
-            $('#updateContractsForm').attr('action', formAction);
-        })
-
-        function confirmImportContracts() {
-            // Konfirmasi pengguna sebelum menyimpan data
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('importContractsForm').submit();
-                } else {
-                    return false;
+        document.getElementById('pic_customerEdit').value = contractPicCustomer
+        document.getElementById('pic_salesEdit').value = contractPicSales
+        document.getElementById('pic_pcEdit').value = contractPicPc
+        document.getElementById('retensiEdit').value = contractRetensi
+        document.getElementById('bast_1Edit').value = contractBast1
+        document.getElementById('bast_2Edit').value = contractBast2
+        document.getElementById('bast_1_nomorEdit').value = contractBast1No
+        document.getElementById('bast_2_nomorEdit').value = contractBast2No
+        document.getElementById('masa_retensiEdit').value = contractMasaRetensi
+            
+        var select3 = document.getElementById('status_retensiEdit');
+            for (var i = 0; i < select3.options.length; i++) {
+                if (select3.options[i].value == contractStatusRetensi) {
+                    select3.options[i].selected = true;
                 }
-            })
+            }
+
+        document.getElementById('overall_statusEdit').value = contractOverallStatus
+        document.getElementById('keteranganEdit').value = contractKeterangan
+        document.getElementById('memoEdit').value = contractMemo
+        
+        // Ubah action form agar sesuai dengan id yang akan diupdate
+        var formAction = '{{ route("contract.update", ":id") }}';
+        formAction = formAction.replace(':id', contractId);
+        $('#updateContractsForm').attr('action', formAction);
+    })
+
+    function confirmUpdateContracts() {
+        // Konfirmasi pengguna sebelum menyimpan data
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('updateContractsForm').submit();
+            }
+        })
+    }
+
+    function confirmImportContracts() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('importContractsForm').submit();
+            } else {
+                return false;
+            }
+        })
+    }
+
+    function exportPDF() {
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Start date and end date are required.',
+                confirmButtonText: 'OK'
+            });
+            return;
         }
+    
+        window.location.href = `/contracts/export-pdf?start_date=${startDate}&end_date=${endDate}`;
+    }
 
-        @if (session('success'))
+    function exportExcel() {
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
             Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: '{{ session('success') }}',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        @endif
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Start date and end date are required.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+    
+        window.location.href = `/contracts/export-excel?start_date=${startDate}&end_date=${endDate}`;
+    }
 
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '{{ session('error') }}',
-                showConfirmButton: true,
-                // timer: 1500
-            })
-        @endif
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    @endif    
 
-        @if ($errors->any())
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '{{ $errors->first() }}',
-                showConfirmButton: true,
-                // timer: 1500
-            })
-        @endif
+    @if (session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ session('error') }}',
+            showConfirmButton: true,
+            // timer: 1500
+        })
+    @endif
 
-    </script>
+    @if ($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ $errors->first() }}',
+            showConfirmButton: true,
+            
+        })
+    @endif
+
+</script>
 @endpush

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employe;
 use App\Models\Tools;
 use App\Models\ToolsTransaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\QontakSevices;
 
@@ -105,22 +107,40 @@ class ToolsDnTransportController extends Controller
 
     public function dnTransport()
     {
+        $code = 'USR01';
+        // $filteredUser = User::whereHas('employe', function ($query) use ($code) {
+        //     $query->where('code', $code);
+        // })->with('employe')->first();
+        // return $filteredUser;
         return view('tools.dntrans');
     }
 
     public function dnTransporting(Request $request)
     {
+        // asumsi di database ada tools dan employee
+        $data = [
+            'tools_id' => $request->tools_id, // mengambil dari scan tools
+            'user_id' => $request->userCode, // mengambil dari inputan code employee kemudian di cocokan dari table employee
+            'type' => 'Out', // Otomatis diisi Out
+            'from' => $request->toolsFrom, // Asal Tools
+            'to' => $request->toolsTo, // Tujuan Tools
+            'quantity' => $request->toolsQty, // Jumlah Tools
+            'location' => $request->toolsLocation, // Mengambil lokasi dari scan di posisi awal tools
+            'activity' => $request->toolsActivity, // keggitan atau kegunaan
+            'notes' => $request->toolsNote // catatan
+        ];
 
-        $toolsTrack = ToolsTransaction::with('tools')
-            ->whereHas('tools', function ($query) use ($request) {
-                $query->where('code', $request->code);
-            })->get();
+        // ambil data tools dan employee
+        $tools = Tools::find($request->tools_id);
+        $user = User::whereHas('employe', function ($query) use ($request) {
+            $query->where('code', $request->userCode);
+        })->with('employe')->first();
 
-        $user = ToolsTransaction::with('user')
-            ->whereHas('user', function ($query) use ($request) {
-                $query->where('name', $request->name);
-            })->get();
+        // simpan data ke table tools_tracking
+        // $toolsTrack = ToolsTracking::create($data);
 
-        return response()->json(['success' => true, 'data' => $toolsTrack, 'user' => $user]);
+
+
+        // return response()->json(['success' => true, 'data' => $toolsTrack, 'user' => $user]);
     }
 }

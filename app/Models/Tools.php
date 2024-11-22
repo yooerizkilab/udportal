@@ -25,4 +25,14 @@ class Tools extends Model
         'condition',
         'status',
     ];
+
+    public function categorie()
+    {
+        return $this->belongsTo(ToolsCategorie::class);
+    }
+
+    public function stock()
+    {
+        return $this->hasOne(ToolsStock::class);
+    }
 }

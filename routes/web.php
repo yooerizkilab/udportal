@@ -37,6 +37,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'contracts'], function () {
         // Contract Management
         Route::resource('contract', 'ContractController');
+        // Contract Export
+        Route::get('export-pdf', 'ContractController@exportPdf')->name('contract.exportPdf');
+        Route::get('export-excel', 'ContractController@exportExcel')->name('contract.exportExcel');
+        Route::post('import-contract', 'ContractController@importContract')->name('contract.importContract');
+        Route::post('filter-export', 'ContractController@filterExport')->name('contract.filterExport');
     });
 
     // Vehicles

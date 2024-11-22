@@ -31,9 +31,16 @@ class ToolsTransaction extends Model
         return $this->belongsTo(Tools::class);
     }
 
-    public function user()
+    public function employee()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOneThrough(
+            Employe::class,
+            User::class,
+            'id',         // Foreign key di tabel User
+            'user_id',    // Foreign key di tabel Employee
+            'user_id',    // Local key di tabel ToolTransaction
+            'id'          // Local key di tabel User
+        );
     }
 
     public function getBadgeClassAttribute()

@@ -25,42 +25,14 @@
                 <h6 class="m-0 font-weight-bold text-primary">Contracts Details</h6>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <td>{{ $response['Code'] }}</td>
-                        <br>
-                        <td>{{ $response['Name'] }}</td>
-                        <br>
-                        <td>{{ $response['U_CardName'] }}</td>
-                        <br>
-                        <td>{{ $response['U_PrjName'] }}</td>
-                        <br>
-                        <td>{{ $response['U_ContrSts'] }}</td>
-                        <br>
-                        <td>{{ $response['U_JobTyp'] }}</td>
-                        <br>
-                        <td>{{ $response['U_ContrAmt'] }}</td>
-                    </div>
-                    <div class="col-md-6">
-                        <td>{{ $response['U_ContrStart'] }}</td>
-                        <br>
-                        <td>{{ $response['U_ValidPrd'] }}</td>
-                        <br>
-                        <td>{{ $response['U_PrjSts'] }}</td>
-                        <br>
-                        <td>{{ $response['U_ContrCurr'] }}</td>
-                        <br>
-                        <td>{{ $response['U_Company'] }}</td>
-                        <br>
-                        <td>{{ $response['U_Remark'] }}</td>
-                        <br>
-                        <td>{{ $response['U_Memo'] }}</td>
-                        <br>
-                    </div>
-                </div>
+                {{ $contract->code }}
+                <br>
+                {{ $contract->name }}  
             </div>
         </div>
     </div>
+
+    
 
 @endsection
 

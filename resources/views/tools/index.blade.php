@@ -103,7 +103,7 @@
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
                                                 data-owner="{{ $tool->owner_id }}"
-                                                data-categorie="{{ $tool->categerie_id }}"
+                                                data-categorie="{{ $tool->categorie->name }}"
                                                 data-code="{{ $tool->code }}"
                                                 data-serial="{{ $tool->serial_number }}"
                                                 data-name="{{ $tool->name }}"
@@ -113,6 +113,7 @@
                                                 data-year="{{ $tool->year }}"
                                                 data-origin="{{ $tool->origin }}"
                                                 data-condition="{{ $tool->condition }}"
+                                                data-quantity="{{ $tool->stock->quantity }}"
                                                 data-status="{{ $tool->status }}"
                                                 data-target="#editToolsModal">
                                                 <i class="fas fa-edit fa-md white-50"></i>
@@ -582,7 +583,7 @@
                             <select name="ownership" id="ownershipEdit" class="form-control @error('ownership') is-invalid @enderror" required>
                                 <option value="" disabled selected>Select Ownership</option>
                                 @foreach ($toolsOwnership as $ownership)
-                                    <option value="{{ $ownership->id }}">{{ $ownership->owner_name }}</option>
+                                    <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -601,7 +602,7 @@
                                     <select name="categories" id="categoriesEdit" class="form-control @error('categories') is-invalid @enderror">
                                         <option value="" disabled selected>Select Categories</option>
                                         @foreach ($toolsCategories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name_categorie }}</option>
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -914,10 +915,14 @@
         var toolsModel = button.data('model')
         var toolsYear = button.data('year')
         var toolsOrigin = button.data('origin')
+        var toolsQuantity = button.data('quantity')
         var toolsCondition = button.data('condition')
         var toolsStatus = button.data('status')
 
         var modal = $(this);
+
+        console.log(toolsQuantity);
+        
 
         var select = document.getElementById('ownershipEdit');
         for (var i = 0; i < select.options.length; i++) {
@@ -927,14 +932,28 @@
         }
         
         document.getElementById('codeToolsEdit').value = toolsCode;
-        document.getElementById('nameToolsEdit').value = toolsName;
         document.getElementById('serialToolsEdit').value = toolsSerial;
+        document.getElementById('nameToolsEdit').value = toolsName;
+        document.getElementById('modelToolsEdit').value = toolsModel;
+
+        var select1 = document.getElementById('categoriesEdit');
+        for (var i = 0; i < select1.options.length; i++) {
+            if (select1.options[i].value == toolsCategorie) {
+                select1.options[i].selected = true;
+            }
+        }
+        
+        document.getElementById('yearToolsEdit').value = toolsYear;
+
         document.getElementById('brandToolsEdit').value = toolsBrand;
         document.getElementById('typeToolsEdit').value = toolsType;
-        document.getElementById('modelToolsEdit').value = toolsModel;
-        document.getElementById('yearToolsEdit').value = toolsYear;
-        document.getElementById('categorieToolsEdit').value = toolsCategorie;
-        document.getElementById('categorieToolsEdit').value = to;
+
+        // document.getElementById('quantityEdit').value = tools
+
+        
+        
+        // document.getElementById('categorieToolsEdit').value = toolsCategorie;
+        // document.getElementById('categorieToolsEdit').value = to;
         // document.getElementById('originToolsEdit').value = toolsOrigin;
         // document.getElementById('conditionToolsEdit').value = toolsCondition;
         // document.getElementById('statusToolsEdit').value = toolsStatus;

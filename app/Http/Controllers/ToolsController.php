@@ -17,7 +17,7 @@ class ToolsController extends Controller
      */
     public function index()
     {
-        $tools = Tools::all();
+        $tools = Tools::with('categorie', 'stock')->get();
         $toolsCategories = ToolsCategorie::all();
         $toolsOwnership = ToolsOwners::all();
         return view('tools.index', compact('tools', 'toolsCategories', 'toolsOwnership'));

@@ -16,4 +16,9 @@ class ToolsStock extends Model
         'quantity',
         'unit',
     ];
+
+    public function tools()
+    {
+        return $this->belongsTo(Tools::class);
+    }
 }
