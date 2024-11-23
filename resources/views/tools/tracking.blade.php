@@ -31,7 +31,7 @@
                             <th>Activity</th>
                             <th>Quantity</th>
                             <th>Type</th>
-                            <th>Date</th>
+                            <th>Transaction Date</th>
                             <th width="10%" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -48,7 +48,7 @@
                                 <td>{{ date('d F Y', strtotime($tracking->transaction_date)) }}</td>
                                 <td class="text-center">
                                     <div class="d-inline-flex">
-                                        <a href="{{ route('tracking.show', $tracking->id) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                        <a href="{{ route('tracking.show', $tracking->id) }}" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
                                     </div>
                                 </td>
                             </tr>

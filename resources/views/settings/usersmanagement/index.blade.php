@@ -63,7 +63,7 @@
                                     <td>
                                         @if ($user->id !== auth()->user()->id)
                                             <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-info btn-sm mr-1 btn-circle" 
+                                                <button type="button" class="btn btn-info mr-2 btn-circle" 
                                                     data-name="{{ $user->name }}"
                                                     data-last_name="{{ $user->last_name }}"
                                                     data-email="{{ $user->email }}"
@@ -71,7 +71,7 @@
                                                     data-toggle="modal" data-target="#viewUsersModal">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle"
+                                                <button type="button" class="btn btn-warning mr-2 btn-circle"
                                                     data-id="{{ $user->id }}"
                                                     data-name="{{ $user->name }}"
                                                     data-last_name="{{ $user->last_name }}"
@@ -82,7 +82,7 @@
                                                 </button>
                                                 <form action="{{ route('users.destroy', $user->id) }}" method="post" id="deleteUsersForm" class="d-inline">
                                                     @csrf
-                                                    <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-sm btn-circle">
+                                                    <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-circle">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>

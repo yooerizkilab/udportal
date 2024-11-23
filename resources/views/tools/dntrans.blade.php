@@ -7,11 +7,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DN Transport</title>
   </head>
   <body>
-    <h1 class="text-center">Scan QR Code DN Transport</h1>
+    <h1 class="text-center">Scan QR Code</h1>
     <div class="container">
         <div class="row">
             <div class="col-md-6 offset-md-3">
@@ -49,18 +49,11 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.4/html5-qrcode.min.js"></script>
-
-    <!-- Optional JavaScript; choose one of the two! -->
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.4/html5-qrcode.min.js"></script>
     <script>
         document.getElementById('startScan').addEventListener('click', function () {
             // Tangkap lokasi sebelum memulai scan QR
@@ -135,39 +128,23 @@
             data.qrCode = qrCodeMessage;
             data.location = address;
 
+            console.log(data);
             // Kirim data ke server menggunakan AJAX
-            fetch('{{ route('dntrans.store') }}', {
-                method: 'POST',
+            $.ajax({
+                url: "{{ route('dntrans.store') }}",
+                method: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                body: JSON.stringify(data)
-            }).then(response => {
-                if (response.ok) {
+                data: data,
+                success: function (response) {
                     alert('Data berhasil disimpan.');
                     location.reload(); // Refresh halaman setelah berhasil
-                } else {
-                    alert('Terjadi kesalahan: ' + response.statusText);
+                },
+                error: function (xhr) {
+                    alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
                 }
-            })
-            .catch(error => {
-                console.error('Terjadi kesalahan:', error);
             });
-            // $.ajax({
-            //     url: "{{ route('dntrans.store') }}",
-            //     method: "POST",
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     },
-            //     data: data,
-            //     success: function (response) {
-            //         alert('Data berhasil disimpan.');
-            //         location.reload(); // Refresh halaman setelah berhasil
-            //     },
-            //     error: function (xhr) {
-            //         alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
-            //     }
-            // });
         }
     </script>
     </body>

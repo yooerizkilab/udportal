@@ -41,7 +41,7 @@
                                         <td>{{ $role->name }}</td>
                                         <td>
                                             <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-info btn-sm mr-1 btn-circle" data-toggle="modal" 
+                                                <button type="button" class="btn btn-info mr-1 btn-circle" data-toggle="modal" 
                                                         data-id="{{ $role->id }}" 
                                                         data-name="{{ $role->name }}" 
                                                         data-permissions="{{ $role->permissions->pluck('id')->join(',') }}" 
@@ -49,7 +49,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                                 @if ($role->name != 'Superadmin')
-                                                    <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle" data-toggle="modal"
+                                                    <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal"
                                                         data-id="{{ $role->id }}"
                                                         data-name="{{ $role->name }}" 
                                                         data-target="#editRoleModal">
@@ -57,7 +57,7 @@
                                                     </button>
                                                     <form action="{{ route('roles.destroy', $role->id) }}" method="post" id="deleteRoleForm" class="d-inline">
                                                         @csrf
-                                                        <button type="button" onclick="confirmDeleteRole()" class="btn btn-danger btn-sm btn-circle">
+                                                        <button type="button" onclick="confirmDeleteRole()" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -101,7 +101,7 @@
                                         <td>{{ $permission->name }}</td>
                                         <td>
                                             <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle" data-toggle="modal"
+                                                <button type="button" class="btn btn-warning mr-2 btn-circle" data-toggle="modal"
                                                     data-id="{{ $permission->id }}"
                                                     data-name="{{ $permission->name }}"
                                                     data-target="#editPermissionModal">
@@ -109,7 +109,7 @@
                                                 </button>
                                                 <form action="" method="post" id="deletePermissionForm" class="d-inline">
                                                     @csrf
-                                                    <button type="button" onclick="confirmPermissionDelete()" class="btn btn-danger btn-sm btn-circle">
+                                                    <button type="button" onclick="confirmPermissionDelete()" class="btn btn-danger btn-circle">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>

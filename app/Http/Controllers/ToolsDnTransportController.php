@@ -133,22 +133,10 @@ class ToolsDnTransportController extends Controller
             $query->where('code', $request->codeEmploye);
         })->with('employe')->firstOrFail();
 
-        // misal generate code transaksi
-        // $notran = 'abc';
-
         $data = [
             'tools_id' => $tools->id,
             'user_id' => $user->id,
-            // tambah di db 
-            // Transaksi code
-            // Driver
-            // Vehicle
-
-            // cek dari code tools jika awal type out jika melakukan scan lagi maka otomatis barang menjadi type In
-
-
-
-            // 'type' => 'Out' ,
+            'type' => 'Out',
             'from' => $request->from,
             'to' => $request->to,
             'quantity' => $request->qty,
@@ -156,8 +144,6 @@ class ToolsDnTransportController extends Controller
             'activity' => $request->activity ?? null,
             'notes' => $request->note ?? null,
         ];
-
-        return $data;
 
         DB::beginTransaction();
         try {
@@ -170,9 +156,10 @@ class ToolsDnTransportController extends Controller
                 throw new \Exception('Stok alat tidak mencukupi.');
             }
             $toolsStock->update(['stock' => $toolsStock->stock - $data['quantity']]);
-
             DB::commit();
-            return redirect()->back()->with('success', 'Data ' . $toolsTransaction->tools->name . ' berhasil disimpan.');
+
+            // return respon json
+            return response()->json(['message' => 'Transaksi ' . $toolsTransaction->id . ' berhasil disimpan.']);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());

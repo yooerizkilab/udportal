@@ -20,6 +20,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
+                    <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
                     <!-- Tombol PDF dengan AJAX -->
                     <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
@@ -702,7 +703,7 @@
                             <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror">
                         </div>
                         <div class="form-group">
-                            <label for="note">Note</label>
+                            <label for="notes">Note</label>
                             <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" cols="30" rows="4"></textarea>
                         </div>
                     </form>
