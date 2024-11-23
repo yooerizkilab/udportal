@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('brand');
             $table->string('model', 50)->nullable();
-            $table->date('color', 20)->nullable();
+            $table->string('color', 20)->nullable();
             $table->year('year')->nullable();
             $table->string('license_plate', 10)->unique();
             $table->date('tax_year')->nullable();

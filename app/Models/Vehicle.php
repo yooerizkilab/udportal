@@ -16,16 +16,17 @@ class Vehicle extends Model
     protected $fillable = [
         'owner_id',
         'type_id',
-        'vehicle_code',
+        'code',
         'brand',
         'model',
+        'color',
         'year',
         'license_plate',
         'tax_year',
         'tax_five_years',
         'inspected',
-        'purchase_price',
         'purchase_date',
+        'purchase_price',
         'status',
     ];
 

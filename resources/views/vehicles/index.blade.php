@@ -31,6 +31,7 @@
                                     <tr>
                                         <td width="5%">No</td>
                                         <td>Name</td>
+                                        <td>Description</td>
                                         <td class="text-center" width="20%">Action</td>
                                     </tr>
                                 </thead>
@@ -38,20 +39,21 @@
                                     @forelse ($vehicleTypes as $vehiclesType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $vehiclesType->type_name }}</td>
+                                            <td>{{ $vehiclesType->name }}</td>
+                                            <td>{{ $vehiclesType->description }}</td>
                                             <td class="text-center">
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle"
+                                                    <button type="button" class="btn btn-warning mr-2 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $vehiclesType->id }}"
-                                                        data-name="{{ $vehiclesType->type_name }}"
+                                                        data-name="{{ $vehiclesType->name }}"
                                                         data-target="#editVehiclesTypeModal">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-pencil"></i>
                                                     </button>
                                                     <form action="" method="post" id="deleteVehiclesTypeForm" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="btn btn-danger btn-sm btn-circle">
+                                                        <button type="button" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -93,20 +95,20 @@
                                     @forelse ($vehicleOwnerships as $vehicleOwner)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $vehicleOwner->owner_name }}</td>
+                                            <td>{{ $vehicleOwner->name }}</td>
                                             <td class="text-center">
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning btn-sm mr-2 btn-circle"
+                                                    <button type="button" class="btn btn-warning mr-2 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $vehicleOwner->id }}"
-                                                        data-name="{{ $vehicleOwner->owner_name }}"
+                                                        data-name="{{ $vehicleOwner->name }}"
                                                         data-target="#editVehiclesOwnerModal">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-pencil"></i>
                                                     </button>
                                                     <form action="" method="post" id="deleteVehiclesOwnerForm" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="btn btn-danger btn-sm btn-circle">
+                                                        <button type="button" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -173,6 +175,9 @@
                                         <th>Model</th>
                                         <th>Tahun</th>
                                         <th>Plat Nomor</th>
+                                        <th>Pajak Tahunan</th>
+                                        <th>Pajak 5 Tahunan</th>
+                                        <th>Uji Kir</th>
                                         <th>Status</th>
                                         <th width="10%" class="text-center" >Action</th>
                                     </tr>
@@ -181,11 +186,14 @@
                                     @forelse ($vehicles as $vehicle)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $vehicle->vehicle_code }}</td>
+                                            <td>{{ $vehicle->code }}</td>
                                             <td>{{ $vehicle->brand }}</td>
                                             <td>{{ $vehicle->model }}</td>
                                             <td>{{ $vehicle->year }}</td>
                                             <td>{{ $vehicle->license_plate }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->inspected)) }}</td>
                                             <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
                                             <td>
                                                 <div class="d-inline-flex">
@@ -309,7 +317,7 @@
                                     <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Vehicle Type</option>
                                         @foreach ($vehicleTypes as $vehicleType)
-                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->type_name }}</option>
+                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

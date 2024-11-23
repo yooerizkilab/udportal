@@ -16,9 +16,11 @@ class VehicleSeeder extends Seeder
         Vehicle::insert([
             [
                 'owner_id' => 1,
-                'vehicle_code' => 'V123',
+                'type_id' => 1,
+                'code' => 'V123',
                 'brand' => 'Toyota',
                 'model' => 'Avanza',
+                'color' => 'White',
                 'year' => 2020,
                 'license_plate' => 'B1234XYZ',
                 'tax_year' => '2022-01-01',
@@ -27,15 +29,16 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2020-01-01',
                 'purchase_price' => 2000000,
                 'status' => 'Active',
-                'type_id' => 1, // Assuming 1 is 'Car' type
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'owner_id' => 2,
-                'vehicle_code' => 'V124',
+                'type_id' => 1,
+                'code' => 'V124',
                 'brand' => 'Honda',
                 'model' => 'Civic',
+                'color' => 'Black',
                 'year' => 2019,
                 'license_plate' => 'B5678ABC',
                 'tax_year' => '2022-01-01',
@@ -44,15 +47,16 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2019-01-01',
                 'purchase_price' => 1800000,
                 'status' => 'Maintenance',
-                'type_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'owner_id' => 1,
-                'vehicle_code' => 'V125',
+                'type_id' => 2,
+                'code' => 'V125',
                 'brand' => 'Isuzu',
                 'model' => 'Elf',
+                'color' => 'Red',
                 'year' => 2018,
                 'license_plate' => 'B91011DEF',
                 'tax_year' => '2022-01-01',
@@ -61,15 +65,16 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2018-01-01',
                 'purchase_price' => 1600000,
                 'status' => 'Inactive',
-                'type_id' => 2, // Assuming 2 is 'Truck' type
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'owner_id' => 2,
-                'vehicle_code' => 'V126',
+                'type_id' => 1,
+                'code' => 'V126',
                 'brand' => 'Suzuki',
                 'model' => 'Swift',
+                'color' => 'Blue',
                 'year' => 2021,
                 'license_plate' => 'B1234XAB',
                 'tax_year' => '2022-01-01',
@@ -78,10 +83,27 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2021-01-01',
                 'purchase_price' => 1900000,
                 'status' => 'Active',
-                'type_id' => 1, // Assuming 1 is 'Car' type
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
+            [
+                'owner_id' => 1,
+                'type_id' => 2,
+                'code' => 'V127',
+                'brand' => 'Mitsubishi',
+                'model' => 'Lancer',
+                'color' => 'Green',
+                'year' => 2017,
+                'license_plate' => 'B5678XCD',
+                'tax_year' => '2022-01-01',
+                'tax_five_year' => '2023-01-01',
+                'inspected' => '2023-01-01',
+                'purchase_date' => '2017-01-01',
+                'purchase_price' => 1500000,
+                'status' => 'Maintenance',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

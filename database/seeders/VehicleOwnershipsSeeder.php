@@ -15,12 +15,12 @@ class VehicleOwnershipsSeeder extends Seeder
     {
         VehicleOwnership::insert([
             [
-                'owner_name' => 'Company A',
+                'name' => 'Company A',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'owner_name' => 'Company B',
+                'name' => 'Company B',
                 'created_at' => now(),
                 'updated_at' => now()
             ]
