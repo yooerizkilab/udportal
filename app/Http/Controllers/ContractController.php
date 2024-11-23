@@ -29,6 +29,16 @@ class ContractController extends Controller
      */
     public function index()
     {
+        // notification contaract min 21 14 7 3 0 -3 -7 -14 -21
+        $now = Carbon::now(); // Waktu sekarang
+        // $contract = Contract::whereDate('masa_berlaku', '<=', $now->addDays(21))
+        //     ->whereDate('masa_berlaku', '>=', $now)
+        //     ->get();
+        // foreach ($contract as $item) {
+        //     $day
+        // }
+
+
         $contracts = Contract::all();
         return view('contracts.index', compact('contracts'));
     }
@@ -127,7 +137,7 @@ class ContractController extends Controller
             'name' => $request->name,
             'nama_perusahaan' => $request->nama_perusahaan,
             'nama_pekerjaan' => $request->nama_pekerjaan,
-            'status_kontrak' => $request->stattus_kontrak,
+            'status_kontrak' => $request->status_kontrak,
             'jenis_pekerjaan' => $request->jenis_pekerjaan,
             'nominal_kontrak' => $request->nominal_kontrak,
             'tanggal_kontrak' => $request->tanggal_kontrak,
@@ -176,6 +186,13 @@ class ContractController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal dihapus.');
         }
+    }
+
+    public function export($id)
+    {
+        $contract = Contract::findOrFail($id);
+        $pdf = PDF::loadView('contracts.detailpdf', compact('contract'));
+        return $pdf->stream('contracts.pdf');
     }
 
     public function exportPdf(Request $request)
@@ -228,12 +245,13 @@ class ContractController extends Controller
         return redirect()->back()->with('success', 'Data berhasil diimport.');
     }
 
-    public function filterExport(Request $request)
+    public function exportStatusContract(Request $request)
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $contracts = Contract::whereBetween('created_at', [$startDate, $endDate])->get();
-        $pdf = PDF::loadView('contracts.pdf', compact('contracts'));
-        return $pdf->download('contracts.pdf');
+        // 
+    }
+
+    public function exportStatusProject(Request $request)
+    {
+        // 
     }
 }

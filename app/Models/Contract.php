@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Contract extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * Tabel yang digunakan oleh model ini.

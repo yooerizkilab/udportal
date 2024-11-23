@@ -28,7 +28,7 @@ Route::post('tracking/tools', 'ToolsTrackingController@tracking')->name('trackin
 
 // Test DN Transport
 Route::get('dn-transport/tools', 'ToolsDnTransportController@dnTransport')->name('dn-transport.tools');
-Route::post('dn-transport/tools/{id}', 'ToolsDnTransportController@dnTransporting')->name('dn-transporting.tools');
+Route::post('dn-trans/tools', 'ToolsDnTransportController@dnTransporting')->name('dntrans.store');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -37,11 +37,32 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'contracts'], function () {
         // Contract Management
         Route::resource('contract', 'ContractController');
-        // Contract Export
+
+        // Contract Export fix
+        Route::get('export-detail/{id}', 'ContractController@export')->name('contract.export');
         Route::get('export-pdf', 'ContractController@exportPdf')->name('contract.exportPdf');
         Route::get('export-excel', 'ContractController@exportExcel')->name('contract.exportExcel');
         Route::post('import-contract', 'ContractController@importContract')->name('contract.importContract');
-        Route::post('filter-export', 'ContractController@filterExport')->name('contract.filterExport');
+
+        // Contract Filter
+        // Route::get('export-status-contract', 'ContractController@exportStatusContract')->name('contract.filterStatusContract');
+        // Route::get('export-status-proyek', 'ContractController@exportStatusProject')->name('contract.filterStatusProject');
+    });
+
+    // Tools
+    Route::group(['prefix' => 'tools'], function () {
+        // Tools Management
+        Route::resource('tools', 'ToolsController');
+        // Tools Trasfer Management
+        Route::post('transfer', 'ToolsController@transfer')->name('tools.transfer');
+        // Tools Categories Management
+        Route::resource('categories', 'ToolsCategoriesController');
+        // Tools Ownership Management
+        Route::resource('owners', 'ToolsOwnershipController');
+        // Tools Tracking Management
+        Route::resource('tracking', 'ToolsTrackingController');
+        // Tools Dn Transport Management
+        Route::resource('dn-transport', 'ToolsDnTransportController');
     });
 
     // Vehicles
@@ -56,22 +77,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('maintenances', 'VehicleMaintenanceController');
         // Vehicle Insurance Management
         Route::resource('insurances', 'VehicleInsuranceController');
-    });
-
-    // Tools
-    Route::group(['prefix' => 'tools'], function () {
-        // Tools Management
-        Route::resource('tools', 'ToolsController');
-        // Tools Trasfer Management
-        Route::post('tools/transfer', 'ToolsController@transfer')->name('tools.transfer');
-        // Tools Categories Management
-        Route::resource('categories', 'ToolsCategoriesController');
-        // Tools Ownership Management
-        Route::resource('owners', 'ToolsOwnershipController');
-        // Tools Tracking Management
-        Route::resource('tracking', 'ToolsTrackingController');
-        // Tools Dn Transport Management
-        Route::resource('dn-transport', 'ToolsDnTransportController');
     });
 
     // Vouchers

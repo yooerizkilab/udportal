@@ -11,6 +11,8 @@ class Tools extends Model
 
     protected $table = 'tools';
 
+    protected $appends = ['badgeClass'];
+
     protected $fillable = [
         'owner_id',
         'categorie_id',
@@ -25,6 +27,18 @@ class Tools extends Model
         'condition',
         'status',
     ];
+
+    public function getBadgeClassAttribute()
+    {
+        $statusColor = [
+            'Maintenance' => 'danger',
+            'Active' => 'success',
+            'InActive' => 'secondary',
+        ];
+
+        // Berikan warna default jika status tidak ditemukan
+        return $statusColor[$this->status ?? 'success'] ?? 'secondary';
+    }
 
     public function categorie()
     {

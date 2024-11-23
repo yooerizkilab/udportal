@@ -18,13 +18,16 @@
             <span>{{ __('Dashboard') }}</span></a>
     </li>
 
+    @can('view contract')
     <!-- Nav Item - Kontract Management-->
     <li class="nav-item {{ Nav::isRoute('contract.index') }}">
         <a class="nav-link" href="{{ route('contract.index') }}">
             <i class="fas fa-fw fa-address-card"></i>
             <span>Contract Management</span></a>
     </li>
+    @endcan
 
+    {{-- @can('view tools') --}}
     <!-- Nav Item - Tools Management Collapse Menu -->
     <li class="nav-item {{ request()->routeIs('tools.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTools"
@@ -47,6 +50,7 @@
             </div>
         </div>
     </li>
+    {{-- @endcan --}}
 
     <!-- Nav Item - Equipment Management Collapse Menu -->
     <li class="nav-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}">

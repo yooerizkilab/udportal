@@ -72,10 +72,10 @@
                                     <td>{{ $tool->serial_number }}</td>
                                     <td>{{ $tool->name }}</td>
                                     <td>{{ $tool->condition }}</td>
-                                    <td>{{ $tool->status }}</td>
+                                    <td><span class="badge badge-{{ $tool->badgeClass }}">{{ $tool->status }}</span></td>
                                     <td>
                                         <div class="d-inline-flex">
-                                            <button type="button" class="btn btn-info btn-sm mr-1 btn-circle"
+                                            <button type="button" class="btn btn-info mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
                                                 data-owner="{{ $tool->owner_id }}"
@@ -93,13 +93,13 @@
                                                 data-target="#viewToolsModal">
                                                 <i class="fas fa-eye fa-md white-50"></i>
                                             </button>
-                                            <button type="button" class="btn btn-secondary btn-sm mr-1 btn-circle"
+                                            <button type="button" class="btn btn-secondary mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
                                                 data-target="#transferToolsModal">
                                                 <i class="fas fa-exchange fa-md white-50"></i>
                                             </button>
-                                            <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle"
+                                            <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
                                                 data-owner="{{ $tool->owner_id }}"
@@ -116,12 +116,12 @@
                                                 data-quantity="{{ $tool->stock->quantity }}"
                                                 data-status="{{ $tool->status }}"
                                                 data-target="#editToolsModal">
-                                                <i class="fas fa-edit fa-md white-50"></i>
+                                                <i class="fas fa-pencil fa-md white-50"></i>
                                             </button>
                                             <form action="{{ route('tools.destroy', $tool->id) }}" method="post" id="formDeleteTools">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-sm mr-1 btn-circle" onclick="confirmToolsDelete()">
+                                                <button type="button" class="btn btn-danger mr-1 btn-circle" onclick="confirmToolsDelete()">
                                                     <i class="fas fa-trash fa-md white-50"></i>
                                                 </button>
                                             </form>
@@ -169,19 +169,19 @@
                                             <td>{{ $category->name }}</td>
                                             <td class="text-center">
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle"
+                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $category->id }}"
                                                         data-code="{{ $category->code }}"
                                                         data-name="{{ $category->name }}"
                                                         data-description="{{ $category->description }}"
                                                         data-target="#editCategoryModal">
-                                                        <i class="fas fa-edit fa-md white-50"></i>
+                                                        <i class="fas fa-pencil fa-md white-50"></i>
                                                     </button>
                                                     <form action="{{ route('categories.destroy', $category->id) }}" method="post" id="deleteCategoryForm" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" onclick="confirmDeleteCategory()" class="btn btn-danger btn-sm btn-circle">
+                                                        <button type="button" onclick="confirmDeleteCategory()" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash fa-md white-50"></i>
                                                         </button>
                                                     </form>
@@ -226,7 +226,7 @@
                                             <td>{{ $ownership->name }}</td>
                                             <td>
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-info btn-sm mr-1 btn-circle"
+                                                    <button type="button" class="btn btn-info mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $ownership->id }}" 
                                                         data-name="{{ $ownership->name }}"
@@ -235,19 +235,19 @@
                                                         data-target="#viewOwnerModal">
                                                         <i class="fas fa-eye fa-md white-50"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle"
+                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $ownership->id }}" 
                                                         data-name="{{ $ownership->name }}"
                                                         data-address="{{ $ownership->address }}"
                                                         data-phone="{{ $ownership->phone }}"
                                                         data-target="#editOwnershipModal">
-                                                        <i class="fas fa-edit fa-md white-50"></i>
+                                                        <i class="fas fa-pencil fa-md white-50"></i>
                                                     </button>
                                                     <form action="{{ route('owners.destroy', $ownership->id) }}" method="post" id="deleteOwnershipForm" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" onclick="confirmOwnershipDelete()" class="btn btn-danger btn-sm btn-circle">
+                                                        <button type="button" onclick="confirmOwnershipDelete()" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash fa-md white-50"></i>
                                                         </button>
                                                     </form>

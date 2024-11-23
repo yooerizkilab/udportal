@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employe;
 use App\Models\Tools;
 use App\Models\ToolsTransaction;
 use App\Models\User;
+use App\Models\ToolsStock;
 use Illuminate\Http\Request;
 use App\Services\QontakSevices;
+use Illuminate\Support\Facades\DB;
 
 class ToolsDnTransportController extends Controller
 {
@@ -117,30 +118,64 @@ class ToolsDnTransportController extends Controller
 
     public function dnTransporting(Request $request)
     {
-        // asumsi di database ada tools dan employee
+        $request->validate([
+            'codeEmploye' => 'required|string|exists:employe,code',
+            'qrCode' => 'required|string|exists:tools,code',
+            'from' => 'required|string',
+            'to' => 'required|string',
+            'qty' => 'required|integer|min:1',
+            'note' => 'nullable|string',
+        ]);
+
+        // Ambil data dari request dan validasi
+        $tools = Tools::where('code', $request->qrCode)->firstOrFail();
+        $user = User::whereHas('employe', function ($query) use ($request) {
+            $query->where('code', $request->codeEmploye);
+        })->with('employe')->firstOrFail();
+
+        // misal generate code transaksi
+        // $notran = 'abc';
+
         $data = [
-            'tools_id' => $request->tools_id, // mengambil dari scan tools
-            'user_id' => $request->userCode, // mengambil dari inputan code employee kemudian di cocokan dari table employee
-            'type' => 'Out', // Otomatis diisi Out
-            'from' => $request->toolsFrom, // Asal Tools
-            'to' => $request->toolsTo, // Tujuan Tools
-            'quantity' => $request->toolsQty, // Jumlah Tools
-            'location' => $request->toolsLocation, // Mengambil lokasi dari scan di posisi awal tools
-            'activity' => $request->toolsActivity, // keggitan atau kegunaan
-            'notes' => $request->toolsNote // catatan
+            'tools_id' => $tools->id,
+            'user_id' => $user->id,
+            // tambah di db 
+            // Transaksi code
+            // Driver
+            // Vehicle
+
+            // cek dari code tools jika awal type out jika melakukan scan lagi maka otomatis barang menjadi type In
+
+
+
+            // 'type' => 'Out' ,
+            'from' => $request->from,
+            'to' => $request->to,
+            'quantity' => $request->qty,
+            'location' => $request->location ?? null,
+            'activity' => $request->activity ?? null,
+            'notes' => $request->note ?? null,
         ];
 
-        // ambil data tools dan employee
-        $tools = Tools::find($request->tools_id);
-        $user = User::whereHas('employe', function ($query) use ($request) {
-            $query->where('code', $request->userCode);
-        })->with('employe')->first();
+        return $data;
 
-        // simpan data ke table tools_tracking
-        // $toolsTrack = ToolsTracking::create($data);
+        DB::beginTransaction();
+        try {
+            // Simpan transaksi
+            $toolsTransaction = ToolsTransaction::create($data);
 
+            // Perbarui stok alat
+            $toolsStock = ToolsStock::where('tools_id', $tools->id)->firstOrFail();
+            if ($toolsStock->stock < $data['quantity']) {
+                throw new \Exception('Stok alat tidak mencukupi.');
+            }
+            $toolsStock->update(['stock' => $toolsStock->stock - $data['quantity']]);
 
-
-        // return response()->json(['success' => true, 'data' => $toolsTrack, 'user' => $user]);
+            DB::commit();
+            return redirect()->back()->with('success', 'Data ' . $toolsTransaction->tools->name . ' berhasil disimpan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

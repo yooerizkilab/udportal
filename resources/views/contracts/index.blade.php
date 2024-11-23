@@ -33,12 +33,12 @@
                     <!-- Dropdown Filter -->
                     <div class="dropdown ml-2 mb-2">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-filter fa-md white-50"></i> Filter
+                            <i class="fas fa-filter fa-md white-50"></i> Print Filter
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">Action</a>
-                            <a class="dropdown-item" href="">Another action</a>
-                            <a class="dropdown-item" href="">Something else here</a>
+                            <a class="dropdown-item" href="">Status Kontrak</a>
+                            <a class="dropdown-item" href="">Status Proyek</a>
+                            <a class="dropdown-item" href="">Status</a>
                         </div>
                     </div>
                     <!-- Tombol Import Data Contracts -->
@@ -60,6 +60,10 @@
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Name Perusahaan</th>
+                                <th>Status Kontrak</th>
+                                <th>Status Proyek</th>
+                                <th>Tanggal Kontrak</th>
+                                <th>Masa Berlaku</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -70,12 +74,19 @@
                                     <td>{{ $contract->code }}</td>
                                     <td>{{ $contract->name }}</td>
                                     <td>{{ $contract->nama_perusahaan }}</td>
+                                    <td>{{ $contract->status_kontrak }}</td>
+                                    <td>{{ $contract->status_proyek }}</td>
+                                    <td>{{ $contract->tanggal_kontrak }}</td>
+                                    <td>{{ $contract->masa_berlaku }}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
                                             <a href="{{ route('contract.show', $contract->id) }}" class="btn btn-info mr-2 btn-circle">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button type="button" class="btn btn-warning btn-circle" data-toggle="modal"
+                                            <a href="{{ route('contract.export', $contract->id) }}" class="btn btn-success btn-circle mr-2">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-warning btn-circle mr-2" data-toggle="modal"
                                                 data-id="{{ $contract->id }}"
                                                 data-code="{{ $contract->code }}"
                                                 data-name="{{ $contract->name }}"
@@ -103,11 +114,18 @@
                                                 data-keterangan="{{ $contract->keterangan }}"
                                                 data-memo="{{ $contract->memo }}"
                                                 data-target="#editContractsModal">
-                                                <i class="fas fa-edit"></i>
-                                            </button> 
+                                                <i class="fas fa-pencil"></i>
+                                            </button>
+                                            {{-- <form action="{{ route('contract.destroy', $contract->id) }}" method="post" id="deleteContractsForm" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteContract()">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form> --}}
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>   
                             @empty
                                 <tr>
                                     <td colspan="5" class="text-center">No data available</td>
@@ -503,6 +521,7 @@
 @endsection
 
 @push('scripts')
+
 <!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
@@ -643,6 +662,23 @@
         })
     }
 
+    function confirmDeleteContract() {
+        // Konfirmasi pengguna sebelum menghapus data
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('deleteContractsForm').submit();
+            }
+        })
+    }
+
     function confirmImportContracts() {
         Swal.fire({
             title: 'Are you sure?',
@@ -694,6 +730,8 @@
     
         window.location.href = `/contracts/export-excel?start_date=${startDate}&end_date=${endDate}`;
     }
+
+    
 
     @if (session('success'))
         Swal.fire({

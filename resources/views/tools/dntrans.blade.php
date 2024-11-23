@@ -1,150 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scan QR Code</title>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+    <title>DN Transport</title>
+  </head>
+  <body>
+    <h1 class="text-center">Scan QR Code DN Transport</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="reader" style="display: none;"></div>
+                        <form id="dnForm">
+                            <div class="form-group">
+                                <label for="codeEmploye">Code Pegawai</label>
+                                <input type="text" class="form-control" id="codeEmploye" name="codeEmploye" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer">From</label>
+                                <input type="text" class="form-control" id="from" name="from" required>
+                            </div>
+                            <div class="text-center"><i class="fas fa-arrow-down">-</i></div>
+                            <div class="form-group">
+                                <label for="to">To</label>
+                                <input type="text" class="form-control" id="to" name="to" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" class="form-control" id="qty" name="qty" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="note">Note</label>
+                                <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-success" id="startScan">Scan QR</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.4/html5-qrcode.min.js"></script>
-    <style>
-        #reader {
-            width: 300px;
-            margin: auto;
-            display: none; /* Scanner hidden until button is clicked */
-        }
 
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <h1 style="text-align: center;">Scan QR Code DN Transport</h1>
-    <label for="">Code Pegawai</label>
-    <input type="text" name="code" id="code">
-    <label for="">From</label>
-    <input type="text" name="from" id="from">
-    <label for="">To</label>
-    <input type="text" name="to" id="to">
-    <Label>Quantity</Label>
-    <input type="text" name="" id="">
-    <Label>Activity</Label>
-    <input type="text" name="" id="">
-    <Label>Note</Label>
-    <input type="text" name="" id="">
-    <button id="startButton">Start Scanning</button>
-    <div id="reader"></div>
-    <p style="text-align: center;">
-        <strong>Result:</strong>
-        <span id="result">No QR Code scanned</span><br>
-        <a href="{{ url('/') }}">Kembali</a>
-    </p>
+    <!-- Optional JavaScript; choose one of the two! -->
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     
-
-
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-    {{-- <script>
-        const html5QrCode = new Html5Qrcode("reader");
-
-        document.getElementById("startButton").addEventListener("click", function () {
-            const readerDiv = document.getElementById("reader");
-            readerDiv.style.display = "block";
-            this.style.display = "none";
-
-            html5QrCode.start({ facingMode: "environment" }, {
-                fps: 10,
-                qrbox: { width: 250, height: 250 }
-            }, (qrCodeMessage) => {
-                document.getElementById("result").innerHTML = qrCodeMessage;
-
-                html5QrCode.stop().then(() => {
-                    console.log("Scanner stopped successfully.");
-                    readerDiv.style.display = "none";
-
-                    // Kirim data QR Code ke backend
-                    $.ajax({
-                        url: "{{ route('tracking.tools') }}",
-                        method: "POST",
-                        data: {
-                            qrCodeData: qrCodeMessage,
-                            _token: "{{ csrf_token() }}" // Tambahkan CSRF token untuk keamanan
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                const data = response.data;
-
-                                // Bersihkan konten lama jika perlu
-                                const existingContainer = document.getElementById('tool-container');
-                                if (existingContainer) {
-                                    existingContainer.remove();
-                                }
-
-                                // Buat elemen container untuk menampung semua data
-                                const container = document.createElement('div');
-                                container.id = 'tool-container';
-                                container.style.padding = '20px';
-                                container.style.border = '1px solid #ccc';
-                                container.style.marginTop = '20px';
-                                container.style.backgroundColor = '#f9f9f9';
-
-                                // Loop melalui data
-                                data.forEach(item => {
-                                    const tool = item.tools;
-
-                                    // Validasi apakah tools ada di dalam data
-                                    if (!tool) {
-                                        console.warn('Tool data is missing for item:', item);
-                                        return;
-                                    }
-
-                                    // Buat elemen HTML untuk item ini
-                                    const toolHTML = `
-                                        <div style="margin-bottom: 20px;">
-                                            <p><strong>Activity:</strong> ${item.activity || 'N/A'}</p>
-                                            <p><strong>From:</strong> ${item.from || 'N/A'}</p>
-                                            <p><strong>To:</strong> ${item.to || 'N/A'}</p>
-                                            <p><strong>Type:</strong> ${item.type || 'N/A'}</p>
-                                            <p><strong>Transaction Date:</strong> ${item.transaction_date || 'N/A'}</p>
-                                            <p><strong>Tool Name:</strong> ${tool.name || 'N/A'}</p>
-                                            <p><strong>Code:</strong> ${tool.code || 'N/A'}</p>
-                                            <p><strong>Brand:</strong> ${tool.brand || 'N/A'}</p>
-                                            <p><strong>Condition:</strong> ${tool.condition || 'N/A'}</p>
-                                            <p><strong>Model:</strong> ${tool.model || 'N/A'}</p>
-                                            <p><strong>Year:</strong> ${tool.year || 'N/A'}</p>
-                                            <hr>
-                                        </div>
-                                    `;
-
-                                    // Tambahkan elemen ke dalam container
-                                    container.innerHTML += toolHTML;
-                                });
-
-                                // Tambahkan container ke dalam body atau lokasi lain yang diinginkan
-                                document.body.appendChild(container);
-                            } else {
-                                alert(response.message || "Failed to fetch data.");
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(error);
-                            alert("An error occurred. Please try again.");
-                        }
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('startScan').addEventListener('click', function () {
+            // Tangkap lokasi sebelum memulai scan QR
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+    
+                    reverseGeocode(latitude, longitude).then((address) => {
+                        startQrCodeScanner(address);
                     });
-
-
-                }).catch(err => {
-                    console.error("Failed to stop scanner:", err);
+                }, (error) => {
+                    console.error("Geolocation error:", error);
                 });
-            }, (errorMessage) => {
-                console.error(errorMessage);
-            });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
         });
+    
+        async function reverseGeocode(lat, lon) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.display_name || `${lat}, ${lon}`;
+            } catch (error) {
+                console.error("Error during reverse geocoding:", error);
+                return `${lat}, ${lon}`;
+            }
+        }
+    
+        function startQrCodeScanner(address) {
+            const html5QrCode = new Html5Qrcode("reader");
+            document.getElementById('reader').style.display = 'block';
+    
+            html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                (decodedText) => {
+                    html5QrCode.stop().then(() => {
+                        document.getElementById('reader').style.display = 'none';
+                        saveDataToDatabase(decodedText, address);
+                        // console.log(decodedText)
+                        // console.log(address);
+                        
+                    }).catch((err) => {
+                        console.error("Error stopping QR scanner:", err);
+                    });
+                },
+                (errorMessage) => {
+                    console.error("Error scanning QR code:", errorMessage);
+                }
+            ).catch((err) => {
+                console.error("Unable to start QR scanner:", err);
+            });
+        }
+    
+        function saveDataToDatabase(qrCodeMessage, address) {
+            // Ambil data dari form
+            const formData = $('#dnForm').serializeArray();
+            const data = {};
 
+            // Masukkan data form ke objek data
+            formData.forEach(item => {
+                data[item.name] = item.value;
+            });
 
-    </script> --}}
-</body>
+            // Tambahkan data QR code dan lokasi ke objek data
+            data.qrCode = qrCodeMessage;
+            data.location = address;
+
+            // Kirim data ke server menggunakan AJAX
+            fetch('{{ route('dntrans.store') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    alert('Data berhasil disimpan.');
+                    location.reload(); // Refresh halaman setelah berhasil
+                } else {
+                    alert('Terjadi kesalahan: ' + response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Terjadi kesalahan:', error);
+            });
+            // $.ajax({
+            //     url: "{{ route('dntrans.store') }}",
+            //     method: "POST",
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     },
+            //     data: data,
+            //     success: function (response) {
+            //         alert('Data berhasil disimpan.');
+            //         location.reload(); // Refresh halaman setelah berhasil
+            //     },
+            //     error: function (xhr) {
+            //         alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+            //     }
+            // });
+        }
+    </script>
+    </body>
 </html>
- 

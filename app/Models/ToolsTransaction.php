@@ -31,6 +31,11 @@ class ToolsTransaction extends Model
         return $this->belongsTo(Tools::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function employee()
     {
         return $this->hasOneThrough(
