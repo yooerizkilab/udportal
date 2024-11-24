@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code', 10)->unique();
             $table->string('name', 50);
+            $table->string('type', 50);
             $table->string('address', 100);
             $table->string('phone', 20);
             $table->enum('status', ['Active', 'Inactive'])->default('Active');

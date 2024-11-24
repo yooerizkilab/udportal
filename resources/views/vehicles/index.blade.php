@@ -173,7 +173,6 @@
                                         <th>Code</th>
                                         <th>Brand</th>
                                         <th>Model</th>
-                                        <th>Tahun</th>
                                         <th>Plat Nomor</th>
                                         <th>Pajak Tahunan</th>
                                         <th>Pajak 5 Tahunan</th>
@@ -189,7 +188,6 @@
                                             <td>{{ $vehicle->code }}</td>
                                             <td>{{ $vehicle->brand }}</td>
                                             <td>{{ $vehicle->model }}</td>
-                                            <td>{{ $vehicle->year }}</td>
                                             <td>{{ $vehicle->license_plate }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
@@ -197,7 +195,7 @@
                                             <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
                                             <td>
                                                 <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-info btn-sm mr-1 btn-circle"
+                                                    <button type="button" class="btn btn-info mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $vehicle->id }}"
                                                         data-code="{{ $vehicle->vehicle_code }}"
@@ -209,27 +207,22 @@
                                                         data-target="#viewVehiclesModal">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
-
-                                                    <button type="button" class="btn btn-primary btn-sm mr-1 btn-circle"
-                                                        
+                                                    <button type="button" class="btn btn-primary mr-1 btn-circle"  
                                                         data-toggle="modal" data-target="#assignVehiclesModal">
                                                         <i class="fas fa-rotate"></i>
                                                     </button>
-
-                                                    <button type="button" class="btn btn-secondary btn-sm mr-1 btn-circle"
-                                                        
+                                                    <button type="button" class="btn btn-secondary mr-1 btn-circle"
                                                         data-toggle="modal" data-target="#mutationVehiclesModal">
                                                         <i class="fas fa-exchange"></i>
                                                     </button>
-
-                                                    <button type="button" class="btn btn-warning btn-sm mr-1 btn-circle"
-                                                        
+                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                         data-toggle="modal" data-target="#editVehiclesModal">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-pencil"></i>
                                                     </button>
-                                                    <form action="" method="post" id="deleteVehiclesForm" class="d-inline">
+                                                    <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="post" id="deleteVehiclesForm" class="d-inline">
                                                         @csrf
-                                                        <button type="button" onclick="confirmVehiclesDelete()" class="btn btn-danger btn-sm btn-circle">
+                                                        @method('DELETE')
+                                                        <button type="button" onclick="confirmVehiclesDelete()" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -238,7 +231,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">No Data</td>
+                                            <td colspan="10" class="text-center">No Data</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -336,7 +329,7 @@
                                     <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Ownership</option>
                                         @foreach ($vehicleOwnerships as $ownership)
-                                            <option value="{{ $ownership->id }}">{{ $ownership->owner_name }}</option>
+                                            <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -348,7 +341,10 @@
                                     <label for="purchase_date">Purchase Date</label>
                                     <input type="date" name="purchase_date" id="purchase_date" class="form-control @error('purchase_date') is-invalid @enderror" required>
                                 </div>
-                                
+                                <div class="form-group">
+                                    <label for="color">Color</label>
+                                    <input type="text" name="color" id="color" class="form-control @error('color') is-invalid @enderror" required>
+                                </div>
                             </div> 
                             <div class="col-md-4">
                                 <div class="form-group">

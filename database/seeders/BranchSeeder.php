@@ -15,8 +15,9 @@ class BranchSeeder extends Seeder
     {
         Branch::insert([
             [
-                'code_branch' => 'B001',
-                'name_branch' => 'Branch 1',
+                'code' => 'B001',
+                'name' => 'Branch 1',
+                'type' => 'Warehouse XYZ',
                 'address' => 'Address 1',
                 'phone' => '1234567890',
                 'status' => 'Active',
@@ -26,8 +27,9 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'code_branch' => 'B002',
-                'name_branch' => 'Branch 2',
+                'code' => 'B002',
+                'name' => 'Branch 2',
+                'type' => 'Warehouse ABC',
                 'address' => 'Address 2',
                 'phone' => '9876543210',
                 'status' => 'Inactive',
@@ -37,8 +39,9 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'code_branch' => 'B003',
-                'name_branch' => 'Branch 3',
+                'code' => 'B003',
+                'name' => 'Branch 3',
+                'type' => 'Warehouse DEF',
                 'address' => 'Address 3',
                 'phone' => '5555555555',
                 'status' => 'Active',
@@ -48,8 +51,9 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'code_branch' => 'B004',
-                'name_branch' => 'Branch 4',
+                'code' => 'B004',
+                'name' => 'Branch 4',
+                'type' => 'Warehouse GHI',
                 'address' => 'Address 4',
                 'phone' => '9999999999',
                 'status' => 'Inactive',
@@ -59,8 +63,9 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'code_branch' => 'B005',
-                'name_branch' => 'Branch 5',
+                'code' => 'B005',
+                'name' => 'Branch 5',
+                'type' => 'Warehouse JKL',
                 'address' => 'Address 5',
                 'phone' => '7777777777',
                 'status' => 'Active',

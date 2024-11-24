@@ -134,6 +134,24 @@
         {{ __('Settings') }}
     </div>
 
+    <!-- Nav Item - Companies Management Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCompenies"
+            aria-expanded="true" aria-controls="collapseCompenies">
+            <i class="fas fa-fw fa-building"></i>
+            <span>Company Management</span>
+        </a>
+        <div id="collapseCompenies" class="collapse" aria-labelledby="headingCompenies"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('companies.index') }}">Companies</a>
+                <a class="collapse-item" href="{{ route('branches.index') }}">Branches</a>
+                <a class="collapse-item" href="{{ route('departments.index') }}">Departments</a>
+                <a class="collapse-item" href="{{ route('employees.index') }}">Employees</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Nav Item - Users Management Collapse Menu -->
     <li class="nav-item {{ request()->routeIs(['users.index', 'roles.index']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers"

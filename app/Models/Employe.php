@@ -14,7 +14,10 @@ class Employe extends Model
     protected $table = 'employe';
 
     protected $fillable = [
-        'employe_code',
+        'user_id',
+        'company_id',
+        'department_id',
+        'code',
         'nik',
         'full_name',
         'gender',
@@ -22,7 +25,7 @@ class Employe extends Model
         'address',
         'position',
         'age',
-        'photo',
         'status',
+        'photo',
     ];
 }

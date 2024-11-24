@@ -97,18 +97,32 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('ticketing', 'TicketingController');
     });
 
-    // Users Management
-    Route::resource('users', 'UsersController')->only('index', 'create', 'store', 'edit', 'update', 'destroy');
-    Route::post('users/exportPdf', 'UsersController@exportPDF')->name('users.exportPdf');
-    Route::post('users/exportExcel', 'UsersController@exportExcel')->name('users.exportExcel');
-    Route::post('users/importUsers', 'UsersController@importUsers')->name('users.importUsers');
+    Route::group(['prefix' => 'settings'], function () {
+        // Companies Management
+        Route::resource('companies', 'CompanyController');
 
-    // Roles Management
-    Route::resource('roles', 'RolesController')->only('index', 'create', 'store', 'edit', 'update', 'destroy');
-    Route::post('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
+        // Branches Management 
+        Route::resource('branches', 'BranchController');
 
-    // Permissions Management
-    Route::resource('permissions', 'PermissionsController');
+        // Departments Management
+        Route::resource('departments', 'DepartmentController');
+
+        // Employees Management
+        Route::resource('employees', 'EmployeController');
+
+        // Users Management
+        Route::resource('users', 'UsersController');
+        Route::post('users/exportPdf', 'UsersController@exportPDF')->name('users.exportPdf');
+        Route::post('users/exportExcel', 'UsersController@exportExcel')->name('users.exportExcel');
+        Route::post('users/importUsers', 'UsersController@importUsers')->name('users.importUsers');
+
+        // Roles Management
+        Route::resource('roles', 'RolesController');
+        Route::post('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
+
+        // Permissions Management
+        Route::resource('permissions', 'PermissionsController');
+    });
 
     // Profile
     Route::get('/profile', 'ProfileController@index')->name('profile');
