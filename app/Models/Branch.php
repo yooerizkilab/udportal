@@ -12,8 +12,9 @@ class Branch extends Model
     protected $table = 'branch';
 
     protected $fillable = [
-        'code_branch',
-        'name_branch',
+        'code',
+        'name',
+        'type',
         'address',
         'phone',
         'status',

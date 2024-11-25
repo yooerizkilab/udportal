@@ -57,7 +57,7 @@
                         <thead>
                             <tr>
                                 <th width="5%" class="text-center">No</th>
-                                <th>Code</th>
+                                {{-- <th>Code</th> --}}
                                 <th>Name</th>
                                 <th>Name Perusahaan</th>
                                 <th>Status Kontrak</th>
@@ -71,7 +71,7 @@
                             @forelse ($contracts as $contract)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>{{ $contract->code }}</td>
+                                    {{-- <td>{{ $contract->code }}</td> --}}
                                     <td>{{ $contract->name }}</td>
                                     <td>{{ $contract->nama_perusahaan }}</td>
                                     <td>{{ $contract->status_kontrak }}</td>
@@ -582,9 +582,8 @@
         var contractKontrakMilik = button.data('kontrak_milik');
         var contractKeterangan = button.data('keterangan');
         var contractMemo = button.data('memo');
-
+        
         var modal = $(this);
-            
         document.getElementById('codeEdit').value = contractCode
         document.getElementById('nameEdit').value = contractName
         document.getElementById('nama_perusahaanEdit').value = contractNamaPerusahaan

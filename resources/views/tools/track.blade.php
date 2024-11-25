@@ -87,7 +87,6 @@
                                         console.warn('Tool data is missing for item:', item);
                                         return;
                                     }
-
                                     // Buat elemen HTML untuk item ini
                                     const toolHTML = `
                                         <div style="margin-bottom: 20px;">

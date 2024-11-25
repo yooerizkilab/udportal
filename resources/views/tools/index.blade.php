@@ -115,6 +115,7 @@
                                                 data-origin="{{ $tool->origin }}"
                                                 data-condition="{{ $tool->condition }}"
                                                 data-quantity="{{ $tool->stock->quantity }}"
+                                                data-unit="{{ $tool->stock->unit }}"
                                                 data-status="{{ $tool->status }}"
                                                 data-target="#editToolsModal">
                                                 <i class="fas fa-pencil fa-md white-50"></i>
@@ -649,7 +650,7 @@
                                         <option value="Pcs">Pcs</option>
                                         <option value="Set">Set</option>
                                         <option value="Rol">Rol</option>
-                                        <option value="Unit">Unit</option>☻
+                                        <option value="Unit">Unit</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -917,14 +918,14 @@
         var toolsYear = button.data('year')
         var toolsOrigin = button.data('origin')
         var toolsQuantity = button.data('quantity')
+        var toolsUnit = button.data('unit')
         var toolsCondition = button.data('condition')
         var toolsStatus = button.data('status')
 
         var modal = $(this);
-
-        console.log(toolsQuantity);
+    
+        // console.log(toolsCategorie);
         
-
         var select = document.getElementById('ownershipEdit');
         for (var i = 0; i < select.options.length; i++) {
             if (select.options[i].value == toolsOwner) {
@@ -945,19 +946,37 @@
         }
         
         document.getElementById('yearToolsEdit').value = toolsYear;
-
         document.getElementById('brandToolsEdit').value = toolsBrand;
         document.getElementById('typeToolsEdit').value = toolsType;
+        document.getElementById('quantityToolsEdit').value = toolsQuantity
 
-        // document.getElementById('quantityEdit').value = tools
+        var select2 = document.getElementById('unitToolsEdit');
+        for (var i = 0; i < select2.options.length; i++) {
+            if (select2.options[i].value == toolsUnit) {
+                select2.options[i].selected = true;
+            }
+        }
 
-        
-        
-        // document.getElementById('categorieToolsEdit').value = toolsCategorie;
-        // document.getElementById('categorieToolsEdit').value = to;
-        // document.getElementById('originToolsEdit').value = toolsOrigin;
-        // document.getElementById('conditionToolsEdit').value = toolsCondition;
-        // document.getElementById('statusToolsEdit').value = toolsStatus;
+        var select3 = document.getElementById('conditionEdit');
+        for (var i = 0; i < select3.options.length; i++) {
+            if (select3.options[i].value == toolsCondition) {
+                select3.options[i].selected = true;
+            }
+        }
+
+        var select4 = document.getElementById('statusToolsEdit');
+        for (var i = 0; i < select4.options.length; i++) {
+            if (select4.options[i].value == toolsStatus) {
+                select4.options[i].selected = true;
+            }
+        }
+
+        // var select5 = document.getElementById('categoriesEdit');
+        // for (var i = 0; i < select5.options.length; i++) {
+        //     if (select5.options[i].value == toolsCategorie) {
+        //         select5.options[i].selected = true;
+        //     }
+        // }
 
         var FormAction = '{{ route("tools.update", ":id") }}';
         FormAction = FormAction.replace(':id', toolsId);

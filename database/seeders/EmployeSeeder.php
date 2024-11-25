@@ -15,15 +15,16 @@ class EmployeSeeder extends Seeder
     {
         Employe::insert([
             [
-                'company_id' => 1, // Assuming company with ID 1 exists
+                'user_id' => 1,
+                'company_id' => 1,
                 'department_id' => 1,
-                'employe_code' => 'A001',
+                'code' => 'A001',
                 'nik' => '1234567890',
                 'full_name' => 'John Doe',
                 'gender' => 'Male',
                 'phone' => '1234567890',
                 'address' => '123 Main St',
-                'position' => 'Manager',
+                'position' => 'Super Admin',
                 'age' => '30',
                 'status' => 'Active',
                 'photo' => 'photo1.jpg',
@@ -31,9 +32,10 @@ class EmployeSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'user_id' => 2,
                 'company_id' => 1, // Assuming company with ID 1 exists
                 'department_id' => 2,
-                'employe_code' => 'A002',
+                'code' => 'A002',
                 'nik' => '9876543210',
                 'full_name' => 'Jane Smith',
                 'gender' => 'Female',
@@ -46,54 +48,6 @@ class EmployeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
-            [
-                'company_id' => 2, // Assuming company with ID 2 exists
-                'department_id' => 3,
-                'employe_code' => 'A003',
-                'nik' => '5555555555',
-                'full_name' => 'Bob Johnson',
-                'gender' => 'Male',
-                'phone' => '5555555555',
-                'address' => '789 Oak St',
-                'position' => 'Designer',
-                'age' => '35',
-                'status' => 'Active',
-                'photo' => 'photo3.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'company_id' => 2, // Assuming company with ID 2 exists
-                'department_id' => 4,
-                'employe_code' => 'A004',
-                'nik' => '1111111111',
-                'full_name' => 'Alice Brown',
-                'gender' => 'Female',
-                'phone' => '1111111111',
-                'address' => '123 Maple St',
-                'position' => 'Analyst',
-                'age' => '28',
-                'status' => 'Active',
-                'photo' => 'photo4.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'company_id' => 2, // Assuming company with ID 2 exists
-                'department_id' => 5,
-                'employe_code' => 'A005',
-                'nik' => '2222222222',
-                'full_name' => 'Tom Green',
-                'gender' => 'Male',
-                'phone' => '2222222222',
-                'address' => '456 Oak St',
-                'position' => 'Tester',
-                'age' => '32',
-                'status' => 'Active',
-                'photo' => 'photo5.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
         ]);
     }
 }

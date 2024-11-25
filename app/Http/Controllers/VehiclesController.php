@@ -37,22 +37,22 @@ class VehiclesController extends Controller
     public function store(Request $request)
     {
         // Validate the form data
-        $request->validate([
-            'vehicle_code' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'status' => 'required|in:Active,Maintenance,Inactive',
-            'vehicle_type' => 'required|exists:vehicle_type,id',
-            'license_plate' => 'required|string|max:255|unique:vehicle,license_plate',
-            'year' => 'required|date',
-            'ownership' => 'required|exists:vehicle_ownership,id',
-            'purchase_price' => 'required|numeric|min:0',
-            'purchase_date' => 'required|date',
-            'tax_year' => 'required|date',
-            'tax_five_years' => 'required|date',
-            'inspected' => 'required|date',
-            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
-        ]);
+        // $request->validate([
+        //     'vehicle_code' => 'required|string|max:255',
+        //     'brand' => 'required|string|max:255',
+        //     'model' => 'required|string|max:255',
+        //     'status' => 'required|in:Active,Maintenance,Inactive',
+        //     'vehicle_type' => 'required|exists:vehicle_type,id',
+        //     'license_plate' => 'required|string|max:255|unique:vehicle,license_plate',
+        //     'year' => 'required|date',
+        //     'ownership' => 'required|exists:vehicle_ownership,id',
+        //     'purchase_price' => 'required|numeric|min:0',
+        //     'purchase_date' => 'required|date',
+        //     'tax_year' => 'required|date',
+        //     'tax_five_years' => 'required|date',
+        //     'inspected' => 'required|date',
+        //     // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+        // ]);
 
         // Proses upload gambar
         // if ($request->hasFile('image')) {
@@ -63,10 +63,11 @@ class VehiclesController extends Controller
         $data = [
             'owner_id' => $request->ownership,
             'type_id' => $request->vehicle_type,
-            'vehicle_code' => $request->vehicle_code,
+            'code' => $request->vehicle_code,
             'brand' => $request->brand,
             'status' => $request->status,
             'model' => $request->model,
+            'color' => $request->color,
             'year' => date('Y', strtotime($request->year)),
             'license_plate' => $request->license_plate,
             'tax_year' => $request->tax_year,
