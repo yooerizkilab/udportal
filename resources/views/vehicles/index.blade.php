@@ -171,9 +171,7 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Code</th>
-                                        <th>Brand</th>
                                         <th>Model</th>
-                                        <th>Tahun</th>
                                         <th>Plat Nomor</th>
                                         <th>Pajak Tahunan</th>
                                         <th>Pajak 5 Tahunan</th>
@@ -187,9 +185,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $vehicle->code }}</td>
-                                            <td>{{ $vehicle->brand }}</td>
                                             <td>{{ $vehicle->model }}</td>
-                                            <td>{{ $vehicle->year }}</td>
                                             <td>{{ $vehicle->license_plate }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
