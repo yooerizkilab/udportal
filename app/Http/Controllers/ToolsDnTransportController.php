@@ -54,21 +54,26 @@ class ToolsDnTransportController extends Controller
     public function store(Request $request)
     {
         // $data = [
-        //     'to_number' => 6285559623398,
+        //     'to_number' => 62895341341001,
+        //     // 'to_number' => 6285904253752,
         //     'to_name' => 'Virdha Dwi',
-        //     'message_template_id' => '162a7076-f58b-49e4-87ae-b427de082f85',
+        //     'message_template_id' => '76d15145-0688-4ea7-81a7-4effe440cd77',
         //     'channel_integration_id' => '0a62d1f1-bfc6-4d82-8197-9dbfda6ba41a',
         //     'language' => [
         //         'code' => 'id',
         //     ],
         //     'parameters' => [
-        //         'body' => [],
+        //         'body' => [
+        //             'key' => '1',
+        //             'value_text' => 'K 5',
+        //             'value' => 'abc def',
+        //         ],
         //     ],
         // ];
 
         // try {
         //     $response = $this->QontakSevices->sendMessage($data);
-        //     return redirect()->back()->with('success', 'Message ' . $response['status'] . ' sent successfully.');
+        //     return redirect()->back()->with('success', 'Message ' . $response['status']['data'] . ' sent successfully.');
         // } catch (\Exception $e) {
         //     return redirect()->back()->with('error', $e->getMessage());
         // }

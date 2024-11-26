@@ -28,8 +28,8 @@ class ReminderContractNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        // return ['mail', 'whatsapp'];
-        return ['mail'];
+        return ['mail', 'whatsapp'];
+        // return ['mail'];
     }
 
     /**
@@ -52,8 +52,18 @@ class ReminderContractNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'code' => $this->contract->code,
-            'name' => $this->contract->name,
+            //
         ];
     }
+
+    /**
+     * 
+     * Get the WhatsApp representation of the notification.
+     */
+
+    // public function toWhatsApp(object $notifiable): WhatsAppMessage
+    // {
+    //     return (new WhatsAppMessage)
+    //         ->content("Masa kontrak {$this->contract->name} akan berakhir dalam beberapa hari. Harap segera mengambil tindakan.");
+    // }
 }

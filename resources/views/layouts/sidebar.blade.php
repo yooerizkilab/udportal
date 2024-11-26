@@ -45,7 +45,7 @@
                 <a class="collapse-item {{ request()->routeIs('tracking.index') ? 'active' : '' }}" href="{{ route('tracking.index') }}">Tracking</a>
                 @endcan
                 @can('view dn-transport')
-                <a class="collapse-item {{ request()->routeIs('dn-transport.index') ? 'active' : '' }}" href="{{ route('dn-transport.index') }}">Dn Transport</a>
+                <a class="collapse-item {{ request()->routeIs('dn-transport.index') ? 'active' : '' }}" href="{{ route('dn-transport.index') }}">Transport</a>
                 @endcan
             </div>
         </div>

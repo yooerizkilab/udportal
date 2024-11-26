@@ -11,8 +11,8 @@ class QontakSevices
 
     public function __construct()
     {
-        $this->baseUrl = env('QONTAK_BASE_URL');
-        $this->token = env('QONTAK_TOKEN');
+        $this->baseUrl = env('QONTAK_WHATSAPP_URL');
+        $this->token = env('QONTAK_WHATSAPP_TOKEN');
     }
 
     public function channel($endpoint, $parameters = [])
@@ -27,7 +27,7 @@ class QontakSevices
         }
     }
 
-    public function sendMessage($message = [])
+    public function sendMessage($message)
     {
         $endpoint = 'broadcasts/whatsapp/direct';
 
