@@ -82,6 +82,7 @@ class RolesController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $role = Role::findOrFail($id);
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
@@ -93,7 +94,6 @@ class RolesController extends Controller
 
         DB::beginTransaction();
         try {
-            $role = Role::findOrFail($id);
             $role->name = $data['name'];
             $role->save();
             DB::commit();

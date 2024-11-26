@@ -60,6 +60,7 @@
                                 <th>Code</th>
                                 <th>Serial Number</th>
                                 <th>Name</th>
+                                <th>Quantity</th>
                                 <th>Condition</th>
                                 <th>Status</th>
                                 <th width="10%" class="text-center">Action</th>
@@ -72,7 +73,8 @@
                                     <td>{{ $tool->code }}</td>
                                     <td>{{ $tool->serial_number }}</td>
                                     <td>{{ $tool->name }}</td>
-                                    <td>{{ $tool->condition }}</td>
+                                    <td>{{ $tool->stock->quantity }}</td>
+                                    <td><span class="badge badge-{{ $tool->badge }}">{{ $tool->condition }}</span></td>
                                     <td><span class="badge badge-{{ $tool->badgeClass }}">{{ $tool->status }}</span></td>
                                     <td>
                                         <div class="d-inline-flex">
@@ -908,13 +910,14 @@
         var button = $(event.relatedTarget);
         var toolsId = button.data('id')
         var toolsOwner = button.data('owner')
-        var toolsCategorie = button.data('categorie')
         var toolsCode = button.data('code')
         var toolsSerial = button.data('serial')
         var toolsName = button.data('name')
+        var toolsModel = button.data('model')
+        var toolsCategorie = button.data('categorie')
+
         var toolsBrand = button.data('brand')
         var toolsType = button.data('type')
-        var toolsModel = button.data('model')
         var toolsYear = button.data('year')
         var toolsOrigin = button.data('origin')
         var toolsQuantity = button.data('quantity')
@@ -923,8 +926,6 @@
         var toolsStatus = button.data('status')
 
         var modal = $(this);
-    
-        // console.log(toolsCategorie);
         
         var select = document.getElementById('ownershipEdit');
         for (var i = 0; i < select.options.length; i++) {
@@ -932,7 +933,7 @@
                 select.options[i].selected = true;
             }
         }
-        
+
         document.getElementById('codeToolsEdit').value = toolsCode;
         document.getElementById('serialToolsEdit').value = toolsSerial;
         document.getElementById('nameToolsEdit').value = toolsName;
@@ -970,13 +971,6 @@
                 select4.options[i].selected = true;
             }
         }
-
-        // var select5 = document.getElementById('categoriesEdit');
-        // for (var i = 0; i < select5.options.length; i++) {
-        //     if (select5.options[i].value == toolsCategorie) {
-        //         select5.options[i].selected = true;
-        //     }
-        // }
 
         var FormAction = '{{ route("tools.update", ":id") }}';
         FormAction = FormAction.replace(':id', toolsId);

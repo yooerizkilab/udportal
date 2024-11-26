@@ -12,8 +12,6 @@ class VehicleOwnership extends Model
     protected $table = 'vehicle_ownership';
 
     protected $fillable = [
-        'owner',
-        'purchase_date',
-        'purchase_price',
+        'name'
     ];
 }

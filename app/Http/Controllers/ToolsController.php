@@ -9,6 +9,7 @@ use App\Models\ToolsCategorie;
 use App\Models\ToolsStock;
 use App\Models\ToolsOwners;
 use App\Models\ToolsTransaction;
+use PhpParser\Node\Expr\Throw_;
 
 class ToolsController extends Controller
 {
@@ -106,7 +107,55 @@ class ToolsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
+        $tools = Tools::findOrFail($id);
+        // Validate request data
+        $request->validate([
+            'ownership' => 'required|exists:tools_ownership,id',
+            'code' => 'required|string|max:255|unique:tools,code',
+            'name' => 'required|string|max:255',
+            'categories' => 'required|exists:tools_categorie,id', // Pastikan tabel tool_categories ada
+            'brand' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'condition' => 'required|string|in:Good,Used,Broken',
+            'serial_number' => 'required|string|max:255|unique:tools,serial_number',
+            'model' => 'required|string|max:255',
+            'year' => 'required|date',
+            'origin' => 'required|string|max:256',
+            'quantity' => 'required|integer|min:1',
+            'unit' => 'required|string|in:Pcs,Set,Rol,Unit',
+            'status' => 'required|string|in:Active,Maintenance,In Active',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $dataTools = [
+                'owner_id' => $request->ownership,
+                'code' => $request->code,
+                'name' => $request->name,
+                'categorie_id' => $request->categories,
+                'brand' => $request->brand,
+                'type' => $request->type,
+                'condition' => $request->condition,
+                'serial_number' => $request->serial_number,
+                'model' => $request->model,
+                'year' => date('Y', strtotime($request->year)),
+                'origin' => $request->origin,
+                'status' => $request->status,
+            ];
+            $tools->update($dataTools);
+            $dataStock = [
+                'tools_id' => $tools->id,
+                'quantity' => $request->quantity,
+                'unit' => $request->unit,
+            ];
+            // $toolsStock = ToolsStock::update($dataStock);
+            DB::commit();
+            return redirect()->back()->with('success', 'Tools update successfuly');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -114,7 +163,16 @@ class ToolsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $tools = Tools::findOrFail($id);
+            $tools->delete();
+            DB::commit();
+            return redirect()->back()->with('message', 'Tools ' . $tools->name . 'Successfully delete');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function transfer(Request $request)
