@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->string('model')->nullable();
             $table->year('year')->nullable();
-            $table->enum('condition', ['New', 'Good', 'Used', 'Broken'])->default('Good');
+            $table->enum('condition', ['New', 'Used', 'Broken'])->default('New');
             $table->enum('status', ['Active', 'Maintenance', 'Inactive'])->default('Active');
             $table->timestamps();
         });

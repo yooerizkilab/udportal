@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VehicleOwnership;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class VehicleOwnershipController extends Controller
@@ -27,7 +29,23 @@ class VehicleOwnershipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $data = [
+            'name' => $request->name
+        ];
+
+        DB::beginTransaction();
+        try {
+            $owner = VehicleOwnership::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Owner' . $owner->name . 'Successfully Created');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**

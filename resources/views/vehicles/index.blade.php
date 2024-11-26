@@ -15,6 +15,121 @@
     </p>
 
     <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        <div class="d-flex align-items-center flex-wrap">
+                            <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
+                            <span class="mx-2">to</span>
+                            <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
+                            <!-- Tombol PDF dengan AJAX -->
+                            <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
+                                <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
+                            </button>
+                            <!-- Tombol Excel dengan AJAX -->
+                            <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
+                                <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
+                            </button>
+                            <!-- Dropdown Filter -->
+                            <div class="dropdown ml-2 mb-2">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-filter fa-md white-50"></i> Filter
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </div>
+                            </div>
+                            <!-- Tombol Import Data -->
+                            <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importVehiclesModal">
+                                <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
+                            </button>
+                            <!-- Tombol Add Users -->
+                            <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addVehiclesModal">
+                                <i class="fas fa-truck-fast fa-md white-50"></i> Add Vehicles
+                            </button>
+                        </div>
+                    </div> 
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th>Code</th>
+                                        <th>Brand</th>
+                                        <th>Model</th>
+                                        <th>License Plate</th>
+                                        <th>Tax Year</th>
+                                        <th>Tax Five Year</th>
+                                        <th>Inspected</th>
+                                        <th>Status</th>
+                                        <th width="10%" class="text-center" >Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($vehicles as $vehicle)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $vehicle->code }}</td>
+                                            <td>{{ $vehicle->brand }}</td>
+                                            <td>{{ $vehicle->model }}</td>
+                                            <td>{{ $vehicle->license_plate }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
+                                            <td>{{ date('d M Y', strtotime($vehicle->inspected)) }}</td>
+                                            <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
+                                            <td>
+                                                <div class="d-inline-flex">
+                                                    <button type="button" class="btn btn-info mr-1 btn-circle"
+                                                        data-toggle="modal"
+                                                        data-id="{{ $vehicle->id }}"
+                                                        data-code="{{ $vehicle->vehicle_code }}"
+                                                        data-brand="{{ $vehicle->brand }}"
+                                                        data-model="{{ $vehicle->model }}"
+                                                        data-year="{{ $vehicle->year }}"
+                                                        data-license_plate="{{ $vehicle->license_plate }}"
+                                                        data-status="{{ $vehicle->status }}"
+                                                        data-target="#viewVehiclesModal">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary mr-1 btn-circle"  
+                                                        data-toggle="modal" data-target="#assignVehiclesModal">
+                                                        <i class="fas fa-rotate"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary mr-1 btn-circle"
+                                                        data-toggle="modal" data-target="#transferVehiclesModal">
+                                                        <i class="fas fa-exchange"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
+                                                        data-toggle="modal" data-target="#editVehiclesModal">
+                                                        <i class="fas fa-pencil"></i>
+                                                    </button>
+                                                    <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="post" id="deleteVehiclesForm" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" onclick="confirmVehiclesDelete()" class="btn btn-danger btn-circle">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
@@ -127,6 +242,7 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
         <div class="col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
@@ -239,6 +355,8 @@
                 </div>
             </div>
         </div>
+=======
+>>>>>>> e86f40a5e86f4e2956cb461e71bd352882035ba8
     </div>
 
     <!-- Modal View Vehicles -->
@@ -384,11 +502,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="addVehiclesTypeForm" method="post">
+                    <form action="{{ route('types.store') }}" id="addVehiclesTypeForm" method="post">
                         @csrf
                         <div class="form-group">
-                            <label for="vehicle_type">Vehicle Type</label>
-                            <input type="text" name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                            <label for="name">Vehicle Type</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
@@ -398,7 +516,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddType()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAddTypeVehicles()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -415,11 +533,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form action="{{ route('ownerships.store') }}" method="post" id="addVehicleOwnerForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" required>
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddOwner()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAddVehicleOwner()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -436,7 +560,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <form action="" method="post">
+                        @csrf
+                        <div class="form-group">
+                            <input type="text" name="search" id="search" class="form-control">
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
@@ -446,18 +575,18 @@
         </div>
     </div>
 
-    <!-- Modal Mutation Vehicles -->
-    <div class="modal fade" id="mutationVehiclesModal" tabindex="-1" aria-labelledby="mutationModalLabel" aria-hidden="true">
+    <!-- Modal Transfer Vehicles -->
+    <div class="modal fade" id="transferVehiclesModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="mutationModalLabel">Modal Mutation Vehicles</h5>
+                    <h5 class="modal-title" id="transferModalLabel">Modal Transfer Vehicles</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="mutationVehiclesForm" method="post">
+                    <form action="" id="transferVehiclesForm" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="from">From</label>
@@ -474,15 +603,15 @@
                             <label for="description">Description</label>
                             <textarea name="description" id="description" class="form-control" cols="30" rows="3"></textarea>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="file">File</label>
                             <input type="file" name="file" id="file" class="form-control">
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmMutationVehicles()"><i class="fas fa-check"></i> Save Mutation</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmtransferVehicles()"><i class="fas fa-check"></i> Save transfer</button>
                 </div>
             </div>
         </div>
@@ -657,6 +786,38 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addVehiclesForm').submit();
+            }
+        })
+    }
+
+    function confirmAddTypeVehicles(){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, add it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#addVehiclesTypeForm').submit();
+            }
+        })
+    }
+
+    function confirmAddVehicleOwner(){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, add it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#addVehicleOwnerForm').submit();
             }
         })
     }

@@ -11,7 +11,7 @@ class Tools extends Model
 
     protected $table = 'tools';
 
-    protected $appends = ['badgeClass'];
+    protected $appends = ['badge', 'badgeClass'];
 
     protected $fillable = [
         'owner_id',
@@ -28,6 +28,17 @@ class Tools extends Model
         'status',
     ];
 
+    public function getBadgeAttribute()
+    {
+        $statusColor = [
+            'New' => 'success',
+            'Used' => 'primary',
+            'Broken' => 'danger'
+        ];
+
+        return $statusColor[$this->condition] ?? 'secondary';
+    }
+
     public function getBadgeClassAttribute()
     {
         $statusColor = [
@@ -37,7 +48,7 @@ class Tools extends Model
         ];
 
         // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->status ?? 'success'] ?? 'secondary';
+        return $statusColor[$this->status] ?? 'success';
     }
 
     public function categorie()
