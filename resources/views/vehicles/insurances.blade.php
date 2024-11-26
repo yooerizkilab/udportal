@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 
 @push('css')
-  
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet"> 
 @endpush
 
 @section('main-content')
@@ -22,25 +23,25 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- image vehicle -->
-                        <div class="col-6">
-                            {{-- <img src="{{ asset('img/vehicle.png') }}" class="img-fluid" alt="vehicle"> --}}
-                            <div class="border p-3">
-                                <img src="https://imgcdn.oto.com/medium/gallery/exterior/38/2707/toyota-innova-zenix-hybrid-ev-front-angle-low-view-239610.jpg" class="img-fluid" style="width: 100%" alt="vehicle">
-                            </div>
-                        </div>
                         <!-- form add vehicle insurance -->
-                        <div class="col-6">
+                        <div class="col-4">
                             <form action="" method="POST">
                                 @csrf
-
                                 <div class="form-group">
-                                    <label for="insurance_number">Insurance Number</label>
-                                    <input type="text" class="form-control" id="insurance_number" name="insurance_number" placeholder="Enter Insurance Number">
+                                    <label for="vehicle_code">Vehicle Code</label>
+                                    <input type="text" class="form-control" id="vehicle_code" name="vehicle_code" placeholder="Enter Vehicle Code">
                                 </div>
                                 <div class="form-group">
                                     <label for="insurance_company">Insurance Company</label>
                                     <input type="text" class="form-control" id="insurance_company" name="insurance_company" placeholder="Enter Insurance Company">
+                                </div>
+                                <div class="form-group">
+                                    <label for="policy_number">Policy Number</label>
+                                    <input type="text" class="form-control" id="policy_number" name="policy_number" placeholder="Enter Policy Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="premium">Premium</label>
+                                    <input type="text" class="form-control" id="premium" name="premium" placeholder="Enter Premium">
                                 </div>
                                 <div class="form-group">
                                     <label for="start_date">Start Date</label>
@@ -55,6 +56,53 @@
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
+                        <!--- List Car Insurance --->
+                        <div class="col-8">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Vehicle Code</th>
+                                            <th>Insurance Number</th>
+                                            <th>Insurance Company</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th width="10%" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($insurances as $insurance)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $insurance->vehicle->code }}</td>
+                                                <td>{{ $insurance->policy_number }}</td>
+                                                <td>{{ $insurance->insurance_provider }}</td>
+                                                <td>{{ $insurance->coverage_start }}</td>
+                                                <td>{{ $insurance->coverage_end }}</td>
+                                                <td class="text-center">
+                                                    <div class="d-inline-flex">
+                                                        <button type="button" class="btn btn-sm btn-info mr-1 btn-circle">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-warning mr-1 btn-circle">
+                                                            <i class="fas fa-pencil"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger btn-circle">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">No data available</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -65,5 +113,12 @@
 @endsection
 
 @push('scripts')
-
+<!-- Page level plugins -->
+<script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
 @endpush

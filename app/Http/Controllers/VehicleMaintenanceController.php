@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\VehicleMaintenance;
 
 class VehicleMaintenanceController extends Controller
 {
@@ -11,7 +12,8 @@ class VehicleMaintenanceController extends Controller
      */
     public function index()
     {
-        return view('vehicles.maintenances');
+        $maintenances = VehicleMaintenance::with('vehicle')->get();
+        return view('vehicles.maintenances', compact('maintenances'));
     }
 
     /**

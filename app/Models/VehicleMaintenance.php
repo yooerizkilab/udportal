@@ -17,4 +17,9 @@ class VehicleMaintenance extends Model
         'cost',
         'next_maintenance',
     ];
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
 }

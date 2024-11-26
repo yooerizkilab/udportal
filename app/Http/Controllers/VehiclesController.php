@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employe;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vehicle;
@@ -20,7 +22,8 @@ class VehiclesController extends Controller
         $vehicles = Vehicle::all();
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = VehicleOwnership::all();
-        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'defaultCode'));
+        $users = User::all();
+        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'defaultCode', 'users'));
     }
 
     /**

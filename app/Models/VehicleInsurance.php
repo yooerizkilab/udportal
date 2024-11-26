@@ -18,4 +18,9 @@ class VehicleInsurance extends Model
         'coverage_end',
         'premium',
     ];
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
 }

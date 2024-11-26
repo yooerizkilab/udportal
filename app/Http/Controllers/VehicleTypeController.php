@@ -46,7 +46,7 @@ class VehicleTypeController extends Controller
             return redirect()->back()->with('success', 'Type ' . $type->name . ' Succes fully created');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while transfering the tools.');
+            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Create');
         }
     }
 
@@ -71,7 +71,8 @@ class VehicleTypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $type = VehicleType::findOrFail($id);
+
+        $types = VehicleType::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string',
@@ -85,12 +86,12 @@ class VehicleTypeController extends Controller
 
         DB::beginTransaction();
         try {
-            $type->update($data);
+            $types->update($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Type ' . $type->name . ' Succes fully updated');
+            return redirect()->back()->with('success', 'Type ' . $types->name . ' Successfully Updated');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error ' . $e->getMessage() . ' occurred while transfering the tools.');
+            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Update');
         }
     }
 
@@ -104,10 +105,10 @@ class VehicleTypeController extends Controller
             $type = VehicleType::findOrFail($id);
             $type->delete();
             DB::commit();
-            return redirect()->back()->with('success', 'Type ' . $type->name . ' Succes fully delete');
+            return redirect()->back()->with('success', 'Type ' . $type->name . ' Successfully Deleted');
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error ' . $e->getMessage() . ' occurred while transfering the tools.');
+            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Delete');
         }
     }
 }

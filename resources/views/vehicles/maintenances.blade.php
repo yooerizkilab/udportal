@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 
 @push('css')
-  
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet"> 
 @endpush
 
 @section('main-content')
@@ -12,10 +13,107 @@
             href="https://datatables.net">official DataTables documentation</a>.
     </p>
 
-    
+    <!-- 2 column grid -->
+    <div class="row">
+        <div class="col-12">
+            <!-- card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Vehicles Maintenances</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- form add vehicle insurance -->
+                        <div class="col-4">
+                            <form action="" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="vehicle_code">Vehicle Code</label>
+                                    <input type="text" class="form-control" id="vehicle_code" name="vehicle_code" placeholder="Enter Vehicle Code">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maintenances_date">Maintenances Date</label>
+                                    <input type="date" class="form-control" id="maintenances_date" name="maintenances_date" placeholder="Enter Maintenances Date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maintenances_description">Maintenances Description</label>
+                                    <textarea name="maintenances_description" id="maintenances_description" class="form-control" id="" cols="30" rows="4"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="maintenances_cost">Maintenances Cost</label>
+                                    <input type="text" class="form-control" id="maintenances_cost" name="maintenances_cost" placeholder="Enter Maintenances Cost">
+                                </div>
+                                <div class="form-group">
+                                    <label for="next_maintenances">Next Maintenances</label>
+                                    <input type="date" class="form-control" id="next_maintenances" name="next_maintenances" placeholder="Enter Next Maintenances">
+                                </div>
+                            </form>
+                            <div class="float-right mt-3">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                        <!--- List Car Insurance --->
+                        <div class="col-8">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Vehicle Code</th>
+                                            <th>Maintenances Date</th>
+                                            <th>Maintenances Description</th>
+                                            <th>Maintenances Cost</th>
+                                            <th>Next Maintenances</th>
+                                            <th width="10%" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($maintenances as $maintenance)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $maintenance->vehicle->code }}</td>
+                                                <td>{{ $maintenance->maintenance_date }}</td>
+                                                <td>{{ $maintenance->description }}</td>
+                                                <td>{{ $maintenance->cost }}</td>
+                                                <td>{{ $maintenance->next_maintenance }}</td>
+                                                <td class="text-center">
+                                                    <div class="d-inline-flex">
+                                                        <button type="button" class="btn btn-sm btn-info mr-1 btn-circle">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-warning mr-1 btn-circle">
+                                                            <i class="fas fa-pencil"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-danger btn-circle">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center">No data available</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
 
 @endsection
 
 @push('scripts')
-
+<!-- Page level plugins -->
+<script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
 @endpush

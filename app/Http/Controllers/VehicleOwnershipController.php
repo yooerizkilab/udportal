@@ -41,10 +41,10 @@ class VehicleOwnershipController extends Controller
         try {
             $owner = VehicleOwnership::create($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Owner' . $owner->name . 'Successfully Created');
+            return redirect()->back()->with('success', 'Owner ' . $owner->name . ' Successfully Created');
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Owner ' . $e->getMessage() . ' Failed to Create');
         }
     }
 
@@ -69,7 +69,25 @@ class VehicleOwnershipController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $owner = VehicleOwnership::find($id);
+
+        $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $data = [
+            'name' => $request->name
+        ];
+
+        DB::beginTransaction();
+        try {
+            $owner->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Owner' . $owner->name . ' Successfully Updated');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Owner' . $e->getMessage() . ' Failed to Update');
+        }
     }
 
     /**
@@ -77,6 +95,15 @@ class VehicleOwnershipController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $owner = VehicleOwnership::find($id);
+            $owner->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Owner' . $owner->name . ' Successfully Deleted');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Owner' . $e->getMessage() . ' Failed to Delete');
+        }
     }
 }

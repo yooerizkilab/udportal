@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vehicle_assignment', function (Blueprint $table) {
             $table->id();
-            $table->string('assigned_to', 50); // Can be a person or a department
+            $table->unsignedBigInteger('user_id')->references('id')->on('users');
             $table->date('assignment_date');
             $table->date('return_date')->nullable();
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\VehicleInsurance;
 use Illuminate\Http\Request;
 
 class VehicleInsuranceController extends Controller
@@ -19,7 +20,9 @@ class VehicleInsuranceController extends Controller
      */
     public function index()
     {
-        return view('vehicles.insurances');
+        $insurances = VehicleInsurance::with('vehicle')->get();
+        // return $insurances;
+        return view('vehicles.insurances', compact('insurances'));
     }
 
     /**
