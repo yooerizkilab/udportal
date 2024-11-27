@@ -12,7 +12,7 @@ class VehicleAssignment extends Model
     protected $table = 'vehicle_assignment';
 
     protected $fillable = [
-        'assigned_to',
+        'user_id',
         'assignment_date',
         'return_date',
     ];

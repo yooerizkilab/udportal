@@ -41,7 +41,7 @@ class ToolsSeeder extends Seeder
                 'model' => 'Model 2',
                 'year' => '2023',
                 'origin' => 'Office B',
-                'condition' => 'Good',
+                'condition' => 'Used',
                 'status' => 'Active',
                 'created_at' => now(),
                 'updated_at' => now()

@@ -44,11 +44,10 @@ class Tools extends Model
         $statusColor = [
             'Maintenance' => 'danger',
             'Active' => 'success',
-            'InActive' => 'secondary',
+            'Inactive' => 'secondary',
         ];
 
-        // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->status] ?? 'success';
+        return $statusColor[$this->status] ?? 'secondary';
     }
 
     public function categorie()

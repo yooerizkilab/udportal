@@ -49,12 +49,12 @@ class Vehicle extends Model
 
     public function ownership()
     {
-        return $this->hasMany(VehicleOwnership::class, 'id');
+        return $this->belongsTo(VehicleOwnership::class, 'owner_id', 'id');
     }
 
     public function assignments()
     {
-        return $this->hasMany(VehicleAssignment::class, 'id');
+        return $this->belongsTo(VehicleAssignment::class, 'id');
     }
 
     public function maintenanceRecords()
@@ -64,6 +64,6 @@ class Vehicle extends Model
 
     public function insurancePolicies()
     {
-        return $this->hasMany(VehicleInsurance::class, 'id');
+        return $this->belongsTo(VehicleInsurance::class, 'id');
     }
 }

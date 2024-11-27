@@ -63,6 +63,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('tracking', 'ToolsTrackingController');
         // Tools Dn Transport Management
         Route::resource('dn-transport', 'ToolsDnTransportController');
+        // Tools Maintenance Management
+        Route::resource('tools-maintenances', 'ToolsMaintenanceController');
+        Route::post('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
+        Route::post('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
+        // Route::post('tools-maintenances/pending/{id}', 'ToolsMaintenanceController@pendingMaintenance')->name('tools-maintenances.pendingMaintenance');
     });
 
     // Vehicles
@@ -74,7 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
         // Vehicle Ownership Management
         Route::resource('ownerships', 'VehicleOwnershipController');
         // Vehicle Maintenance Management
-        Route::resource('maintenances', 'VehicleMaintenanceController');
+        Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         // Vehicle Insurance Management
         Route::resource('insurances', 'VehicleInsuranceController');
     });

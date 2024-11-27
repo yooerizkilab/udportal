@@ -20,6 +20,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
+                    <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
                     <!-- Tombol PDF dengan AJAX -->
                     <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
@@ -32,11 +33,11 @@
                     
                     <!-- Tombol Import Data -->
                     <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
-                        <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
+                        <i class="fas fa-file-import fa-md white-50"></i> Import Department
                     </button>
                     <!-- Tombol Add Users -->
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addUsersModal">
-                        <i class="fas fa-truck-fast fa-md white-50"></i> Add Vehicles
+                        <i class="fas fa-building-user fa-md white-50"></i> Add Department
                     </button>
                 </div>
             </div> 
@@ -45,23 +46,36 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th width="5%">No</th>
+                                <th>Code</th>
                                 <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
+                                <th>Description</th>
+                                <th width="10%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
-                            </tr>
+                            @forelse ($departments as $department)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $department->code }}</td>
+                                    <td>{{ $department->name }}</td>
+                                    <td>{{ $department->description }}</td>
+                                    <td>
+                                        <div class="d-inline-flex">
+                                            <button type="button" class="btn btn-warning mr-2 btn-circle" data-toggle="modal" data-target="#editModal{{ $department->id }}">
+                                                <i class="fas fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-circle" data-toggle="modal" data-target="#deleteModal{{ $department->id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td> 
+                                </tr>                               
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">No data available</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

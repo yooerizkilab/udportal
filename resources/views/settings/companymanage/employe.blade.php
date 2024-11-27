@@ -32,11 +32,11 @@
                     
                     <!-- Tombol Import Data -->
                     <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
-                        <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
+                        <i class="fas fa-file-import fa-md white-50"></i> Import Employess
                     </button>
                     <!-- Tombol Add Users -->
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addUsersModal">
-                        <i class="fas fa-truck-fast fa-md white-50"></i> Add Vehicles
+                        <i class="fas fa-user-plus fa-md white-50"></i> Add Employess
                     </button>
                 </div>
             </div> 
@@ -45,23 +45,46 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th width="5%">No</th>
+                                <th>Code</th>
                                 <th>Name</th>
                                 <th>Position</th>
-                                <th>Office</th>
+                                <th>Phone</th>
+                                <th>Gander</th>
                                 <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
-                            </tr>
+                            @forelse ($employees as $employee)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $employee->code }}</td>
+                                    <td>{{ $employee->full_name }}</td>
+                                    <td>{{ $employee->position }}</td>
+                                    <td>{{ $employee->phone }}</td>
+                                    <td>{{ $employee->gender }}</td>
+                                    <td>{{ $employee->age }}</td>
+                                    <td>{{ $employee->status }}</td>
+                                    <td class="text-center">
+                                        {{-- <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-warning btn-circle btn-sm">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <form action="{{ route('employee.destroy', $employee->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-circle btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form> --}}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">No data available</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

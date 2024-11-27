@@ -9,7 +9,6 @@ use App\Models\ToolsCategorie;
 use App\Models\ToolsStock;
 use App\Models\ToolsOwners;
 use App\Models\ToolsTransaction;
-use PhpParser\Node\Expr\Throw_;
 
 class ToolsController extends Controller
 {
@@ -45,7 +44,7 @@ class ToolsController extends Controller
             'categories' => 'required|exists:tools_categorie,id', // Pastikan tabel tool_categories ada
             'brand' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'condition' => 'required|string|in:Good,Used,Broken',
+            'condition' => 'required|string|in:New,Used,Broken',
             'serial_number' => 'required|string|max:255|unique:tools,serial_number',
             'model' => 'required|string|max:255',
             'year' => 'required|date',
@@ -112,15 +111,13 @@ class ToolsController extends Controller
         // Validate request data
         $request->validate([
             'ownership' => 'required|exists:tools_ownership,id',
-            'code' => 'required|string|max:255|unique:tools,code',
             'name' => 'required|string|max:255',
             'categories' => 'required|exists:tools_categorie,id', // Pastikan tabel tool_categories ada
             'brand' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'condition' => 'required|string|in:Good,Used,Broken',
-            'serial_number' => 'required|string|max:255|unique:tools,serial_number',
+            'condition' => 'required|string|in:New,Used,Broken',
             'model' => 'required|string|max:255',
-            'year' => 'required|date',
+            'year' => 'required',
             'origin' => 'required|string|max:256',
             'quantity' => 'required|integer|min:1',
             'unit' => 'required|string|in:Pcs,Set,Rol,Unit',
@@ -131,13 +128,11 @@ class ToolsController extends Controller
         try {
             $dataTools = [
                 'owner_id' => $request->ownership,
-                'code' => $request->code,
                 'name' => $request->name,
                 'categorie_id' => $request->categories,
                 'brand' => $request->brand,
                 'type' => $request->type,
                 'condition' => $request->condition,
-                'serial_number' => $request->serial_number,
                 'model' => $request->model,
                 'year' => date('Y', strtotime($request->year)),
                 'origin' => $request->origin,
@@ -149,12 +144,17 @@ class ToolsController extends Controller
                 'quantity' => $request->quantity,
                 'unit' => $request->unit,
             ];
-            // $toolsStock = ToolsStock::update($dataStock);
+            $toolsStock = ToolsStock::where('tools_id', $tools->id)->first();
+            if (!$toolsStock) {
+                $toolsStock = ToolsStock::create($dataStock);
+            } else {
+                $toolsStock->update($dataStock);
+            }
             DB::commit();
-            return redirect()->back()->with('success', 'Tools update successfuly');
+            return redirect()->back()->with('success', 'Tools ' . $tools->name . ' update successfuly');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Tools ' . $e->getMessage() . ' failed to update');
         }
     }
 

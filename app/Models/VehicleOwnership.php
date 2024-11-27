@@ -14,4 +14,9 @@ class VehicleOwnership extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'ownership');
+    }
 }
