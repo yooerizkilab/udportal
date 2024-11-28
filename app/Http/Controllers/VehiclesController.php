@@ -20,7 +20,6 @@ class VehiclesController extends Controller
         // generate default code vehicle
         $defaultCode = 'A' . date('Ym') . sprintf('%04d', Vehicle::count() + 1);
         $vehicles = Vehicle::with('type', 'ownership')->get();
-        return $vehicles;
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = VehicleOwnership::all();
         $users = User::all();

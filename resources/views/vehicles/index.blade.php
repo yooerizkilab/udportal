@@ -75,7 +75,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $vehicle->code }}</td>
-                                            <td>{{ $vehicle->ownership->name ?? '-' }}</td>
+                                            <td>{{ $vehicle->brand }}</td>
                                             <td>{{ $vehicle->model }}</td>
                                             <td>{{ $vehicle->license_plate }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
@@ -98,8 +98,8 @@
                                                     <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $vehicle->id }}"
-                                                        {{-- data-type="{{ $vehicle->type->name }}"
-                                                        data-owner="{{ $vehicle->ownership->name }}" --}}
+                                                        data-type="{{ $vehicle->type->name }}"
+                                                        data-owner="{{ $vehicle->ownership->name }}"
                                                         data-code="{{ $vehicle->code }}"
                                                         data-brand="{{ $vehicle->brand }}"
                                                         data-model="{{ $vehicle->model }}"
@@ -520,19 +520,19 @@
                         @method('PUT')
                         <div class="form-group">
                             <label for="code">Vehicle Code</label>
-                            <input type="text" name="code" id="code" class="form-control" value="{{ $defaultCode }}" readonly required>
+                            <input type="text" name="code" id="codeEdit" class="form-control" value="" readonly required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
-                                    <input type="text" name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror" required>
+                                    <input type="text" name="brand" id="brandEdit" class="form-control @error('brand') is-invalid @enderror" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="model">Model</label>
-                                    <input type="text" name="model" id="model" class="form-control @error('model') is-invalid @enderror" required>
+                                    <input type="text" name="model" id="modelEdit" class="form-control @error('model') is-invalid @enderror" required>
                                 </div>
                             </div>
                         </div>
@@ -541,7 +541,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label for="status">Status</label>
-                                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                                        <select name="status" id="statusEdit" class="form-control @error('status') is-invalid @enderror" required>
                                             <option value="" disabled selected>Select Status</option>
                                             <option value="Active">Active</option>
                                             <option value="Maintenance">Maintenance</option>
@@ -549,7 +549,7 @@
                                         </select>
                                     </div>
                                     <label for="vehicle_type">Vehicle Type</label>
-                                    <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                                    <select name="vehicle_type" id="vehicle_typeEdit" class="form-control @error('vehicle_type') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Vehicle Type</option>
                                         @foreach ($vehicleTypes as $vehicleType)
                                             <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
@@ -558,7 +558,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="license_plate">License Plate</label>
-                                    <input type="text" name="license_plate" id="license_plate @error('license_plate') is-invalid @enderror" class="form-control" required>
+                                    <input type="text" name="license_plate" id="license_plateEdit" class="form-control @error('license_plate') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Year</label>
@@ -568,7 +568,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
-                                    <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
+                                    <select name="ownership" id="ownershipE" class="form-control @error('ownership') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Ownership</option>
                                         @foreach ($vehicleOwnerships as $ownership)
                                             <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
