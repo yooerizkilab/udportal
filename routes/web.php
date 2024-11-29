@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'vehicles'], function () {
         // Vehicles Management
         Route::resource('vehicles', 'VehiclesController');
+        Route::post('assign', 'VehiclesController@assign')->name('vehicles.assign');
         // Vehicle Type Management
         Route::resource('types', 'VehicleTypeController');
         // Vehicle Ownership Management

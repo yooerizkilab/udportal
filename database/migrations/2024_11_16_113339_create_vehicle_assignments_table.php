@@ -17,6 +17,8 @@ return new class extends Migration
             $table->date('assignment_date');
             $table->date('return_date')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

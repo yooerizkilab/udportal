@@ -12,8 +12,24 @@ class VehicleAssignment extends Model
     protected $table = 'vehicle_assignment';
 
     protected $fillable = [
+        'vehicle_id',
         'user_id',
         'assignment_date',
         'return_date',
     ];
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'user_id');
+    }
+
+    public function getLatestAssignedUserAttribute()
+    {
+        return $this->assignedUsers->sortByDesc('pivot.created_at')->first();
+    }
 }

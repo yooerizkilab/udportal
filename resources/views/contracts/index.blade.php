@@ -281,7 +281,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="retensi">Retensi</label>
-                                    <input type="number" class="form-control" id="retensi" name="retensi" value="{{ old('retensi') }}">
+                                    <input type="text" class="form-control" id="retensi" name="retensi" value="{{ old('retensi') }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="masa_retensi">Masa Retensi</label>

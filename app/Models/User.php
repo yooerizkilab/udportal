@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Employe::class);
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(VehicleAssignment::class, 'vehicle_id');
+    }
 }

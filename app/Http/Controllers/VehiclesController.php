@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employe;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Employe;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\VehicleOwnership;
+use App\Models\VehicleAssignment;
 
 class VehiclesController extends Controller
 {
@@ -19,7 +20,8 @@ class VehiclesController extends Controller
     {
         // generate default code vehicle
         $defaultCode = 'A' . date('Ym') . sprintf('%04d', Vehicle::count() + 1);
-        $vehicles = Vehicle::with('type', 'ownership')->get();
+        $vehicles = Vehicle::with('type', 'ownership', 'assignments', 'assignedUsers')->get();
+        // return $vehicles;
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = VehicleOwnership::all();
         $users = User::all();
@@ -122,5 +124,31 @@ class VehiclesController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function assign(Request $request)
+    {
+        $request->validate([
+            'employee' => 'required|exists:employe,id',
+            'assignment_date' => 'required|date',
+            'return_date' => 'nullable|date',
+        ]);
+
+        $data = [
+            'vehicle_id' => $request->vehicle_id,
+            'user_id' => $request->employee,
+            'assignment_date' => $request->assignment_date,
+            'return_date' => $request->return_date,
+        ];
+
+        DB::beginTransaction();
+        try {
+            $assignment = VehicleAssignment::updateOrCreate($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Vehicle assigned to ' . $assignment->user->full_name . ' successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error assigning vehicle ' . $e->getMessage());
+        }
     }
 }

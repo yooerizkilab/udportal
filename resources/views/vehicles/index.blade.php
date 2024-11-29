@@ -60,12 +60,12 @@
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Code</th>
-                                        <th>Brand</th>
                                         <th>Model</th>
                                         <th>License Plate</th>
                                         <th>Tax Year</th>
                                         <th>Tax Five Year</th>
                                         <th>Inspected</th>
+                                        <th>Assigned</th>
                                         <th>Status</th>
                                         <th width="10%" class="text-center" >Action</th>
                                     </tr>
@@ -75,12 +75,18 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $vehicle->code }}</td>
-                                            <td>{{ $vehicle->brand }}</td>
                                             <td>{{ $vehicle->model }}</td>
                                             <td>{{ $vehicle->license_plate }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->inspected)) }}</td>
+                                            @if ($vehicle->assignedUsers->isNotEmpty())
+                                            @foreach ($vehicle->assignedUsers as $user)
+                                            <td>{{ $user->name }}</td>
+                                            @endforeach
+                                            @else
+                                            <td>-</td>
+                                            @endif
                                             <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
                                             <td>
                                                 <div class="d-inline-flex">
@@ -88,7 +94,9 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-primary mr-1 btn-circle"  
-                                                        data-toggle="modal" data-target="#assignVehiclesModal">
+                                                        data-toggle="modal"
+                                                        data-id="{{ $vehicle->id }}"
+                                                        data-target="#assignVehiclesModal">
                                                         <i class="fas fa-rotate"></i>
                                                     </button>
                                                     {{-- <button type="button" class="btn btn-secondary mr-1 btn-circle"
@@ -433,9 +441,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="post">
+                    <form action="{{ route('vehicles.assign') }}" method="post" id="assignVehiclesForm">
                         @csrf
                         <div class="form-group">
+                            <input type="hidden" name="vehicle_id" id="vehiclesId" required>
                             <label for="employee">Employee</label>
                             <select name="employee" id="employee" class="form-control">
                                 <option value="" disabled selected>Select Employee</option>
@@ -880,6 +889,32 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('deleteVehiclesOwnerForm').submit();
+            }
+        })
+    }
+
+    $('#assignVehiclesModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var vehiclesId = button.data('id');
+
+        console.log(vehiclesId);
+        
+        var modal = $(this);
+        document.getElementById('vehiclesId').value = vehiclesId;
+    })
+
+    function confirmAssignVehicles() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('assignVehiclesForm').submit();
             }
         })
     }
