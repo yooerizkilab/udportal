@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('vehicle_assignment', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->references('id')->on('users');
             $table->date('assignment_date');
             $table->date('return_date')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

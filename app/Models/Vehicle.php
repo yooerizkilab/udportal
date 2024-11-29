@@ -52,15 +52,9 @@ class Vehicle extends Model
         return $this->belongsTo(VehicleOwnership::class, 'owner_id', 'id');
     }
 
-    public function assignments()
+    public function assigned()
     {
-        return $this->belongsTo(VehicleAssignment::class, 'id');
-    }
-
-    // Jika ingin mendapatkan user langsung dari vehicle
-    public function assignedUsers()
-    {
-        return $this->hasManyThrough(User::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id');
+        return $this->hasOneThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id');
     }
 
     public function maintenanceRecords()

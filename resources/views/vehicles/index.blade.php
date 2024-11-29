@@ -80,13 +80,7 @@
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
                                             <td>{{ date('d M Y', strtotime($vehicle->inspected)) }}</td>
-                                            @if ($vehicle->assignedUsers->isNotEmpty())
-                                            @foreach ($vehicle->assignedUsers as $user)
-                                            <td>{{ $user->name }}</td>
-                                            @endforeach
-                                            @else
-                                            <td>-</td>
-                                            @endif
+                                            <td>{{ $vehicle->assigned->full_name ?? '-' }}</td>
                                             <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
                                             <td>
                                                 <div class="d-inline-flex">
