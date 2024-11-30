@@ -18,12 +18,16 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model', 50)->nullable();
             $table->string('color', 20)->nullable();
+            $table->string('transmission', 50)->nullable();
+            $table->string('fuel', 50)->nullable();
             $table->year('year')->nullable();
             $table->string('license_plate', 10)->unique();
             $table->date('tax_year')->nullable();
             $table->date('tax_five_year')->nullable();
             $table->date('inspected')->nullable();
             $table->enum('status', ['Active', 'Maintenance', 'Inactive'])->default('Active');
+            $table->text('description')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('vehicle_type');

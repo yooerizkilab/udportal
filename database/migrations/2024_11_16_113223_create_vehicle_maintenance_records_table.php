@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('cost', 15, 2);
             $table->date('next_maintenance')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

@@ -46,6 +46,10 @@ class ToolsMaintenanceController extends Controller
             return redirect()->back()->with('error', 'Tool dengan kode ' . $request->code . ' tidak ditemukan.');
         }
 
+        if ($tools->status == 'Inactive') {
+            return redirect()->back()->with('error', 'Failed to create maintenance record: Tool is inactive.');
+        }
+
         // Siapkan data untuk maintenance
         $data = [
             'tools_id' => $tools->id,

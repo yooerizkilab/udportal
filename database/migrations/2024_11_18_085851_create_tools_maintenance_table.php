@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('tools_maintenance', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tools_id')->references('id')->on('tools');
+            $table->string('code', 20)->unique();
             $table->date('maintenance_date');
-            $table->enum('status', ['Completed', 'Pending', 'In Progress', 'Cancelled',])->default('Pending');
+            $table->decimal('cost', 15, 2);
+            $table->date('completion_date')->nullable();
+            $table->enum('status', ['Completed', 'In Progress', 'Cancelled',])->default('Pending');
             $table->string('description')->nullable();
             $table->timestamps();
         });

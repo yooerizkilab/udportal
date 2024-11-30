@@ -11,16 +11,24 @@ class VehicleInsurance extends Model
 
     protected $table = 'vehicle_insurance_policie';
 
+    protected $appends = ['status'];
+
     protected $fillable = [
-        'insurance_provider	',
+        'vehicle_id',
         'policy_number',
         'coverage_start',
         'coverage_end',
         'premium',
+        'insurance_provider'
     ];
 
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->coverage_end > now() ? 'Active' : 'Expired';
     }
 }

@@ -81,8 +81,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('ownerships', 'VehicleOwnershipController');
         // Vehicle Maintenance Management
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
+        Route::post('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
+        // Route::post('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
+        Route::get('vehicles-export-detail/{id}', 'VehicleMaintenanceController@exportPdf')->name('vehicles-maintenances.exportPdf');
         // Vehicle Insurance Management
         Route::resource('insurances', 'VehicleInsuranceController');
+        Route::get('insurances-export-detail/{id}', 'VehicleInsuranceController@exportPdf')->name('insurances.exportPdf');
     });
 
     // Vouchers
@@ -106,26 +110,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'settings'], function () {
         // Companies Management
         Route::resource('companies', 'CompanyController');
-
         // Branches Management 
         Route::resource('branches', 'BranchController');
-
         // Departments Management
         Route::resource('departments', 'DepartmentController');
-
         // Employees Management
         Route::resource('employees', 'EmployeController');
-
         // Users Management
         Route::resource('users', 'UsersController');
         Route::post('users/exportPdf', 'UsersController@exportPDF')->name('users.exportPdf');
         Route::post('users/exportExcel', 'UsersController@exportExcel')->name('users.exportExcel');
         Route::post('users/importUsers', 'UsersController@importUsers')->name('users.importUsers');
-
         // Roles Management
         Route::resource('roles', 'RolesController');
         Route::post('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
-
         // Permissions Management
         Route::resource('permissions', 'PermissionsController');
     });

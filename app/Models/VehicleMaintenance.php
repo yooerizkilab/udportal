@@ -15,6 +15,7 @@ class VehicleMaintenance extends Model
 
 
     protected $fillable = [
+        'vehicle_id',
         'maintenance_date',
         'description',
         'cost',
@@ -26,8 +27,8 @@ class VehicleMaintenance extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function getStatusAttribute($value)
+    public function getStatusAttribute()
     {
-        return $value ? 'Completed' : 'Maintenance';
+        return $this->status = $this->vehicle->status == 'Maintenance' ? 'Maintenance' : 'Completed';
     }
 }

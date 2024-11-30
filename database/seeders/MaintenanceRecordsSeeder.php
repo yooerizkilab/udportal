@@ -20,6 +20,8 @@ class MaintenanceRecordsSeeder extends Seeder
                 'description' => 'Oil Change',
                 'cost' => 500000,
                 'next_maintenance' => '2023-02-15',
+                'notes' => 'Replace the oil filter.',
+                'photo' => 'https://example.com/oil-change.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -29,6 +31,8 @@ class MaintenanceRecordsSeeder extends Seeder
                 'description' => 'Brake Replacement',
                 'cost' => 1000000,
                 'next_maintenance' => '2023-08-10',
+                'notes' => 'Replace the brake pads.',
+                'photo' => 'https://example.com/brake-replacement.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
             ]

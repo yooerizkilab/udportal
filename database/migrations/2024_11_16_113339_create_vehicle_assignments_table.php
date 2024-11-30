@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('vehicle_assignment', function (Blueprint $table) {
             $table->id();
             $table->date('assignment_date');
+            $table->text('notes')->nullable();
             $table->date('return_date')->nullable();
             $table->timestamps();
         });

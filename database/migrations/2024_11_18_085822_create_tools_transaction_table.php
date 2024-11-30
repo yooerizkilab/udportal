@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tools_id')->references('id')->on('tools');
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->string('code', 20)->unique();
             $table->enum('type', ['In', 'Transfer', 'Out'])->default('In');
             $table->string('from', 100);
             $table->string('to', 100);
