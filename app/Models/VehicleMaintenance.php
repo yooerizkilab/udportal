@@ -11,6 +11,9 @@ class VehicleMaintenance extends Model
 
     protected $table = 'vehicle_maintenance_record';
 
+    protected $appends = ['status'];
+
+
     protected $fillable = [
         'maintenance_date',
         'description',
@@ -21,5 +24,10 @@ class VehicleMaintenance extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function getStatusAttribute($value)
+    {
+        return $value ? 'Completed' : 'Maintenance';
     }
 }

@@ -23,9 +23,9 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- form add vehicle insurance -->
+                        <!-- form add vehicle maintenances -->
                         <div class="col-4">
-                            <form action="" method="POST">
+                            <form action="" method="POST" id="addMaintenancesForm">
                                 @csrf
                                 <div class="form-group">
                                     <label for="vehicle_code">Vehicle Code</label>
@@ -49,10 +49,10 @@
                                 </div>
                             </form>
                             <div class="float-right mt-3">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmAddMaintenances()"><i class="fas fa-check"></i> Save</button>
                             </div>
                         </div>
-                        <!--- List Car Insurance --->
+                        <!--- List Car Maintenances --->
                         <div class="col-8">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -78,21 +78,21 @@
                                                 <td>{{ $maintenance->next_maintenance }}</td>
                                                 <td class="text-center">
                                                     <div class="d-inline-flex">
-                                                        <button type="button" class="btn btn-sm btn-info mr-1 btn-circle">
-                                                            <i class="fas fa-eye"></i>
+                                                        <button type="button" class="btn btn-sm btn-success mr-1 btn-circle" onclick="confirmCompleteMaintenances({{ $maintenance->id }})">
+                                                            <i class="fas fa-check"></i>
                                                         </button>
-                                                        <button type="button" class="btn btn-sm btn-warning mr-1 btn-circle">
+                                                        <button type="button" class="btn btn-sm btn-danger mr-1 btn-circle" onclick="confirmCancelledMaintenances({{ $maintenance->id }})">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-warning btn-circle" data-toggle="modal" data-target="#updateMaintenancesModal">
                                                             <i class="fas fa-pencil"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-sm btn-danger btn-circle">
-                                                            <i class="fas fa-trash"></i>
                                                         </button>
                                                     </div>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="6" class="text-center">No data available</td>
+                                                <td colspan="7" class="text-center">No data available</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

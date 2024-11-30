@@ -112,9 +112,9 @@
                                                         data-tax_five_year="{{ $vehicle->tax_five_year }}"
                                                         data-inspected="{{ $vehicle->inspected }}"
                                                         data-purchase_date="{{ $vehicle->purchase_date }}"
-                                                        data-pruchase_price="{{ $vehicle->pruchase_price }}"
+                                                        data-purchase_price="{{ $vehicle->purchase_price }}"
                                                         data-status="{{ $vehicle->status }}"
-                                                        data-target="#editVehiclesModal">
+                                                        data-target="#updateVehiclesModal">
                                                         <i class="fas fa-pencil"></i>
                                                     </button>
                                                     <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="post" id="deleteVehiclesForm" class="d-inline">
@@ -508,7 +508,7 @@
     </div>
 
     <!-- Modal Edit Vehicles -->
-    <div class="modal fade" id="editVehiclesModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateVehiclesModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -518,24 +518,24 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="editVehiclesForm" method="post">
+                    <form action="{{ route('vehicles.update', ':id') }}" id="updateVehiclesForm" method="post">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
                             <label for="code">Vehicle Code</label>
-                            <input type="text" name="code" id="codeEdit" class="form-control" value="" readonly required>
+                            <input type="text" name="code" id="vehiclesCode" class="form-control" value="" readonly required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
-                                    <input type="text" name="brand" id="brandEdit" class="form-control @error('brand') is-invalid @enderror" required>
+                                    <input type="text" name="brand" id="vehiclesBrand" class="form-control @error('brand') is-invalid @enderror" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="model">Model</label>
-                                    <input type="text" name="model" id="modelEdit" class="form-control @error('model') is-invalid @enderror" required>
+                                    <input type="text" name="model" id="vehiclesModel" class="form-control @error('model') is-invalid @enderror" required>
                                 </div>
                             </div>
                         </div>
@@ -544,7 +544,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label for="status">Status</label>
-                                        <select name="status" id="statusEdit" class="form-control @error('status') is-invalid @enderror" required>
+                                        <select name="status" id="vehiclesStatus" class="form-control @error('status') is-invalid @enderror" required>
                                             <option value="" disabled selected>Select Status</option>
                                             <option value="Active">Active</option>
                                             <option value="Maintenance">Maintenance</option>
@@ -552,7 +552,7 @@
                                         </select>
                                     </div>
                                     <label for="vehicle_type">Vehicle Type</label>
-                                    <select name="vehicle_type" id="vehicle_typeEdit" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                                    <select name="vehicle_type" id="vehiclesType" class="form-control @error('vehicle_type') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Vehicle Type</option>
                                         @foreach ($vehicleTypes as $vehicleType)
                                             <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
@@ -561,17 +561,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="license_plate">License Plate</label>
-                                    <input type="text" name="license_plate" id="license_plateEdit" class="form-control @error('license_plate') is-invalid @enderror" required>
+                                    <input type="text" name="license_plate" id="vehicleslicense" class="form-control @error('license_plate') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Year</label>
-                                    <input type="number" name="year" id="year" class="form-control @error('year') is-invalid @enderror" required>
+                                    <input type="text" name="year" id="vehiclesYear" class="form-control @error('year') is-invalid @enderror" required>
                                 </div>
                             </div> 
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
-                                    <select name="ownership" id="ownershipE" class="form-control @error('ownership') is-invalid @enderror" required>
+                                    <select name="ownership" id="vehiclesOwner" class="form-control @error('ownership') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Ownership</option>
                                         @foreach ($vehicleOwnerships as $ownership)
                                             <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
@@ -580,29 +580,29 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_price">Purchase Price</label>
-                                    <input type="text" name="purchase_price" id="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" required>
+                                    <input type="text" name="purchase_price" id="vehiclesPurchasePrice" class="form-control @error('purchase_price') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_date">Purchase Date</label>
-                                    <input type="date" name="purchase_date" id="purchase_date" class="form-control @error('purchase_date') is-invalid @enderror" required>
+                                    <input type="date" name="purchase_date" id="vehiclesPurchase" class="form-control @error('purchase_date') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="color">Color</label>
-                                    <input type="text" name="color" id="color" class="form-control @error('color') is-invalid @enderror" required>
+                                    <input type="text" name="color" id="vehiclesColor" class="form-control @error('color') is-invalid @enderror" required>
                                 </div>
                             </div> 
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="tax_year">Tax Year</label>
-                                    <input type="date" name="tax_year" id="tax_year" class="form-control @error('tax_year') is-invalid @enderror" required>
+                                    <input type="date" name="tax_year" id="vehiclesTaxYear" class="form-control @error('tax_year') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="tax_five_years">Tax Five Years</label>
-                                    <input type="date" name="tax_five_year" id="tax_five_year" class="form-control @error('tax_five_years') is-invalid @enderror" required>
+                                    <input type="date" name="tax_five_year" id="vehiclesTaxFive" class="form-control @error('tax_five_years') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="inspected">Inspected</label>
-                                    <input type="date" name="inspected" id="inspected" class="form-control @error('inspected') is-invalid @enderror" required>
+                                    <input type="date" name="inspected" id="vehiclesInspected" class="form-control @error('inspected') is-invalid @enderror" required>
                                 </div>
                                 {{-- <div class="form-group">
                                     <label for="image">Image</label>
@@ -614,7 +614,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateVehicles()"><i class="fas fa-check"></i> Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmVehiclesUpdate()"><i class="fas fa-check"></i> Save changes</button>
                 </div>
             </div>
         </div>
@@ -783,7 +783,6 @@
         var vehiclesTypeDescription = button.data('description');
 
         var modal = $(this);
-        modal.find('.modal-body #vehiclesTypeId').val(vehiclesTypeId);
         modal.find('.modal-body #vehiclesTypeName').val(vehiclesTypeName);
         modal.find('.modal-body #vehiclesTypeDescription').val(vehiclesTypeDescription);
         
@@ -838,6 +837,64 @@
             }
         })
     }
+
+    $('#updateVehiclesModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var vehiclesId = button.data('id');
+        var vehiclesType = button.data('type');
+        var vehiclesOwner = button.data('owner');
+        var vehiclesCode = button.data('code');
+        var vehiclesName = button.data('name');
+        var vehiclesBrand = button.data('brand');
+        var vehiclesModel = button.data('model');
+        var vehiclesColor = button.data('color');
+        var vehiclesYear = button.data('year');
+        var vehicleslicense = button.data('license_plate');
+        var vehiclesTaxYear = button.data('tax_year');
+        var vehiclesTaxFive = button.data('tax_five_year');
+        var vehiclesInspected = button.data('inspected');
+        var vehiclesPurchase = button.data('purchase_date');
+        var vehiclesPurchasePrice = button.data('purchase_price');
+        var vehiclesStatus = button.data('status');
+        
+        var modal = $(this);
+        modal.find('.modal-body #vehiclesType').val(vehiclesType);
+        modal.find('.modal-body #vehiclesOwner').val(vehiclesOwner).trigger('change');
+        modal.find('.modal-body #vehiclesCode').val(vehiclesCode);
+        modal.find('.modal-body #vehiclesName').val(vehiclesName);
+        modal.find('.modal-body #vehiclesBrand').val(vehiclesBrand);
+        modal.find('.modal-body #vehiclesModel').val(vehiclesModel);
+        modal.find('.modal-body #vehiclesColor').val(vehiclesColor);
+        modal.find('.modal-body #vehiclesYear').val(vehiclesYear);
+        modal.find('.modal-body #vehicleslicense').val(vehicleslicense);
+        modal.find('.modal-body #vehiclesTaxYear').val(vehiclesTaxYear);
+        modal.find('.modal-body #vehiclesTaxFive').val(vehiclesTaxFive);
+        modal.find('.modal-body #vehiclesInspected').val(vehiclesInspected);
+        modal.find('.modal-body #vehiclesPurchase').val(vehiclesPurchase);
+        modal.find('.modal-body #vehiclesPurchasePrice').val(vehiclesPurchasePrice);
+        modal.find('.modal-body #vehiclesStatus').val(vehiclesStatus).trigger('change');
+
+        //replace action form
+        var action = $('#updateVehiclesForm').attr('action');
+        var newAction = action.replace(':id', vehiclesId);
+        $('#updateVehiclesForm').attr('action', newAction);
+    })
+
+    function confirmVehiclesUpdate() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('updateVehiclesForm').submit();
+            }
+        })
+    }    
 
     function confirmVehiclesDelete() {
         Swal.fire({

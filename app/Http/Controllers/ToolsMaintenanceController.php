@@ -134,6 +134,10 @@ class ToolsMaintenanceController extends Controller
     {
         $maintenance = ToolsMaintenance::findOrFail($id);
 
+        if ($maintenance->tools->status == 'Inactive') {
+            return redirect()->back()->with('error', 'Failed to complete maintenance record: Tool is inactive.');
+        }
+
         DB::beginTransaction();
         try {
             $maintenance->update(['status' => 'Completed']);

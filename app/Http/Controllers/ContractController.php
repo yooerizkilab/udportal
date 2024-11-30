@@ -216,7 +216,7 @@ class ContractController extends Controller
 
         // return $data;
         // Generate PDF
-        $pdf = PDF::loadView('contracts.pdf', compact('data'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('contracts.pdf', compact('data'));
         return $pdf->stream('contracts.pdf');
         // return $pdf->download('contracts.pdf');
     }

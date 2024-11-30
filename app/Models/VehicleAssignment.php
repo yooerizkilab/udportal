@@ -27,9 +27,4 @@ class VehicleAssignment extends Model
     {
         return $this->hasOne(User::class, 'user_id');
     }
-
-    public function getLatestAssignedUserAttribute()
-    {
-        return $this->assignedUsers->sortByDesc('pivot.created_at')->first();
-    }
 }

@@ -11,6 +11,7 @@ class Vehicle extends Model
 
     protected $table = 'vehicle';
 
+    // protected $appends = ['badgeClass', 'assignedEmploye'];
     protected $appends = ['badgeClass'];
 
     protected $fillable = [
@@ -54,8 +55,14 @@ class Vehicle extends Model
 
     public function assigned()
     {
-        return $this->hasOneThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id');
+        return $this->hasOneThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id')->latest('vehicle_assignment.created_at');
+        // return $this->hasManyThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id');
     }
+
+    // public function getAssignedEmployeAttribute()
+    // {
+    //     return $this->assigned()->orderBy('assignment_date', 'desc')->first();
+    // }
 
     public function maintenanceRecords()
     {
