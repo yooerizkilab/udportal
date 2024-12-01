@@ -24,8 +24,17 @@ class Tools extends Model
         'model',
         'year',
         'origin',
+        'quantity',
+        'unit',
         'condition',
         'status',
+        'description',
+        'purchase_date',
+        'purchase_price',
+        'warranty',
+        'warranty_start',
+        'warranty_end',
+        'photo',
     ];
 
     public function getBadgeAttribute()
@@ -53,10 +62,5 @@ class Tools extends Model
     public function categorie()
     {
         return $this->belongsTo(ToolsCategorie::class);
-    }
-
-    public function stock()
-    {
-        return $this->hasOne(ToolsStock::class);
     }
 }

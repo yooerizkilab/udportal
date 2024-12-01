@@ -16,11 +16,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('vehicle_id')->references('id')->on('vehicle');
             $table->foreignId('user_id')->references('id')->on('employe');
-            $table->string('code', 20)->unique();
-            $table->enum('type', ['Transfer'])->default('Transfer');
+            $table->string('code', 50)->unique();
+            $table->enum('type', ['Transfer', 'Return'])->default('Transfer');
             $table->string('from', 100);
             $table->string('to', 100);
             $table->timestamp('transaction_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('return_date')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

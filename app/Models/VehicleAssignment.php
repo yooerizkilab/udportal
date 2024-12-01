@@ -14,8 +14,10 @@ class VehicleAssignment extends Model
     protected $fillable = [
         'vehicle_id',
         'user_id',
+        'code',
         'assignment_date',
         'return_date',
+        'notes'
     ];
 
     public function vehicle()

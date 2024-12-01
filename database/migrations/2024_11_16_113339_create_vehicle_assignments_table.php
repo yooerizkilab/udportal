@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('vehicle_assignment', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
             $table->date('assignment_date');
-            $table->text('notes')->nullable();
             $table->date('return_date')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

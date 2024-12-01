@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tools;
 use App\Models\ToolsCategorie;
-use App\Models\ToolsStock;
 use App\Models\ToolsOwners;
 use App\Models\ToolsTransaction;
 
@@ -17,10 +16,11 @@ class ToolsController extends Controller
      */
     public function index()
     {
-        $tools = Tools::with('categorie', 'stock')->get();
-        $toolsCategories = ToolsCategorie::all();
-        $toolsOwnership = ToolsOwners::all();
-        return view('tools.index', compact('tools', 'toolsCategories', 'toolsOwnership'));
+        // generate default code
+        $tools = Tools::all();
+        $categories = ToolsCategorie::all();
+        $ownerships = ToolsOwners::all();
+        return view('tools.index', compact('tools', 'categories', 'ownerships'));
     }
 
     /**
@@ -39,49 +39,76 @@ class ToolsController extends Controller
         // Validate request data
         $request->validate([
             'ownership' => 'required|exists:tools_ownership,id',
-            'code' => 'required|string|max:255|unique:tools,code',
+            'categories' => 'required|exists:tools_categorie,id',
+            'serial_number' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
-            'categories' => 'required|exists:tools_categorie,id', // Pastikan tabel tool_categories ada
-            'brand' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'condition' => 'required|string|in:New,Used,Broken',
-            'serial_number' => 'required|string|max:255|unique:tools,serial_number',
-            'model' => 'required|string|max:255',
-            'year' => 'required|date',
-            'origin' => 'required|string|max:256',
-            'quantity' => 'required|integer|min:1',
-            'unit' => 'required|string|in:Pcs,Set,Rol,Unit',
-            'status' => 'required|string|in:Active,Maintenance,In Active',
+            'brand' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'origin' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer|min:1',
+            'unit' => 'nullable|in:ROL,PCS,SET,UNIT,METER,LITER,KG',
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'warranty' => 'nullable|string|max:255',
+            'warranty_start' => 'nullable|date',
+            'warranty_end' => 'nullable|date|after_or_equal:warranty_start',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Generate default code where category is selected
+        $getCategory = ToolsCategorie::where('id', $request->categories)->first();
+        // Ambil 3 huruf pertama nama kategori
+        $prefix = strtoupper(substr($getCategory->name, 0, 4));
+        // Cari item terakhir yang memiliki prefix sama
+        $lastItem = Tools::where('code', 'LIKE', $prefix . '%')->latest('id')->first();
+        // Ambil angka terakhir dari kode, jika ada
+        $lastNumber = $lastItem ? intval(substr($lastItem->code, strlen($prefix))) : 0;
+        // Tambahkan 1 ke angka terakhir
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        // Gabungkan prefix dengan angka baru
+        $code = $prefix . $newNumber;
+
+        // image upload
+        $photoFile = null;
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('img/tools'), $photoFile);
+        }
+
+        $tools = [
+            'owner_id' => $request->ownership,
+            'categorie_id' => $request->categories,
+            'code' => $code,
+            'serial_number' => $request->serial_number,
+            'name' => $request->name,
+            'brand' => $request->brand,
+            'type' => $request->type,
+            'model' => $request->model,
+            'year' => $request->year,
+            'origin' => $request->origin,
+            'quantity' => $request->quantity,
+            'unit' => $request->unit,
+            'description' => $request->description,
+            'purchase_date' => $request->purchase_date,
+            'purchase_price' => $request->purchase_price,
+            'warranty' => $request->warranty,
+            'warranty_start' => $request->warranty_start,
+            'warranty_end' => $request->warranty_end,
+            'photo' => $photoFile,
+        ];
 
         DB::beginTransaction();
         try {
-            $dataTools = [
-                'owner_id' => $request->ownership,
-                'code' => $request->code,
-                'name' => $request->name,
-                'categorie_id' => $request->categories,
-                'brand' => $request->brand,
-                'type' => $request->type,
-                'condition' => $request->condition,
-                'serial_number' => $request->serial_number,
-                'model' => $request->model,
-                'year' => date('Y', strtotime($request->year)),
-                'origin' => $request->origin,
-                'status' => $request->status,
-            ];
-            $tools =  Tools::create($dataTools);
-            $dataStock = [
-                'tools_id' => $tools->id,
-                'quantity' => $request->quantity,
-                'unit' => $request->unit,
-            ];
-            $toolsStock = ToolsStock::create($dataStock);
+            $tools = Tools::create($tools);
             DB::commit();
-            return redirect()->back()->with('success', 'Tools ' . $tools->name . $toolsStock->quantity . ' created successfully.');
+            return redirect()->back()->with('success', 'Tools ' . $tools->name . ' created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while creating the tools.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -106,55 +133,60 @@ class ToolsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
-        $tools = Tools::findOrFail($id);
         // Validate request data
         $request->validate([
-            'ownership' => 'required|exists:tools_ownership,id',
             'name' => 'required|string|max:255',
-            'categories' => 'required|exists:tools_categorie,id', // Pastikan tabel tool_categories ada
-            'brand' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'condition' => 'required|string|in:New,Used,Broken',
-            'model' => 'required|string|max:255',
-            'year' => 'required',
-            'origin' => 'required|string|max:256',
-            'quantity' => 'required|integer|min:1',
-            'unit' => 'required|string|in:Pcs,Set,Rol,Unit',
-            'status' => 'required|string|in:Active,Maintenance,In Active',
+            'brand' => 'nullable|string|max:255',
+            'type' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'origin' => 'nullable|string|max:255',
+            'quantity' => 'nullable|integer|min:1',
+            'unit' => 'nullable|in:ROL,PCS,SET,UNIT,METER,LITER,KG',
+            'description' => 'nullable|string',
+            'purchase_date' => 'nullable|date',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'warranty' => 'nullable|string|max:255',
+            'warranty_start' => 'nullable|date',
+            'warranty_end' => 'nullable|date|after_or_equal:warranty_start',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // image upload update
+        $photoFile = null;
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('img/tools'), $photoFile);
+        }
+
+        $tools = [
+            'name' => $request->name,
+            'brand' => $request->brand,
+            'type' => $request->type,
+            'model' => $request->model,
+            'year' => $request->year,
+            'origin' => $request->origin,
+            'quantity' => $request->quantity,
+            'unit' => $request->unit,
+            'description' => $request->description,
+            'purchase_date' => $request->purchase_date,
+            'purchase_price' => $request->purchase_price,
+            'warranty' => $request->warranty,
+            'warranty_start' => $request->warranty_start,
+            'warranty_end' => $request->warranty_end,
+            'photo' => $photoFile,
+        ];
 
         DB::beginTransaction();
         try {
-            $dataTools = [
-                'owner_id' => $request->ownership,
-                'name' => $request->name,
-                'categorie_id' => $request->categories,
-                'brand' => $request->brand,
-                'type' => $request->type,
-                'condition' => $request->condition,
-                'model' => $request->model,
-                'year' => date('Y', strtotime($request->year)),
-                'origin' => $request->origin,
-                'status' => $request->status,
-            ];
-            $tools->update($dataTools);
-            $dataStock = [
-                'tools_id' => $tools->id,
-                'quantity' => $request->quantity,
-                'unit' => $request->unit,
-            ];
-            $toolsStock = ToolsStock::where('tools_id', $tools->id)->first();
-            if (!$toolsStock) {
-                $toolsStock = ToolsStock::create($dataStock);
-            } else {
-                $toolsStock->update($dataStock);
-            }
+            $tools = Tools::findOrFail($id);
+            $tools->update($tools);
             DB::commit();
             return redirect()->back()->with('success', 'Tools ' . $tools->name . ' update successfuly');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Tools ' . $e->getMessage() . ' failed to update');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -188,9 +220,15 @@ class ToolsController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        // generate default code transaction combination. Ex : UD/TF/2024/XII/SEM001/TF001
+        $codeTools = Tools::where('id', $request->tools_id)->first();
+        $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+        $defaultCode = 'UD/TF/' . now()->format('Y') . '/' . $roman[now()->month - 1] . '/' . $codeTools->code . '/TF' . str_pad($codeTools->id, 4, '0', STR_PAD_LEFT);
+
         $dataTools = [
             'tools_id' => $request->tools_id,
             'user_id' => $request->user()->id,
+            'code' => $defaultCode,
             'type' => 'Transfer',
             'from' => $request->from,
             'to' => $request->to,
@@ -205,8 +243,8 @@ class ToolsController extends Controller
         DB::beginTransaction();
         try {
             $tools = ToolsTransaction::create($dataTools);
-            $toolsStock = ToolsStock::where('tools_id', $request->tools_id)->first();
-            $toolsStock->update(['quantity' => $toolsStock->quantity - $request->quantity]);
+            // $toolsStock = ToolsStock::where('tools_id', $request->tools_id)->first();
+            // $toolsStock->update(['quantity' => $toolsStock->quantity - $request->quantity]);
             DB::commit();
             return redirect()->back()->with('success', 'Tools ' . $tools->name . ' ' . $tools->type . ' successfully.');
         } catch (\Exception $e) {

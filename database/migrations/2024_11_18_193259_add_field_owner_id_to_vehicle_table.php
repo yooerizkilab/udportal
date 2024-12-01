@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('owner_id')->nullable()->after('id');
             $table->date('purchase_date')->nullable()->after('inspected');
             $table->decimal('purchase_price', 15, 2)->nullable()->after('purchase_date');
+
             $table->foreign('owner_id')->references('id')->on('vehicle_ownership');
         });
     }

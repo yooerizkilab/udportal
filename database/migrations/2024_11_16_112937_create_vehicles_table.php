@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('inspected')->nullable();
             $table->enum('status', ['Active', 'Maintenance', 'Inactive'])->default('Active');
             $table->text('description')->nullable();
+            $table->string('origin', 50)->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
 

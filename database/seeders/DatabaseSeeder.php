@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Contract;
 use App\Models\Tools;
 use App\Models\ToolsMaintenance;
+use App\Models\VehicleTransaction;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -37,10 +38,10 @@ class DatabaseSeeder extends Seeder
             MaintenanceRecordsSeeder::class,
             AssignmentsSeeder::class,
             InsurancePoliciesSeeder::class,
+            VehicleTransactionSeeder::class,
             ToolsCategorieSeeder::class,
             ToolsOwnersSeeder::class,
             ToolsSeeder::class,
-            ToolsStockSeeder::class,
             ToolsMaintenanceSeeder::class,
             ToolsTransactionSeeder::class,
         ]);

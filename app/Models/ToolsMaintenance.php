@@ -15,7 +15,10 @@ class ToolsMaintenance extends Model
 
     protected $fillable = [
         'tools_id',
+        'code',
         'maintenance_date',
+        'cost',
+        'completion_date',
         'status',
         'description',
     ];

@@ -73,7 +73,7 @@
                                     <td>{{ $tool->code }}</td>
                                     <td>{{ $tool->serial_number }}</td>
                                     <td>{{ $tool->name }}</td>
-                                    <td>{{ $tool->stock->quantity }}</td>
+                                    <td>{{ $tool->quantity }}</td>
                                     <td><span class="badge badge-{{ $tool->badge }}">{{ $tool->condition }}</span></td>
                                     <td><span class="badge badge-{{ $tool->badgeClass }}">{{ $tool->status }}</span></td>
                                     <td>
@@ -92,7 +92,6 @@
                                                 data-id="{{ $tool->id }}"
                                                 data-owner="{{ $tool->owner_id }}"
                                                 data-categorie="{{ $tool->categorie->name }}"
-                                                data-code="{{ $tool->code }}"
                                                 data-serial="{{ $tool->serial_number }}"
                                                 data-name="{{ $tool->name }}"
                                                 data-brand="{{ $tool->brand }}"
@@ -100,10 +99,15 @@
                                                 data-model="{{ $tool->model }}"
                                                 data-year="{{ $tool->year }}"
                                                 data-origin="{{ $tool->origin }}"
-                                                data-condition="{{ $tool->condition }}"
-                                                data-quantity="{{ $tool->stock->quantity }}"
-                                                data-unit="{{ $tool->stock->unit }}"
-                                                data-status="{{ $tool->status }}"
+                                                data-quantity="{{ $tool->quantity }}"
+                                                data-unit="{{ $tool->unit }}"
+                                                data-description ="{{ $tool->description }}"
+                                                data-purchase_date="{{ $tool->purchase_date }}"
+                                                data-purchase_price="{{ $tool->purchase_price }}"
+                                                data-warranty="{{ $tool->warranty }}"
+                                                data-warranty_start="{{ $tool->warranty_start }}"
+                                                data-warranty_end="{{ $tool->warranty_end }}"
+                                                data-photo="{{ $tool->photo }}"
                                                 data-target="#editToolsModal">
                                                 <i class="fas fa-pencil fa-md white-50"></i>
                                             </button>
@@ -151,7 +155,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($toolsCategories as $category)
+                                    @forelse($categories as $category)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $category->code }}</td>
@@ -209,7 +213,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($toolsOwnership as $ownership)
+                                    @forelse ($ownerships as $ownership)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $ownership->name }}</td>
@@ -380,93 +384,105 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('tools.store') }}" method="post" id="addToolsForm">
+                    <form action="{{ route('tools.store') }}" method="post" id="addToolsForm" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
-                                    <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
+                                    <select name="ownership" id="ownership" class="form-control">
                                         <option value="" disabled selected>Select Ownership</option>
-                                        @foreach ($toolsOwnership as $ownership)
-                                            <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
+                                        @foreach ($ownerships as $owner)
+                                            <option value="{{ $owner->id }}">{{ $owner->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="code">Code</label>
-                                    <input type="text" name="code" id="code" class="form-control @error('code') is-invalid @enderror" required>
+                                    <label for="serial_number">Serial Number</label>
+                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_number" name="serial_number">
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" required>
+                                    <label for="model">Model</label>
+                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="model" name="model">
                                 </div>
+                                <div class="form-group">
+                                    <label for="origin">Origin</label>
+                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="origin" name="origin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty">Warranty</label>
+                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warranty" name="warranty">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="1"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="categories">Categories</label>
-                                    <select name="categories" id="categories" class="form-control @error('categories') is-invalid @enderror">
+                                    <select name="categories" id="categories" class="form-control">
                                         <option value="" disabled selected>Select Categories</option>
-                                        @foreach ($toolsCategories as $category)
+                                        @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="brand">Brand</label>
-                                    <input type="text" name="brand" id="brand" class="form-control @error('brand') is-invalid @enderror" required>
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="type">Type</label>
-                                    <input type="text" name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="condition">Condition</label>
-                                    <select name="condition" id="condition" class="form-control @error('condition') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Condition</option>
-                                        <option value="New">New</option>
-                                        <option value="Used">Used</option>
-                                        <option value="Broken">Broken</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="origin">Origin</label>
-                                    <input type="text" name="origin" id="origin" class="form-control @error('origin') is-invalid @enderror" value="{{ old('origin') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="serial_number">Serial Number</label>
-                                    <input type="text" name="serial_number" id="serial_number" class="form-control @error('serial_number') is-invalid @enderror" value="{{ old('serial_number') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="model">Model</label>
-                                    <input type="text" name="model" id="model" class="form-control @error('model') is-invalid @enderror" value="{{ old('model') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="year">Year</label>
-                                    <input type="date" name="year" id="year" class="form-control @error('year') is-invalid @enderror" value="{{ old('year') }}" required>
+                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="type" name="type" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="quantity">Quantity</label>
-                                    <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}" required>
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" name="quantity">
                                 </div>
+                                <div class="form-group">
+                                    <label for="warranty_start">Warranty Start</label>
+                                    <input type="date" class="form-control @error('warranty_start') is-invalid @enderror" id="warranty_start" name="warranty_start">
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty_end">Warranty End</label>
+                                    <input type="date" class="form-control @error('warranty_end') is-invalid @enderror" id="warranty_end" name="warranty_end">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
-                                    <select name="unit" id="unit" class="form-control @error('unit') is-invalid @enderror">
+                                    <select name="unit" id="unit" class="form-control">
                                         <option value="" disabled selected>Select Unit</option>
-                                        <option value="Pcs">Pcs</option>
-                                        <option value="Set">Set</option>
-                                        <option value="Rol">Rol</option>
-                                        <option value="Unit">Unit</option>☻
+                                        <option value="ROL">ROL</option>
+                                        <option value="PCS">PCS</option>
+                                        <option value="SET">SET</option>
+                                        <option value="UNIT">UNIT</option>
+                                        <option value="METER">METER</option>
+                                        <option value="LITER">LITER</option>
+                                        <option value="KG">KG</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Status</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="In Active">In Active</option>
-                                    </select>
+                                    <label for="brand">Brand</label>
+                                    <input type="text" class="form-control @error('brand') is-invalid @enderror" id="brand" name="brand">
+                                </div>
+                                <div class="form-group">
+                                    <label for="year">Year</label>
+                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="year" name="year">
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price</label>
+                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price">
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchase_date">Purchase Date</label>
+                                    <input type="date" class="form-control @error('purchase_date') is-invalid @enderror" id="purchase_date" name="purchase_date">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="photo">Photo</label>
+                                    <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photo">
                                 </div>
                             </div>
                         </div>
@@ -567,90 +583,92 @@
                         @csrf
                         @method('PUT') 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
-                                    <select name="ownership" id="ownershipEdit" class="form-control @error('ownership') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Ownership</option>
-                                        @foreach ($toolsOwnership as $ownership)
-                                            <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="text" class="form-control @error('ownership') is-invalid @enderror" id="ownershipEdit" name="ownership" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="code">Code</label>
-                                    <input type="text" name="code" id="codeToolsEdit" class="form-control @error('code') is-invalid @enderror" required readonly>
+                                    <label for="serial_number">Serial Number</label>
+                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_numberEdit" name="serial_number" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="model">Model</label>
+                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="modelEdit" name="model">
+                                </div>
+                                <div class="form-group">
+                                    <label for="origin">Origin</label>
+                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="originEdit" name="origin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty">Warranty</label>
+                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warrantyEdit" name="warranty">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="descriptionEdit" class="form-control" cols="30" rows="1"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="categories">Categories</label>
+                                    <input type="text" class="form-control @error('categories') is-invalid @enderror" id="categoriesEdit" name="categories" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" name="name" id="nameToolsEdit" class="form-control @error('name') is-invalid @enderror" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEdit" name="name" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="categories">Categories</label>
-                                    <select name="categories" id="categoryToolsEdit" class="form-control @error('categories') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Categories</option>
-                                        @foreach ($toolsCategories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
+                                    <label for="type">Type</label>
+                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="typeEdit" name="type" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quantity">Quantity</label>
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantityEdit" name="quantity">
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty_start">Warranty Start</label>
+                                    <input type="date" class="form-control @error('warranty_start') is-invalid @enderror" id="warranty_startEdit" name="warranty_start">
+                                </div>
+                                <div class="form-group">
+                                    <label for="warranty_end">Warranty End</label>
+                                    <input type="date" class="form-control @error('warranty_end') is-invalid @enderror" id="warranty_endEdit" name="warranty_end">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="unit">Unit</label>
+                                    <select name="unit" id="unitEdit" class="form-control">
+                                        <option value="" disabled selected>Select Unit</option>
+                                        <option value="ROL">ROL</option>
+                                        <option value="PCS">PCS</option>
+                                        <option value="SET">SET</option>
+                                        <option value="UNIT">UNIT</option>
+                                        <option value="METER">METER</option>
+                                        <option value="LITER">LITER</option>
+                                        <option value="KG">KG</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
-                                    <input type="text" name="brand" id="brandEdit" class="form-control @error('brand') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="type">Type</label>
-                                    <input type="text" name="type" id="typeEdit" class="form-control @error('type') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="condition">Condition</label>
-                                    <select name="condition" id="conditionToolsEdit" class="form-control @error('condition') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Condition</option>
-                                        <option value="New">New</option>
-                                        <option value="Used">Used</option>
-                                        <option value="Broken">Broken</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="origin">Origin</label>
-                                    <input type="text" name="origin" id="originEdit" class="form-control @error('origin') is-invalid @enderror" value="{{ old('origin') }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="serial_number">Serial Number</label>
-                                    <input type="text" name="serial_number" id="serial_numberEdit" class="form-control @error('serial_number') is-invalid @enderror" value="{{ old('serial_number') }}" required readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="model">Model</label>
-                                    <input type="text" name="model" id="modelEdit" class="form-control @error('model') is-invalid @enderror" value="{{ old('model') }}" required>
+                                    <input type="text" class="form-control @error('brand') is-invalid @enderror" id="brandEdit" name="brand">
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Year</label>
-                                    <input type="number" name="year" id="yearEdit" class="form-control @error('year') is-invalid @enderror" value="{{ old('year') }}" required>
+                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="yearEdit" name="year">
                                 </div>
                                 <div class="form-group">
-                                    <label for="quantity">Quantity</label>
-                                    <input type="number" name="quantity" id="quantityEdit" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}" required>
+                                    <label for="purchase_price">Purchase Price</label>
+                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_priceEdit" name="purchase_price">
                                 </div>
                                 <div class="form-group">
-                                    <label for="unit">Unit</label>
-                                    <select name="unit" id="unitToolsEdit" class="form-control @error('unit') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Unit</option>
-                                        <option value="Pcs">Pcs</option>
-                                        <option value="Set">Set</option>
-                                        <option value="Rol">Rol</option>
-                                        <option value="Unit">Unit</option>☻
-                                    </select>
+                                    <label for="purchase_date">Purchase Date</label>
+                                    <input type="date" class="form-control @error('purchase_date') is-invalid @enderror" id="purchase_dateEdit" name="purchase_date">
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="statusEdit" class="form-control @error('status') is-invalid @enderror">
-                                        <option value="" disabled selected>Select Status</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="In Active">In Active</option>
-                                    </select>
+                                    <label for="photo">Photo</label>
+                                    <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photoEdit">
                                 </div>
                             </div>
                         </div>
@@ -898,65 +916,46 @@
         var button = $(event.relatedTarget);
         var toolsId = button.data('id')
         var toolsOwner = button.data('owner')
-        var toolsCode = button.data('code')
-        var toolsName = button.data('name')
         var toolsCategorie = button.data('categorie')
+        var toolsSerial = button.data('serial')
+        var toolsName = button.data('name')
         var toolsBrand = button.data('brand')
         var toolsType = button.data('type')
-        var toolsCondition = button.data('condition')
-
-        var toolsOrigin = button.data('origin')
-        var toolsSerial = button.data('serial')
+        var toolsCode = button.data('code')
         var toolsModel = button.data('model')
         var toolsYear = button.data('year')
+        var toolsOrigin = button.data('origin')
         var toolsQuantity = button.data('quantity')
         var toolsUnit = button.data('unit')
-        var toolsStatus = button.data('status')
+        var toolsDescription = button.data('description')
+        var toolsPurchaseDate = button.data('purchase_date')
+        var toolsPurchasePrice = button.data('purchase_price')
+        var toolsWarranty = button.data('warranty')
+        var toolsWarrantyStart = button.data('warranty_start')
+        var toolsWarrantyEnd = button.data('warranty_end')
+        var toolsPhoto = button.data('photo')
 
         var modal = $(this);
-        
-        var select = document.getElementById('ownershipEdit');
-        for (var i = 0; i < select.options.length; i++) {
-            if (select.options[i].value == toolsOwner) {
-                select.options[i].selected = true;
-            }
-        }
-        document.getElementById('codeToolsEdit').value = toolsCode;
-        document.getElementById('nameToolsEdit').value = toolsName;
+        modal.find('#ownershipEdit').val(toolsOwner);
+        modal.find('#categoriesEdit').val(toolsCategorie);
+        modal.find('#serial_numberEdit').val(toolsSerial);
+        modal.find('#nameEdit').val(toolsName);
+        modal.find('#brandEdit').val(toolsBrand);
+        modal.find('#typeEdit').val(toolsType);
+        modal.find('#codeEdit').val(toolsCode);
+        modal.find('#modelEdit').val(toolsModel);
+        modal.find('#yearEdit').val(toolsYear);
+        modal.find('#originEdit').val(toolsOrigin);
+        modal.find('#quantityEdit').val(toolsQuantity);
+        modal.find('#unitEdit').val(toolsUnit);
+        modal.find('#descriptionEdit').val(toolsDescription);
+        modal.find('#purchase_dateEdit').val(toolsPurchaseDate);
+        modal.find('#purchase_priceEdit').val(toolsPurchasePrice);
+        modal.find('#warrantyEdit').val(toolsWarranty);
+        modal.find('#warranty_startEdit').val(toolsWarrantyStart);
+        modal.find('#warranty_endEdit').val(toolsWarrantyEnd);
+        modal.find('#photoEdit').val(toolsPhoto);
 
-        var select1 = document.getElementById('categoryToolsEdit');
-        for (var i = 0; i < select1.options.length; i++) {
-            if (select1.options[i].value == toolsCategorie) {
-                select1.options[i].selected = true;
-            }
-        }
-
-        document.getElementById('brandEdit').value = toolsBrand;
-        document.getElementById('typeEdit').value = toolsType;
-        var select3 = document.getElementById('conditionToolsEdit');
-        for (var i = 0; i < select3.options.length; i++) {
-            if (select3.options[i].value == toolsCondition) {
-                select3.options[i].selected = true;
-            }
-        }
-
-        document.getElementById('originEdit').value = toolsOrigin;
-        document.getElementById('serial_numberEdit').value = toolsSerial;
-        document.getElementById('modelEdit').value = toolsModel;
-        document.getElementById('yearEdit').value = toolsYear;
-        document.getElementById('quantityEdit').value = toolsQuantity
-        var select2 = document.getElementById('unitToolsEdit');
-        for (var i = 0; i < select2.options.length; i++) {
-            if (select2.options[i].value == toolsUnit) {
-                select2.options[i].selected = true;
-            }
-        }
-        var select4 = document.getElementById('statusEdit');
-        for (var i = 0; i < select4.options.length; i++) {
-            if (select4.options[i].value == toolsStatus) {
-                select4.options[i].selected = true;
-            }
-        }
         var FormAction = '{{ route("tools.update", ":id") }}';
         FormAction = FormAction.replace(':id', toolsId);
         $('#updateToolsForm').attr('action', FormAction);

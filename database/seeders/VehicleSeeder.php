@@ -31,6 +31,8 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2020-01-01',
                 'purchase_price' => 2000000,
                 'status' => 'Active',
+                'description' => 'Description for Vehicle 1',
+                'origin' => 'Indonesia',
                 'photo' => 'photo1.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -52,6 +54,8 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2019-01-01',
                 'purchase_price' => 1800000,
                 'status' => 'Maintenance',
+                'description' => 'Description for Vehicle 2',
+                'origin' => 'Japan',
                 'photo' => 'photo2.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -73,6 +77,8 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2018-01-01',
                 'purchase_price' => 1600000,
                 'status' => 'Inactive',
+                'description' => 'Description for Vehicle 3',
+                'origin' => 'Japan',
                 'photo' => 'photo3.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -94,6 +100,8 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2021-01-01',
                 'purchase_price' => 1900000,
                 'status' => 'Active',
+                'description' => 'Description for Vehicle 4',
+                'origin' => 'Japan',
                 'photo' => 'photo4.jpg',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -115,6 +123,8 @@ class VehicleSeeder extends Seeder
                 'purchase_date' => '2017-01-01',
                 'purchase_price' => 1500000,
                 'status' => 'Maintenance',
+                'description' => 'Description for Vehicle 5',
+                'origin' => 'Japan',
                 'photo' => 'photo5.jpg',
                 'created_at' => now(),
                 'updated_at' => now()

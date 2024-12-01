@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('vehicle_insurance_policie', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
             $table->string('insurance_provider', 100);
             $table->string('policy_number', 50);
             $table->date('coverage_start');

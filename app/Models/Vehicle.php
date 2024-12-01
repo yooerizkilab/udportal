@@ -11,7 +11,6 @@ class Vehicle extends Model
 
     protected $table = 'vehicle';
 
-    // protected $appends = ['badgeClass', 'assignedEmploye'];
     protected $appends = ['badgeClass'];
 
     protected $fillable = [
@@ -21,6 +20,8 @@ class Vehicle extends Model
         'brand',
         'model',
         'color',
+        'transmission',
+        'fuel',
         'year',
         'license_plate',
         'tax_year',
@@ -29,6 +30,9 @@ class Vehicle extends Model
         'purchase_date',
         'purchase_price',
         'status',
+        'description',
+        'origin',
+        'photo',
     ];
 
     public function getBadgeClassAttribute()

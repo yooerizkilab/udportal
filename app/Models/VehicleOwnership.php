@@ -12,7 +12,10 @@ class VehicleOwnership extends Model
     protected $table = 'vehicle_ownership';
 
     protected $fillable = [
-        'name'
+        'name',
+        'address',
+        'phone',
+        'email',
     ];
 
     public function vehicles()

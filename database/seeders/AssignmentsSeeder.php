@@ -16,16 +16,20 @@ class AssignmentsSeeder extends Seeder
         VehicleAssignment::insert([
             [
                 'vehicle_id' => 1, // Assuming vehicle with ID 1 exists
+                'code' => '2024/X/ABC/ABC123',
                 'user_id' => 1,
                 'assignment_date' => '2023-01-01',
                 'return_date' => '2023-01-10',
+                'notes' => 'Assignment notes for vehicle 1',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'vehicle_id' => 4, // Assuming vehicle with ID 2 exists
+                'code' => '2024/X/ABC/ABC456',
                 'user_id' => 1,
                 'assignment_date' => '2023-02-01',
+                'notes' => 'Assignment notes for vehicle 2',
                 'return_date' => null,
                 'created_at' => now(),
                 'updated_at' => now()

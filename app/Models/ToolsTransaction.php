@@ -16,6 +16,7 @@ class ToolsTransaction extends Model
     protected $fillable = [
         'tools_id',
         'user_id',
+        'code',
         'type',
         'from',
         'to',

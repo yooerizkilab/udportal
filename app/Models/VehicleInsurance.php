@@ -15,11 +15,13 @@ class VehicleInsurance extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'code',
+        'insurance_provider',
         'policy_number',
         'coverage_start',
         'coverage_end',
         'premium',
-        'insurance_provider'
+        'notes',
     ];
 
     public function vehicle()

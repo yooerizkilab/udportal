@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('vehicle_maintenance_record', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
+            $table->string('kilometer');
             $table->date('maintenance_date');
             $table->text('description')->nullable();
             $table->decimal('cost', 15, 2);

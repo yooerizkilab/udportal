@@ -16,6 +16,8 @@ class MaintenanceRecordsSeeder extends Seeder
         VehicleMaintenance::insert([
             [
                 'vehicle_id' => 2, // Assuming vehicle with ID 1 exists
+                'code' => '2024/PPB/B21004/XII/2021/AMM001',
+                'kilometer' => 10000,
                 'maintenance_date' => '2022-02-15',
                 'description' => 'Oil Change',
                 'cost' => 500000,
@@ -27,6 +29,8 @@ class MaintenanceRecordsSeeder extends Seeder
             ],
             [
                 'vehicle_id' => 5, // Assuming vehicle with ID 2 exists
+                'code' => '2024/PPB/B21004/XII/2021/AMM002',
+                'kilometer' => 20000,
                 'maintenance_date' => '2022-08-10',
                 'description' => 'Brake Replacement',
                 'cost' => 1000000,
