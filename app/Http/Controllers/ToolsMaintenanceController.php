@@ -15,7 +15,7 @@ class ToolsMaintenanceController extends Controller
     public function index()
     {
         $maintenances = ToolsMaintenance::with('tools')->get();
-        return view('tools.maintenance', compact('maintenances'));
+        return view('tools.maintenances.maintenance', compact('maintenances'));
     }
 
     /**
@@ -35,6 +35,7 @@ class ToolsMaintenanceController extends Controller
         $request->validate([
             'code' => 'required|exists:tools,code',
             'maintenance_date' => 'required|date',
+            'cost' => 'required|numeric',
             'description' => 'nullable|string',
         ]);
 
@@ -50,33 +51,45 @@ class ToolsMaintenanceController extends Controller
             return redirect()->back()->with('error', 'Failed to create maintenance record: Tool is inactive.');
         }
 
+        if ($tools->status == 'Maintenance') {
+            return redirect()->back()->with('error', 'Failed to create maintenance record: Tool is already in maintenance.');
+        }
+
+        // Generate code maintenance Ex : UD/MTC/2024/XII/SEM001/MTC001
+        $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+        $defaultCode = 'UD/MTC/' . now()->format('Y') . '/' . $roman[now()->month - 1] . '/' . $tools->code . '/MTC' . str_pad($tools->id, 4, '0', STR_PAD_LEFT);
+
+        // Cek apakah maintenance dengan code sudah ada
+        $existingMaintenance = ToolsMaintenance::where('code', $defaultCode)->first();
+        if ($existingMaintenance) {
+            return redirect()->back()->with('error', 'Maintenance record with code ' . $defaultCode . ' already exists.');
+        }
+
         // Siapkan data untuk maintenance
         $data = [
             'tools_id' => $tools->id,
+            'code' => $defaultCode,
             'maintenance_date' => date('Y-m-d', strtotime($request->maintenance_date)),
+            'cost' => $request->cost,
+            'completion_date' => null,
             'status' => 'In Progress',
             'description' => $request->description,
         ];
 
         // Mulai transaksi database
         DB::beginTransaction();
-
         try {
             // Buat record maintenance
-            $maintenance = ToolsMaintenance::create($data);
-
+            ToolsMaintenance::create($data);
             // Update status tool menjadi "Maintenance"
-            $tools->update(['status' => 'Maintenance']);
-
+            $tools->update(['status' => 'Maintenance', 'condition' => 'Broken']);
             // Commit transaksi
             DB::commit();
-
             // Redirect dengan pesan sukses
             return redirect()->back()->with('success', 'Tool ' . $tools->name . ' maintenance record created successfully.');
         } catch (\Exception $e) {
             // Rollback jika ada error
             DB::rollBack();
-
             // Redirect dengan pesan error
             return redirect()->back()->with('error', 'Failed to create tool maintenance record: ' . $e->getMessage());
         }
@@ -106,6 +119,7 @@ class ToolsMaintenanceController extends Controller
     {
         $request->validate([
             'maintenance_date' => 'required|date',
+            'cost' => 'required|numeric',
             'description' => 'nullable|string',
         ]);
 
@@ -113,6 +127,7 @@ class ToolsMaintenanceController extends Controller
 
         $data = [
             'maintenance_date' => date('Y-m-d', strtotime($request->maintenance_date)),
+            'cost' => $request->cost,
             'description' => $request->description,
         ];
         DB::beginTransaction();
@@ -144,7 +159,7 @@ class ToolsMaintenanceController extends Controller
 
         DB::beginTransaction();
         try {
-            $maintenance->update(['status' => 'Completed']);
+            $maintenance->update(['status' => 'Completed', 'completion_date' => now()]);
             $maintenance->tools()->update(['status' => 'Active', 'condition' => 'New']);
             DB::commit();
             return redirect()->back()->with('success', 'Maintenance record completed successfully.');

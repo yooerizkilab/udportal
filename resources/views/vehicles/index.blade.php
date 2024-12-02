@@ -100,12 +100,13 @@
                                                     <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                         data-toggle="modal"
                                                         data-id="{{ $vehicle->id }}"
-                                                        data-type="{{ $vehicle->type->name }}"
                                                         data-owner="{{ $vehicle->ownership->name }}"
-                                                        data-code="{{ $vehicle->code }}"
+                                                        data-type="{{ $vehicle->type->name }}"
                                                         data-brand="{{ $vehicle->brand }}"
                                                         data-model="{{ $vehicle->model }}"
                                                         data-color="{{ $vehicle->color }}"
+                                                        data-transmisi="{{ $vehicle->transmission }}"
+                                                        data-fuel="{{ $vehicle->fuel }}"
                                                         data-year="{{ $vehicle->year }}"
                                                         data-license_plate="{{ $vehicle->license_plate }}"
                                                         data-tax_year="{{ $vehicle->tax_year }}"
@@ -113,7 +114,9 @@
                                                         data-inspected="{{ $vehicle->inspected }}"
                                                         data-purchase_date="{{ $vehicle->purchase_date }}"
                                                         data-purchase_price="{{ $vehicle->purchase_price }}"
-                                                        data-status="{{ $vehicle->status }}"
+                                                        data-description="{{ $vehicle->description }}"
+                                                        data-origin="{{ $vehicle->origin }}"
+                                                        data-photo="{{ $vehicle->photo }}"
                                                         data-target="#updateVehiclesModal">
                                                         <i class="fas fa-pencil"></i>
                                                     </button>
@@ -267,10 +270,6 @@
                 <div class="modal-body">
                     <form action="{{ route('vehicles.store') }}" id="addVehiclesForm" method="post">
                         @csrf
-                        <div class="form-group">
-                            <label for="code">Vehicle Code</label>
-                            <input type="text" name="code" id="code" class="form-control" value="{{ $defaultCode }}" readonly required>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -288,20 +287,11 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                            <option value="" disabled selected>Select Status</option>
-                                            <option value="Active">Active</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Inactive">Inactive</option>
-                                        </select>
-                                    </div>
-                                    <label for="vehicle_type">Vehicle Type</label>
-                                    <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Vehicle Type</option>
-                                        @foreach ($vehicleTypes as $vehicleType)
-                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
+                                    <label for="ownership">Ownership</label>
+                                    <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Ownership</option>
+                                        @foreach ($vehicleOwnerships as $ownership)
+                                            <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -313,17 +303,29 @@
                                     <label for="year">Year</label>
                                     <input type="number" name="year" id="year" class="form-control @error('year') is-invalid @enderror" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="color">Color</label>
+                                    <input type="text" name="color" id="color" class="form-control @error('color') is-invalid @enderror" required>
+                                </div>
                             </div> 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="ownership">Ownership</label>
-                                    <select name="ownership" id="ownership" class="form-control @error('ownership') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Ownership</option>
-                                        @foreach ($vehicleOwnerships as $ownership)
-                                            <option value="{{ $ownership->id }}">{{ $ownership->name }}</option>
+                                    <label for="vehicle_type">Vehicle Type</label>
+                                    <select name="vehicle_type" id="vehicle_type" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Vehicle Type</option>
+                                        @foreach ($vehicleTypes as $vehicleType)
+                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="fuel">Fuel</label>
+                                    <select name="fuel" id="fuel" class="form-control @error('fuel') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Fuel</option>
+                                        <option value="Gasoline">Gasoline</option>
+                                        <option value="Diesel">Diesel</option>
+                                    </select>
+                                </div>   
                                 <div class="form-group">
                                     <label for="purchase_price">Purchase Price</label>
                                     <input type="text" name="purchase_price" id="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" required>
@@ -331,13 +333,17 @@
                                 <div class="form-group">
                                     <label for="purchase_date">Purchase Date</label>
                                     <input type="date" name="purchase_date" id="purchase_date" class="form-control @error('purchase_date') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="color">Color</label>
-                                    <input type="text" name="color" id="color" class="form-control @error('color') is-invalid @enderror" required>
-                                </div>
+                                </div> 
                             </div> 
                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="transmission">Transmission</label>
+                                    <select name="transmission" id="transmission" class="form-control @error('transmission') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Transmission</option>
+                                        <option value="Automatic">Automatic</option>
+                                        <option value="Manual">Manual</option>
+                                    </select>
+                                </div>
                                 <div class="form-group">
                                     <label for="tax_year">Tax Year</label>
                                     <input type="date" name="tax_year" id="tax_year" class="form-control @error('tax_year') is-invalid @enderror" required>
@@ -350,12 +356,26 @@
                                     <label for="inspected">Inspected</label>
                                     <input type="date" name="inspected" id="inspected" class="form-control @error('inspected') is-invalid @enderror" required>
                                 </div>
-                                {{-- <div class="form-group">
-                                    <label for="image">Image</label>
-                                    <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" required>
-                                </div> --}}
                             </div>
-                        </div>   
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="origin">Origin</label>
+                                    <input type="text" name="origin" id="origin" class="form-control @error('origin') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photo">Photo</label>
+                                    <input type="file" name="photo" id="photo" class="form-control" placeholder="Select Photo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div> 
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -452,8 +472,8 @@
                             <input type="date" name="assignment_date" id="assignment_date" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="return_date">Return Date</label>
-                            <input type="date" name="return_date" id="return_date" class="form-control">
+                            <label for="notes">Notes</label>
+                            <textarea name="notes" id="notes" class="form-control" cols="30" rows="5"></textarea>
                         </div>
                     </form>
                 </div>
@@ -521,10 +541,6 @@
                     <form action="{{ route('vehicles.update', ':id') }}" id="updateVehiclesForm" method="post">
                         @csrf
                         @method('PUT')
-                        <div class="form-group">
-                            <label for="code">Vehicle Code</label>
-                            <input type="text" name="code" id="vehiclesCode" class="form-control" value="" readonly required>
-                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -542,34 +558,6 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <select name="status" id="vehiclesStatus" class="form-control @error('status') is-invalid @enderror" required>
-                                            <option value="" disabled selected>Select Status</option>
-                                            <option value="Active">Active</option>
-                                            <option value="Maintenance">Maintenance</option>
-                                            <option value="Inactive">Inactive</option>
-                                        </select>
-                                    </div>
-                                    <label for="vehicle_type">Vehicle Type</label>
-                                    <select name="vehicle_type" id="vehiclesType" class="form-control @error('vehicle_type') is-invalid @enderror" required>
-                                        <option value="" disabled selected>Select Vehicle Type</option>
-                                        @foreach ($vehicleTypes as $vehicleType)
-                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="license_plate">License Plate</label>
-                                    <input type="text" name="license_plate" id="vehicleslicense" class="form-control @error('license_plate') is-invalid @enderror" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="year">Year</label>
-                                    <input type="text" name="year" id="vehiclesYear" class="form-control @error('year') is-invalid @enderror" required>
-                                </div>
-                            </div> 
-                            <div class="col-md-4">
-                                <div class="form-group">
                                     <label for="ownership">Ownership</label>
                                     <select name="ownership" id="vehiclesOwner" class="form-control @error('ownership') is-invalid @enderror" required>
                                         <option value="" disabled selected>Select Ownership</option>
@@ -579,12 +567,12 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="purchase_price">Purchase Price</label>
-                                    <input type="text" name="purchase_price" id="vehiclesPurchasePrice" class="form-control @error('purchase_price') is-invalid @enderror" required>
+                                    <label for="license_plate">License Plate</label>
+                                    <input type="text" name="license_plate" id="vehicleslicense" class="form-control @error('license_plate') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="purchase_date">Purchase Date</label>
-                                    <input type="date" name="purchase_date" id="vehiclesPurchase" class="form-control @error('purchase_date') is-invalid @enderror" required>
+                                    <label for="year">Year</label>
+                                    <input type="number" name="year" id="vehiclesYear" class="form-control @error('year') is-invalid @enderror" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="color">Color</label>
@@ -592,6 +580,41 @@
                                 </div>
                             </div> 
                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="vehicle_type">Vehicle Type</label>
+                                    <select name="vehicle_type" id="vehiclesType" class="form-control @error('vehicle_type') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Vehicle Type</option>
+                                        @foreach ($vehicleTypes as $vehicleType)
+                                            <option value="{{ $vehicleType->id }}">{{ $vehicleType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fuel">Fuel</label>
+                                    <select name="fuel" id="vehiclesFuel" class="form-control @error('fuel') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Fuel</option>
+                                        <option value="Gasoline">Gasoline</option>
+                                        <option value="Diesel">Diesel</option>
+                                    </select>
+                                </div>   
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price</label>
+                                    <input type="text" name="purchase_price" id="vehiclesPurchasePrice" class="form-control @error('purchase_price') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="purchase_date">Purchase Date</label>
+                                    <input type="date" name="purchase_date" id="vehiclesPurchaseDate" class="form-control @error('purchase_date') is-invalid @enderror" required>
+                                </div> 
+                            </div> 
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="transmission">Transmission</label>
+                                    <select name="transmission" id="vehiclesTransmission" class="form-control @error('transmission') is-invalid @enderror" required>
+                                        <option value="" disabled selected>Select Transmission</option>
+                                        <option value="Automatic">Automatic</option>
+                                        <option value="Manual">Manual</option>
+                                    </select>
+                                </div>
                                 <div class="form-group">
                                     <label for="tax_year">Tax Year</label>
                                     <input type="date" name="tax_year" id="vehiclesTaxYear" class="form-control @error('tax_year') is-invalid @enderror" required>
@@ -604,12 +627,26 @@
                                     <label for="inspected">Inspected</label>
                                     <input type="date" name="inspected" id="vehiclesInspected" class="form-control @error('inspected') is-invalid @enderror" required>
                                 </div>
-                                {{-- <div class="form-group">
-                                    <label for="image">Image</label>
-                                    <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" required>
-                                </div> --}}
                             </div>
-                        </div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="origin">Origin</label>
+                                    <input type="text" name="origin" id="vehiclesOrigin" class="form-control @error('origin') is-invalid @enderror" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photo">Photo</label>
+                                    <input type="file" name="photo" id="vehiclesPhoto" class="form-control" placeholder="Select Photo">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="vehiclesDescription" class="form-control" cols="30" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div> 
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -843,36 +880,43 @@
         var vehiclesId = button.data('id');
         var vehiclesType = button.data('type');
         var vehiclesOwner = button.data('owner');
-        var vehiclesCode = button.data('code');
+        var vehiclesTransmission = button.data('transmisi');
+        var vehiclesOrigin = button.data('origin');
         var vehiclesName = button.data('name');
         var vehiclesBrand = button.data('brand');
         var vehiclesModel = button.data('model');
         var vehiclesColor = button.data('color');
         var vehiclesYear = button.data('year');
+        var vehiclesFuel = button.data('fuel');
         var vehicleslicense = button.data('license_plate');
         var vehiclesTaxYear = button.data('tax_year');
         var vehiclesTaxFive = button.data('tax_five_year');
         var vehiclesInspected = button.data('inspected');
-        var vehiclesPurchase = button.data('purchase_date');
+        var vehiclesPurchaseDate = button.data('purchase_date');
         var vehiclesPurchasePrice = button.data('purchase_price');
-        var vehiclesStatus = button.data('status');
+        var vehiclesPhoto = button.data('photo');
+        var vehiclesDescription = button.data('description');
+        
         
         var modal = $(this);
-        modal.find('.modal-body #vehiclesType').val(vehiclesType);
+        modal.find('.modal-body #vehiclesType').val(vehiclesType).trigger('change');
         modal.find('.modal-body #vehiclesOwner').val(vehiclesOwner).trigger('change');
-        modal.find('.modal-body #vehiclesCode').val(vehiclesCode);
+        modal.find('.modal-body #vehiclesTransmission').val(vehiclesTransmission).trigger('change');
+        modal.find('.modal-body #vehiclesOrigin').val(vehiclesOrigin);
         modal.find('.modal-body #vehiclesName').val(vehiclesName);
         modal.find('.modal-body #vehiclesBrand').val(vehiclesBrand);
         modal.find('.modal-body #vehiclesModel').val(vehiclesModel);
         modal.find('.modal-body #vehiclesColor').val(vehiclesColor);
         modal.find('.modal-body #vehiclesYear').val(vehiclesYear);
+        modal.find('.modal-body #vehiclesFuel').val(vehiclesFuel).trigger('change');
         modal.find('.modal-body #vehicleslicense').val(vehicleslicense);
         modal.find('.modal-body #vehiclesTaxYear').val(vehiclesTaxYear);
         modal.find('.modal-body #vehiclesTaxFive').val(vehiclesTaxFive);
         modal.find('.modal-body #vehiclesInspected').val(vehiclesInspected);
-        modal.find('.modal-body #vehiclesPurchase').val(vehiclesPurchase);
+        modal.find('.modal-body #vehiclesPurchaseDate').val(vehiclesPurchaseDate);
         modal.find('.modal-body #vehiclesPurchasePrice').val(vehiclesPurchasePrice);
-        modal.find('.modal-body #vehiclesStatus').val(vehiclesStatus).trigger('change');
+        // modal.find('.modal-body #vehiclesPhoto').val(vehiclesPhoto);
+        modal.find('.modal-body #vehiclesDescription').val(vehiclesDescription);
 
         //replace action form
         var action = $('#updateVehiclesForm').attr('action');

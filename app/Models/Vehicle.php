@@ -25,7 +25,7 @@ class Vehicle extends Model
         'year',
         'license_plate',
         'tax_year',
-        'tax_five_years',
+        'tax_five_year',
         'inspected',
         'purchase_date',
         'purchase_price',

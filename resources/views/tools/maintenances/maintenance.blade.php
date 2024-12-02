@@ -32,6 +32,10 @@
                                     <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" placeholder="Enter Vehicle Code" required>
                                 </div>
                                 <div class="form-group">
+                                    <label for="cost">Cost</label>
+                                    <input type="number" class="form-control @error('cost') is-invalid @enderror" id="cost" name="cost" placeholder="Enter Cost">
+                                </div>
+                                <div class="form-group">
                                     <label for="maintenance_date">Maintenances Date</label>
                                     <input type="date" class="form-control @error('maintenance_date') is-invalid @enderror" id="maintenance_date" name="maintenance_date" placeholder="Enter Maintenances Date">
                                 </div>
@@ -40,8 +44,8 @@
                                     <textarea name="description" id="description" class="form-control" id="" cols="30" rows="4"></textarea>
                                 </div>
                             </form>
-                            <div class="float-right mt-3">
-                                <button type="button" class="btn btn-primary" onclick="confirmAddMaintenances()"><i class="fas fa-check"></i> Save</button>
+                            <div class="float-right my-3">
+                                <button type="button" class="btn btn-primary" onclick="confirmAddMaintenances()"><i class="fas fa-check"></i> Save Maintenances</button>
                             </div>
                         </div>
                         <!--- List Car Insurance --->
@@ -91,6 +95,7 @@
                                                             data-toggle="modal"
                                                             data-id="{{ $maintenance->id }}"
                                                             data-date="{{ $maintenance->maintenance_date }}"
+                                                            data-cost="{{ $maintenance->cost }}"
                                                             data-description="{{ $maintenance->description }}"
                                                             data-target="#updateMaintenancesModal">
                                                             <i class="fas fa-pencil fa-md white-50"></i>
@@ -128,6 +133,10 @@
                     <form action="{{ route('tools-maintenances.update', ':id') }}" method="POST" id="updateMaintenancesForm">
                         @csrf
                         @method('PUT')
+                        <div class="form-group">
+                            <label for="cost">Cost</label>
+                            <input type="number" class="form-control @error('cost') is-invalid @enderror" id="costEdit" name="cost" placeholder="Enter Cost">
+                        </div>
                         <div class="form-group">
                             <label for="maintenance_date">Maintenances Date</label>
                             <input type="date" class="form-control @error('maintenance_date') is-invalid @enderror" id="maintenance_dateEdit" name="maintenance_date" placeholder="Enter Maintenances Date">
@@ -177,10 +186,12 @@
         var button = $(event.relatedTarget);
         var id = button.data('id');
         var date = button.data('date');
+        var cost = button.data('cost');
         var description = button.data('description');
 
         var modal = $(this);
         modal.find('#maintenance_dateEdit').val(date);
+        modal.find('#costEdit').val(cost);
         modal.find('#descriptionEdit').val(description);
         modal.find('#updateMaintenancesForm').attr('action', modal.find('#updateMaintenancesForm').attr('action').replace(':id', id));
     })

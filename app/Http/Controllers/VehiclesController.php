@@ -18,10 +18,8 @@ class VehiclesController extends Controller
      */
     public function index()
     {
-        // generate default code vehicle
-        $defaultCode = 'A' . date('Ym') . sprintf('%04d', Vehicle::count() + 1);
+        $defaultCode = 'VEH' . str_pad(1, 3, '0', STR_PAD_LEFT);
         $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
-        // return $vehicles;
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = VehicleOwnership::all();
         $users = User::all();
@@ -45,42 +43,50 @@ class VehiclesController extends Controller
         $request->validate([
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'status' => 'required|in:Active,Maintenance,Inactive',
-            'vehicle_type' => 'required|exists:vehicle_type,id',
-            'license_plate' => 'required|string|max:255|unique:vehicle,license_plate',
-            'year' => 'required',
             'ownership' => 'required|exists:vehicle_ownership,id',
-            'purchase_price' => 'required|numeric|min:0',
-            'purchase_date' => 'required|date',
+            'license_plate' => 'required|string|max:20',
+            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'color' => 'required|string|max:50',
+            'vehicle_type' => 'required|exists:vehicle_type,id',
+            'fuel' => 'required|in:Gasoline,Diesel',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
+            'transmission' => 'required|in:Automatic,Manual',
             'tax_year' => 'required|date',
-            'tax_five_years' => 'required|date',
+            'tax_five_year' => 'required|date',
             'inspected' => 'required|date',
-            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Proses upload gambar
-        // if ($request->hasFile('image')) {
-        //     $image = $request->file('image');
-        //     $imagePath = $image->store('vehicles', 'public'); // Simpan di storage/public/vehicles
-        // }
+        $photoFile = null;
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = time() . '-' . $photo->getClientOriginalName();
+            $photo->move(public_path('img/vehicles'), $photoFile);
+        }
+
+        $defaultCode = 'VEH' . str_pad(Vehicle::count() + 1, 3, '0', STR_PAD_LEFT);
 
         $data = [
-            'owner_id' => $request->ownership,
+            'code' => $defaultCode,
             'type_id' => $request->vehicle_type,
-            'code' => $request->code,
             'brand' => $request->brand,
-            'status' => $request->status,
             'model' => $request->model,
-            'color' => $request->color,
-            'year' => date('Y', strtotime($request->year)),
+            'owner_id' => $request->ownership,
             'license_plate' => $request->license_plate,
+            'year' => $request->year,
+            'color' => $request->color,
+            'fuel' => $request->fuel,
+            'transmission' => $request->transmission,
             'tax_year' => $request->tax_year,
             'tax_five_year' => $request->tax_five_year,
             'inspected' => $request->inspected,
             'purchase_date' => $request->purchase_date,
             'purchase_price' => $request->purchase_price,
-            'status' => $request->status,
-            // 'image' => $imagePath,
+            'description' => $request->description,
+            'origin' => $request->origin,
+            'photo' => $photoFile,
         ];
 
         DB::beginTransaction();
@@ -99,7 +105,8 @@ class VehiclesController extends Controller
      */
     public function show(string $id)
     {
-        return view('vehicles.show');
+        $vehicle = Vehicle::with('type', 'ownership', 'assigned')->findOrFail($id);
+        return view('vehicles.show', compact('vehicle'));
     }
 
     /**
@@ -119,42 +126,47 @@ class VehiclesController extends Controller
         $request->validate([
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'status' => 'required|in:Active,Maintenance,Inactive',
-            'vehicle_type' => 'required|exists:vehicle_type,id',
-            // 'license_plate' => 'required|string|max:255|unique:vehicle,license_plate',
-            'year' => 'required',
             'ownership' => 'required|exists:vehicle_ownership,id',
-            'purchase_price' => 'required|numeric|min:0',
-            'purchase_date' => 'required|date',
+            'license_plate' => 'required|string|max:20',
+            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'color' => 'required|string|max:50',
+            'vehicle_type' => 'required|exists:vehicle_type,id',
+            'fuel' => 'required|in:Gasoline,Diesel',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'purchase_date' => 'nullable|date',
+            'transmission' => 'required|in:Automatic,Manual',
             'tax_year' => 'required|date',
             'tax_five_year' => 'required|date',
             'inspected' => 'required|date',
-            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Proses upload gambar
-        // if ($request->hasFile('image')) {
-        //     $image = $request->file('image');
-        //     $imagePath = $image->store('vehicles', 'public'); // Simpan di storage/public/vehicles
-        // }
+        $photoFile = null;
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = time() . '-' . $photo->getClientOriginalName();
+            $photo->move(public_path('img/vehicles'), $photoFile);
+        }
 
         $data = [
-            'owner_id' => $request->ownership,
             'type_id' => $request->vehicle_type,
-            // 'code' => $request->code,
+            'owner_id' => $request->ownership,
             'brand' => $request->brand,
-            'status' => $request->status,
             'model' => $request->model,
             'color' => $request->color,
-            'year' => date('Y', strtotime($request->year)),
-            // 'license_plate' => $request->license_plate,
+            'transmission' => $request->transmission,
+            'fuel' => $request->fuel,
+            'year' => $request->year,
+            'license_plate' => $request->license_plate,
             'tax_year' => $request->tax_year,
             'tax_five_year' => $request->tax_five_year,
             'inspected' => $request->inspected,
             'purchase_date' => $request->purchase_date,
             'purchase_price' => $request->purchase_price,
-            'status' => $request->status,
-            // 'image' => $imagePath,
+            'description' => $request->description,
+            'origin' => $request->origin,
+            'photo' => $photoFile,
         ];
 
         DB::beginTransaction();
@@ -185,18 +197,23 @@ class VehiclesController extends Controller
             'return_date' => 'nullable|date',
         ]);
 
+        // Generate default code Assignment Ex : UD/SIGN/2024/VHE0001/ASGN0001
+        $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+        $defaultCode = 'UD/SIGN' . now('Y') . '/' . 'VHE' . str_pad($getVehicle->code, 4, '0', STR_PAD_LEFT) . '/ASGN' . str_pad(1, 4, '0', STR_PAD_LEFT);
+
         $data = [
-            'vehicle_id' => $request->vehicle_id,
             'user_id' => $request->employee,
+            'vehicle_id' => $request->vehicle_id,
+            'code' => $defaultCode,
             'assignment_date' => $request->assignment_date,
-            'return_date' => $request->return_date,
+            'notes' => $request->notes
         ];
 
         DB::beginTransaction();
         try {
             $assignment = VehicleAssignment::updateOrCreate($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Vehicle assigned to ' . $assignment->user->full_name . ' successfully.');
+            return redirect()->back()->with('success', 'Vehicle assigned to ' . $assignment->user->name . ' successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error assigning vehicle ' . $e->getMessage());

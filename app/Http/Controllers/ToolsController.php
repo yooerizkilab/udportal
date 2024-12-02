@@ -117,7 +117,8 @@ class ToolsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $tools = Tools::findOrFail($id);
+        return view('tools.show', compact('tools'));
     }
 
     /**
@@ -152,7 +153,7 @@ class ToolsController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // image upload update
+        // image upload update file exists
         $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
@@ -160,7 +161,7 @@ class ToolsController extends Controller
             $photo->move(public_path('img/tools'), $photoFile);
         }
 
-        $tools = [
+        $data = [
             'name' => $request->name,
             'brand' => $request->brand,
             'type' => $request->type,
@@ -181,7 +182,7 @@ class ToolsController extends Controller
         DB::beginTransaction();
         try {
             $tools = Tools::findOrFail($id);
-            $tools->update($tools);
+            $tools->update($data);
             DB::commit();
             return redirect()->back()->with('success', 'Tools ' . $tools->name . ' update successfuly');
         } catch (\Exception $e) {
@@ -214,9 +215,6 @@ class ToolsController extends Controller
             'from' => 'required|string|max:255',
             'to' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            // 'location' => 'required|string|max:255',
-            // 'activity' => 'required|string|max:255',
-            // 'transaction_date' => 'required|date',
             'notes' => 'nullable|string',
         ]);
 
@@ -240,13 +238,27 @@ class ToolsController extends Controller
             'notes' => $request->notes,
         ];
 
+        $tool = Tools::findOrFail($request->tools_id);
+
+        if ($tool->quantity < $request->quantity) {
+            return redirect()->back()->with('error', 'Quantity exceeds the available quantity.');
+        }
+
+        if ($tool->condition == 'Broken' || $tool->status == 'Maintenance' || $tool->status == 'Inactive') {
+            return redirect()->back()->with('error', 'Tools is broken or under maintenance or inactive, cannot be transfer.');
+        }
+
+        $toolsUpdate = [
+            'condition' => 'Used',
+            'quantity' => $tool->quantity - $request->quantity
+        ];
+
         DB::beginTransaction();
         try {
-            $tools = ToolsTransaction::create($dataTools);
-            // $toolsStock = ToolsStock::where('tools_id', $request->tools_id)->first();
-            // $toolsStock->update(['quantity' => $toolsStock->quantity - $request->quantity]);
+            $transaction = ToolsTransaction::create($dataTools);
+            $tool->update($toolsUpdate);
             DB::commit();
-            return redirect()->back()->with('success', 'Tools ' . $tools->name . ' ' . $tools->type . ' successfully.');
+            return redirect()->back()->with('success', 'Tools ' . $transaction->name . ' Transfer successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while transfering the tools.');

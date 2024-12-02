@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('transmission', 50)->nullable();
             $table->string('fuel', 50)->nullable();
             $table->year('year')->nullable();
-            $table->string('license_plate', 10)->unique();
+            $table->string('license_plate', 10);
             $table->date('tax_year')->nullable();
             $table->date('tax_five_year')->nullable();
             $table->date('inspected')->nullable();
