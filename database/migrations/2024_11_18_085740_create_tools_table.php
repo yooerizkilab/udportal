@@ -32,6 +32,7 @@ return new class extends Migration
             $table->date('warranty_start')->nullable();
             $table->date('warranty_end')->nullable();
             $table->string('photo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

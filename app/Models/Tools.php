@@ -63,4 +63,9 @@ class Tools extends Model
     {
         return $this->belongsTo(ToolsCategorie::class);
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(ToolsOwners::class);
+    }
 }

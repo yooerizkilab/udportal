@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('activity', 50);
             $table->timestamp('transaction_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->text('notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

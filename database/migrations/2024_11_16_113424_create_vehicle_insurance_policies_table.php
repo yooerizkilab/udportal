@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('coverage_end');
             $table->decimal('premium', 15, 2);
             $table->text('notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

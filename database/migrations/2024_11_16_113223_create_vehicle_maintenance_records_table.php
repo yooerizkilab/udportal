@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('next_maintenance')->nullable();
             $table->text('notes')->nullable();
             $table->string('photo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('kontrak_milik')->nullable();
             $table->text('keterangan')->nullable();
             $table->text('memo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('origin', 50)->nullable();
             $table->string('photo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('vehicle_type');

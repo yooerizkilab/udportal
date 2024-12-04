@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('assignment_date');
             $table->date('return_date')->nullable();
             $table->text('notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

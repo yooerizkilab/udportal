@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('completion_date')->nullable();
             $table->enum('status', ['Completed', 'In Progress', 'Cancelled',])->default('In Progress');
             $table->string('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

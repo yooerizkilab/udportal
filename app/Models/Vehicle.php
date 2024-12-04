@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Vehicle extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'vehicle';
 
@@ -75,6 +76,6 @@ class Vehicle extends Model
 
     public function insurancePolicies()
     {
-        return $this->belongsTo(VehicleInsurance::class, 'id');
+        return $this->hasOne(VehicleInsurance::class, 'id');
     }
 }

@@ -117,7 +117,7 @@ class ToolsController extends Controller
      */
     public function show(string $id)
     {
-        $tools = Tools::findOrFail($id);
+        $tools = Tools::with('categorie', 'owner')->findOrFail($id);
         return view('tools.show', compact('tools'));
     }
 

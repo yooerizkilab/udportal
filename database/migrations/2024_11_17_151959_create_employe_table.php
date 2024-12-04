@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('age');
             $table->enum('status', ['Active', 'Inactive', 'Retired'])->default('Active');
             $table->string('photo')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
