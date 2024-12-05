@@ -24,8 +24,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mt-4 mb-3">
-                            <img 
-                                src="https://auto2000.co.id/berita-dan-tips/_next/image?url=https%3A%2F%2Fastradigitaldigiroomuat.blob.core.windows.net%2Fstorage-uat-001%2Fmobil-mpv-adalah.jpg&w=3840&q=75" 
+                            <img src="https://auto2000.co.id/berita-dan-tips/_next/image?url=https%3A%2F%2Fastradigitaldigiroomuat.blob.core.windows.net%2Fstorage-uat-001%2Fmobil-mpv-adalah.jpg&w=3840&q=75" 
                                 class="img-fluid rounded shadow-sm border border-primary w-100">
                         </div>
                     </div>
@@ -33,34 +32,66 @@
                         <div class="text-center mb-4">
                             <h3 class="font-weight-bold text-primary">Specification Car</h3>
                         </div>
-                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Name</span>
-                                    <span>Toyota Camry</span>
+                                    <span>{{ $vehicle->brand }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Model</span>
-                                    <span>Sedan</span>
+                                    <span>{{ $vehicle->model }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Year</span>
-                                    <span>2023</span>
+                                    <span>{{ $vehicle->year }}</span>
                                 </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Color</span>
+                                    <span>{{ $vehicle->color }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Annual Tax</span>
+                                    <span>{{ $vehicle->tax_year }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Five Annual Tax</span>
+                                    <span>{{ $vehicle->tax_five_year }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Inspected</span>
+                                    <span>{{ $vehicle->inspected }}</span>
+                                </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Type</span>
-                                    <span>Luxury</span>
+                                    <span>{{ $vehicle->type->name }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">License Plate</span>
+                                    <span>{{ $vehicle->license_plate }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Transmission</span>
-                                    <span>Automatic</span>
+                                    <span>{{ $vehicle->transmission }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Fuel Type</span>
-                                    <span>Petrol</span>
+                                    <span>{{ $vehicle->fuel }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Price</span>
+                                    <span>{{ $vehicle->purchase_price }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Date Purchase</span>
+                                    <span>{{ $vehicle->purchase_date }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                    <span class="font-weight-bold text-muted">Status</span>
+                                    <span class="text-{{ $vehicle->status == 'Active' ? 'success' : 'danger' }} font-weight-bold">{{ $vehicle->status }}</span>
                                 </div>
                             </div>
                         </div>
@@ -71,61 +102,7 @@
                         <div class="text-center mb-4">
                             <h3 class="font-weight-bold text-primary">Description</h3>
                         </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nihil.</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="text-center mb-4">
-                            <h3 class="font-weight-bold text-primary">Price</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="text-center mb-4">
-                            <h3 class="font-weight-bold text-primary">Gallery</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="text-center mb-4">
-                            <h3 class="font-weight-bold text-primary">Documents</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                            <div class="col-md-4">
-                                <img src="" alt="">
-                            </div>
-                        </div>
+                        <p>{{ $vehicle->description }}</p>
                     </div>
                 </div>
                 <div class="row">

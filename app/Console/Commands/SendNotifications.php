@@ -50,7 +50,7 @@ class SendNotifications extends Command
         // 30 days, 21 days, 14 days, 7 days, 3 days, 0 days
         $intervals = [30, 21, 14, 7, 3, 0];
 
-        // $this->contractNotifications($intervals);
+        $this->contractNotifications($intervals);
 
         $this->vehicleTaxNotifications($intervals);
 
@@ -72,31 +72,32 @@ class SendNotifications extends Command
             }
 
             foreach ($contracts as $contract) {
+                $formatDate = Carbon::parse($contract->masa_berlaku)->format('d F Y');
+                $phone = '62895341341001';
+                $name = 'John Doe';
+                $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
+                $body = [
+                    [
+                        'key' => '1',
+                        'value_text' => $contract->name,
+                        'value' => 'name',
+                    ],
+                    [
+                        'key' => '2',
+                        'value_text' => $contract->nama_perusahaan,
+                        'value' => 'company',
+                    ],
+                    [
+                        'key' => '3',
+                        'value_text' => $formatDate,
+                        'value' => 'expired',
+                    ],
+                ];
                 try {
-                    $phone = '62895341341001';
-                    $name = 'John Doe';
-                    $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
-                    $body = [
-                        [
-                            'key' => '1',
-                            'value_text' => $contract->name,
-                            'value' => 'name',
-                        ],
-                        [
-                            'key' => '2',
-                            'value_text' => $contract->nama_perusahaan,
-                            'value' => 'company',
-                        ],
-                        [
-                            'key' => '3',
-                            'value_text' => $contract->masa_berlaku,
-                            'value' => 'expired',
-                        ],
-                    ];
                     $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
                     Log::info("Notification sent for contract {$contract->id}: {$response}");
                 } catch (\Exception $e) {
-                    Log::error("Failed to send notification for contract ID {$contract->id}. Error: {$e->getMessage()}");
+                    Log::error("Error sending notification for contract {$contract->id}: {$e->getMessage()}");
                 }
             }
         }
@@ -124,73 +125,71 @@ class SendNotifications extends Command
             }
 
             foreach ($vehicles as $vehicle) {
-                try {
-                    // Phone Number
-                    $contacts = [
-                        [
-                            // Dinamic Notification Phone Number
-                            'phone' => '62895341341001',
-                            'name' => 'Rizki'
-                        ],
-                        // [
-                        //     // Assign Notification Phone Number
-                        //     'phone' => $vehicle->assigned->phone,
-                        //     'name' => $vehicle->assigned->full_name
-                        // ],
-                        // [
-                        //     // Owner Notification Phone Number
-                        //     'phone' => $vehicle->ownership->phone,
-                        //     'name' => $vehicle->ownership->name
-                        // ]
+                $contacts = [
+                    [
+                        // Assign Notification Phone Number
+                        'phone' => $vehicle->assigned->phone,
+                        'name' => $vehicle->assigned->full_name
+                    ],
+                    [
+                        // Owner Notification Phone Number
+                        'phone' => $vehicle->ownership->phone,
+                        'name' => $vehicle->ownership->name
+                    ],
+                    [
+                        // PIC or Custom Notification Phone Number
+                        'phone' => '62895341341001',
+                        'name' => 'John Doe'
+                    ]
 
-                    ];
+                ];
+                foreach ($contacts as $contact) {
 
-                    foreach ($contacts as $contact) {
+                    $phone = $contact['phone'];
+                    $name = $contact['name'];
 
-                        $phone = $contact['phone'];
-                        $name = $contact['name'];
+                    $templateId = '0b6481c3-bf0b-41b9-a52b-f6fe13ceb976';
 
-                        $templateId = '0b6481c3-bf0b-41b9-a52b-f6fe13ceb976';
+                    $notificationType = null;
+                    $dateField = null;
 
-                        $notificationType = null;
-                        $dateField = null;
+                    // Tax Notification
+                    if (!empty($vehicle->tax_year) && Carbon::parse($vehicle->tax_year)->isSameDay($targetDate)) {
+                        $notificationType = 'ANNUAL TAX';
+                        $dateField = Carbon::parse($vehicle->tax_year)->format('d M Y');
+                    } elseif (!empty($vehicle->tax_five_year) && Carbon::parse($vehicle->tax_five_year)->isSameDay($targetDate)) {
+                        $notificationType = 'FIVE YEAR TAX';
+                        $dateField = Carbon::parse($vehicle->tax_five_year)->format('d M Y');
+                    } elseif (!empty($vehicle->inspected) && Carbon::parse($vehicle->inspected)->isSameDay($targetDate)) {
+                        $notificationType = 'INSPECTION';
+                        $dateField = Carbon::parse($vehicle->inspected)->format('d M Y');
+                    }
 
-                        // Tax Notification
-                        if (!empty($vehicle->tax_year) && Carbon::parse($vehicle->tax_year)->isSameDay($targetDate)) {
-                            $notificationType = 'ANNUAL TAX';
-                            $dateField = Carbon::parse($vehicle->tax_year)->format('d M Y');
-                        } elseif (!empty($vehicle->tax_five_year) && Carbon::parse($vehicle->tax_five_year)->isSameDay($targetDate)) {
-                            $notificationType = 'FIVE YEAR TAX';
-                            $dateField = Carbon::parse($vehicle->tax_five_year)->format('d M Y');
-                        } elseif (!empty($vehicle->inspected) && Carbon::parse($vehicle->inspected)->isSameDay($targetDate)) {
-                            $notificationType = 'INSPECTION';
-                            $dateField = Carbon::parse($vehicle->inspected)->format('d M Y');
-                        }
+                    if ($notificationType) {
+                        $body = [
+                            [
+                                'key' => '1',
+                                'value_text' => $notificationType,
+                                'value' => 'type',
+                            ],
+                            [
+                                'key' => '2',
+                                'value_text' => $vehicle->license_plate,
+                                'value' => 'nopol',
+                            ],
+                            [
+                                'key' => '3',
+                                'value_text' => $vehicle->model,
+                                'value' => 'model',
+                            ],
+                            [
+                                'key' => '4',
+                                'value_text' => $dateField,
+                                'value' => 'expired',
+                            ],
+                        ];
 
-                        if ($notificationType) {
-                            $body = [
-                                [
-                                    'key' => '1',
-                                    'value_text' => $notificationType,
-                                    'value' => 'type',
-                                ],
-                                [
-                                    'key' => '2',
-                                    'value_text' => $vehicle->license_plate,
-                                    'value' => 'name',
-                                ],
-                                [
-                                    'key' => '3',
-                                    'value_text' => $vehicle->model,
-                                    'value' => 'assigned',
-                                ],
-                                [
-                                    'key' => '4',
-                                    'value_text' => $dateField,
-                                    'value' => 'expired',
-                                ],
-                            ];
-
+                        try {
                             Log::info("Prepared notification for vehicle ID {$vehicle->id}", ['body' => $body]);
                             $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
 
@@ -199,10 +198,10 @@ class SendNotifications extends Command
                             } else {
                                 Log::info("Notification sent successfully for vehicle ID {$vehicle->id}");
                             }
+                        } catch (\Exception $e) {
+                            Log::error("Failed to send notification for vehicle ID {$vehicle->id}. Error: {$e->getMessage()}");
                         }
                     }
-                } catch (\Exception $e) {
-                    Log::error("Failed to send notification for vehicle ID {$vehicle->id}. Error: {$e->getMessage()}");
                 }
             }
         }

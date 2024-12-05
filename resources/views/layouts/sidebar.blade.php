@@ -41,7 +41,7 @@
             <i class="fas fa-fw fa-wrench"></i>
             <span>Tools Management</span>
         </a>
-        <div id="collapseTools" class="collapse {{ request()->routeIs(['tools.index', 'tracking.index', 'dn-transport.index', 'tools-maintenances.index']) ? 'show' : '' }}" aria-labelledby="headingTools"
+        <div id="collapseTools" class="collapse {{ request()->routeIs(['tools.index', 'tracking.index', 'dn-transport.index', 'tools-maintenances.index', 'tools.*']) ? 'show' : '' }}" aria-labelledby="headingTools"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 @can('view tools')

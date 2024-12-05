@@ -105,7 +105,8 @@ class VehiclesController extends Controller
      */
     public function show(string $id)
     {
-        $vehicle = Vehicle::with('type', 'ownership', 'assigned')->findOrFail($id);
+        $vehicle = Vehicle::with('type', 'ownership', 'assigned', 'maintenanceRecords')->findOrFail($id);
+        // return $vehicle;
         return view('vehicles.show', compact('vehicle'));
     }
 

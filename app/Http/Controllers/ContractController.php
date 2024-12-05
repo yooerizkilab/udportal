@@ -29,16 +29,6 @@ class ContractController extends Controller
      */
     public function index()
     {
-        // notification contaract min 21 14 7 3 0 -3 -7 -14 -21
-        $now = Carbon::now(); // Waktu sekarang
-        // $contract = Contract::whereDate('masa_berlaku', '<=', $now->addDays(21))
-        //     ->whereDate('masa_berlaku', '>=', $now)
-        //     ->get();
-        // foreach ($contract as $item) {
-        //     $day
-        // }
-
-
         $contracts = Contract::all();
         return view('contracts.index', compact('contracts'));
     }

@@ -7,7 +7,7 @@
 
 @section('main-content')
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Vehicles Maintenances</h1>
+    <h1 class="h3 mb-2 text-gray-800">Tools Maintenances</h1>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
             href="https://datatables.net">official DataTables documentation</a>.
@@ -19,7 +19,7 @@
             <!-- card -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Vehicles Maintenances</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Tools Maintenances</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -72,6 +72,9 @@
                                                 <td><span class="badge badge-{{ $maintenance->badgeClass }}">{{ $maintenance->status }}</span></td>
                                                 <td class="text-center">
                                                     <div class="d-inline-flex">
+                                                        <a href="" class="btn btn-sm btn-info mr-1 btn-circle">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
                                                         @if ($maintenance->status != 'Completed')
                                                         <form action="{{ route('tools-maintenances.completeMaintenance', $maintenance->id) }}" method="POST" id="completeMaintenancesForm">
                                                             @csrf

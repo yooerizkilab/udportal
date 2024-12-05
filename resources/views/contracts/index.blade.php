@@ -24,14 +24,14 @@
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    <button type="button" onclick="exportPDF()" class="btn btn-info btn-md ml-2 mb-2">
+                    {{-- <button type="button" onclick="exportPDF()" class="btn btn-info btn-md ml-2 mb-2">
                         <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button>
+                    </button> --}}
                     <button type="button" onclick="exportExcel()" class="btn btn-success btn-md ml-2 mb-2">
                         <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                     </button>
                     <!-- Dropdown Filter -->
-                    <div class="dropdown ml-2 mb-2">
+                    {{-- <div class="dropdown ml-2 mb-2">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-filter fa-md white-50"></i> Print Filter
                         </button>
@@ -40,7 +40,7 @@
                             <a class="dropdown-item" href="">Status Proyek</a>
                             <a class="dropdown-item" href="">Status</a>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- Tombol Import Data Contracts -->
                     <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importContractsModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Contracts

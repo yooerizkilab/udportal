@@ -25,15 +25,15 @@
                             <span class="mx-2">to</span>
                             <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
                             <!-- Tombol PDF dengan AJAX -->
-                            <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
+                            {{-- <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
                                 <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                            </button>
+                            </button> --}}
                             <!-- Tombol Excel dengan AJAX -->
                             <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
                                 <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                             </button>
                             <!-- Dropdown Filter -->
-                            <div class="dropdown ml-2 mb-2">
+                            {{-- <div class="dropdown ml-2 mb-2">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-filter fa-md white-50"></i> Filter
                                 </button>
@@ -42,7 +42,7 @@
                                     <a class="dropdown-item" href="#">Another action</a>
                                     <a class="dropdown-item" href="#">Something else here</a>
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- Tombol Import Data -->
                             <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importVehiclesModal">
                                 <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles

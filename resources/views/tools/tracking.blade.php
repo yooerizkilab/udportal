@@ -9,7 +9,7 @@
 
 @section('main-content')
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">{{ __('Tracking') }}</h1>
+    <h1 class="h3 mb-2 text-gray-800">{{ __('Tracking Tools') }}</h1>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
             href="https://datatables.net">official DataTables documentation</a>.
@@ -32,7 +32,7 @@
                             <th>Quantity</th>
                             <th>Type</th>
                             <th>Transaction Date</th>
-                            <th width="10%" class="text-center">Action</th>
+                            {{-- <th width="10%" class="text-center">Action</th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -46,11 +46,11 @@
                                 <td>{{ $tracking->quantity }}</td>
                                 <td><span class="badge badge-{{ $tracking->badgeClass }}">{{ $tracking->type }}</span></td>
                                 <td>{{ date('d F Y', strtotime($tracking->transaction_date)) }}</td>
-                                <td class="text-center">
+                                {{-- <td class="text-center">
                                     <div class="d-inline-flex">
                                         <a href="{{ route('tracking.show', $tracking->id) }}" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
                                     </div>
-                                </td>
+                                </td> --}}
                             </tr>
                         @empty
                             <tr>
