@@ -9,6 +9,15 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view permissions', ['only' => ['index']]);
+        $this->middleware('permission:create permissions', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update permissions', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete permissions', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -98,6 +107,15 @@ class PermissionsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $permissions = Permission::findOrFail($id);
+            $permissions->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Permission ' . $permissions->name . ' deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'An error occurred while deleting the permission.');
+        }
     }
 }

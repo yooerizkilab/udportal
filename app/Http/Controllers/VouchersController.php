@@ -6,6 +6,14 @@ use Illuminate\Http\Request;
 
 class VouchersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view vouchers', ['only' => ['index']]);
+        $this->middleware('permission:create vouchers', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vouchers', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete vouchers', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

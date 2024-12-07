@@ -11,6 +11,16 @@ use App\Models\ToolsTransaction;
 
 class ToolsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view tools', ['only' => ['index']]);
+        $this->middleware('permission:create tools', ['only' => ['create', 'store', 'importTools', 'transfer']]);
+        $this->middleware('permission:update tools', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete tools', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */

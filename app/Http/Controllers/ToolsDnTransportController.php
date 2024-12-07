@@ -26,36 +26,12 @@ class ToolsDnTransportController extends Controller
      */
     public function index()
     {
-        // $endpoint = 'integrations';
-        // $params = [
-        //     'target_channel' => 'wa',
-        //     'limit' => 10,
-        // ];
 
-        // try {
-        //     $response = $this->QontakSevices->channel($endpoint, $params);
-        //     return response()->json($response->json()); // Kirimkan JSON ke browser
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => $e->getMessage()], 500); // Kirimkan error
-        // }
-
-        $targetDate = now()->addDays(30);
-        $vehicles = Vehicle::with('assigned', 'ownership', 'insurancePolicies', 'maintenanceRecords')
-            // ->where(function ($query) use ($targetDate) {
-            //     $query->whereDate('tax_year', '=', $targetDate)
-            //         ->orWhereDate('tax_five_year', '=', $targetDate)
-            //         ->orWhereDate('inspected', '=', $targetDate)
-            //         ->orWhere('tax_year', '<', now())
-            //         ->orWhere('tax_five_year', '<', now())
-            //         ->orWhere('inspected', '<', now());
-            // })
-            ->whereHas('insurancePolicies', function ($query) use ($targetDate) {
-                $query->whereDate('coverage_end', '=', $targetDate)
-                    ->orWhere('coverage_end', '<', now());
-            })
+        $trans = ToolsTransaction::with(['tools', 'employee'])
+            ->whereIn('type', ['Out', 'In'])
             ->get();
-        return $vehicles;
-        return view('tools.dntransport');
+        // return $trans;
+        return view('tools.dntransport', compact('trans'));
     }
 
     /**
@@ -63,7 +39,7 @@ class ToolsDnTransportController extends Controller
      */
     public function create()
     {
-        //
+        return view('tools.dntools.pdf');
     }
 
     /**
@@ -169,53 +145,85 @@ class ToolsDnTransportController extends Controller
         return view('tools.dntrans');
     }
 
-    // public function dnTransporting(Request $request)
-    // {
-    //     $request->validate([
-    //         'codeEmploye' => 'required|string|exists:employe,code',
-    //         'qrCode' => 'required|string|exists:tools,code',
-    //         'from' => 'required|string',
-    //         'to' => 'required|string',
-    //         'qty' => 'required|integer|min:1',
-    //         'note' => 'nullable|string',
-    //     ]);
+    public function dnTransporting(Request $request)
+    {
+        $request->validate([
+            'codeEmploye' => 'required|string',
+            'from' => 'required|string',
+            'to' => 'required|string',
+            'activity' => 'required|string',
+            'note' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.qr' => 'required|string', // Validasi QR di dalam array items
+            'items.*.location' => 'required|string', // Validasi lokasi
+        ]);
 
-    //     // Ambil data dari request dan validasi
-    //     $tools = Tools::where('code', $request->qrCode)->firstOrFail();
-    //     $user = User::whereHas('employe', function ($query) use ($request) {
-    //         $query->where('code', $request->codeEmploye);
-    //     })->with('employe')->firstOrFail();
+        // Generate default code Dn Transport Ex: UD/DN/2024/DN0001
+        $number = ToolsTransaction::count() + 1; // Tambah 1 untuk kode baru
+        $transactionCode = 'UD/DN/' . date('Y') . '/' . 'DN' . str_pad($number, 4, '0', STR_PAD_LEFT);
 
-    //     $data = [
-    //         'tools_id' => $tools->id,
-    //         'user_id' => $user->id,
-    //         'type' => 'Out',
-    //         'from' => $request->from,
-    //         'to' => $request->to,
-    //         'quantity' => $request->qty,
-    //         'location' => $request->location ?? null,
-    //         'activity' => $request->activity ?? null,
-    //         'notes' => $request->note ?? null,
-    //     ];
+        $user = User::whereHas('employe', function ($query) use ($request) {
+            $query->where('code', $request->codeEmploye);
+        })->with('employe')->firstOrFail();
 
-    //     DB::beginTransaction();
-    //     try {
-    //         // Simpan transaksi
-    //         $toolsTransaction = ToolsTransaction::create($data);
+        DB::beginTransaction();
+        try {
+            foreach ($request->items as $item) {
+                $tools = Tools::where('code', $item['qr'])->firstOrFail();
 
-    //         // Perbarui stok alat
-    //         $toolsStock = ToolsStock::where('tools_id', $tools->id)->firstOrFail();
-    //         if ($toolsStock->stock < $data['quantity']) {
-    //             throw new \Exception('Stok alat tidak mencukupi.');
-    //         }
-    //         $toolsStock->update(['stock' => $toolsStock->stock - $data['quantity']]);
-    //         DB::commit();
+                if ($tools->quantity <= 0) {
+                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is out of stock.');
+                }
 
-    //         // return respon json
-    //         return response()->json(['message' => 'Transaksi ' . $toolsTransaction->id . ' berhasil disimpan.']);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return redirect()->back()->with('error', $e->getMessage());
-    //     }
-    // }
+                if ($tools->condition == 'Broken') {
+                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is broken.');
+                }
+
+                if ($tools->status == 'Maintenance' || $tools->status == 'Inactive') {
+                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is maintenance or inactive.');
+                }
+
+                $existingTransaction = ToolsTransaction::where('tools_id', $tools->id)
+                    ->where('location', $item['location'])
+                    ->where('type', 'Out')
+                    ->exists();
+
+                if ($existingTransaction) {
+                    return redirect()->back()->with('error', 'location ' . $item['location'] . ' already used. Please choose another location.');
+                }
+
+                // Tentukan tipe transaksi (In/Out) berdasarkan kondisi saat ini
+                $currentTransaction = ToolsTransaction::where('tools_id', $tools->id)
+                    ->latest('created_at')
+                    ->first();
+
+                $newTransactionType = $currentTransaction && $currentTransaction->type === 'Out' ? 'In' : 'Out';
+
+                // Buat transaksi baru
+                ToolsTransaction::create([
+                    'tools_id' => $tools->id,
+                    'user_id' => $user->id,
+                    'code' => $transactionCode,
+                    'type' => $newTransactionType,
+                    'from' => $request->from,
+                    'to' => $request->to,
+                    'quantity' => $currentTransaction->quantity,
+                    'location' => $item['location'],
+                    'activity' => $request->activity,
+                    'notes' => $request->note
+                ]);
+
+                // Update kondisi tools
+                $tools->update([
+                    'condition' => $newTransactionType === 'Out' ? 'Used' : 'New',
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Data berhasil disimpan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
 }

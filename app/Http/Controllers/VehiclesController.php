@@ -13,6 +13,15 @@ use App\Models\VehicleAssignment;
 
 class VehiclesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view vehicle', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle', ['only' => ['create', 'store']]);
+        $this->middleware('permission:create vehicle transaction', ['only' => ['assign']]);
+        $this->middleware('permission:update vehicle', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete vehicle', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -198,9 +207,17 @@ class VehiclesController extends Controller
             'return_date' => 'nullable|date',
         ]);
 
-        // Generate default code Assignment Ex : UD/SIGN/2024/VHE0001/ASGN0001
+        // Generate default code Assignment Ex : UD/SIGN/2024/VHE0001/ASGN0001++
         $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-        $defaultCode = 'UD/SIGN' . now('Y') . '/' . 'VHE' . str_pad($getVehicle->code, 4, '0', STR_PAD_LEFT) . '/ASGN' . str_pad(1, 4, '0', STR_PAD_LEFT);
+        $getAssign = VehicleAssignment::count();
+        $number = $getAssign + 1;
+        $defaultCode = 'UD/SIGN' . '/' . 'VHE' . str_pad($getVehicle->code, 4, '0', STR_PAD_LEFT) . '/ASGN' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        $user = Employe::where('id', $request->employee)->first();
+
+        // Check if vehicle is inactive
+        if ($getVehicle->status == 'Inactive') {
+            return redirect()->back()->with('error', 'Failed to assign vehicle: Vehicle is inactive.');
+        }
 
         $data = [
             'user_id' => $request->employee,
@@ -212,9 +229,10 @@ class VehiclesController extends Controller
 
         DB::beginTransaction();
         try {
-            $assignment = VehicleAssignment::updateOrCreate($data);
+
+
             DB::commit();
-            return redirect()->back()->with('success', 'Vehicle assigned to ' . $assignment->user->name . ' successfully.');
+            return redirect()->back()->with('success', 'Vehicle assigned to ' . $user->name . ' successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error assigning vehicle ' . $e->getMessage());

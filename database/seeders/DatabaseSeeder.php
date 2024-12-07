@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\TicketsCategories;
 use App\Models\Tools;
 use App\Models\ToolsMaintenance;
 use App\Models\VehicleTransaction;
@@ -44,6 +45,9 @@ class DatabaseSeeder extends Seeder
             ToolsSeeder::class,
             ToolsMaintenanceSeeder::class,
             ToolsTransactionSeeder::class,
+            TicketsCategoriesSeeder::class,
+            TicketsSeeder::class,
+            TicketsCommentsSeeder::class,
         ]);
     }
 }

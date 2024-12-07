@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class VehicleOwnershipController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view vehicle ownership', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle ownership', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle ownership', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete vehicle ownership', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

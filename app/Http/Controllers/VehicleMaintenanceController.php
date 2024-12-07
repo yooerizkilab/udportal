@@ -10,6 +10,16 @@ use App\Models\VehicleMaintenance;
 
 class VehicleMaintenanceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view vehicle maintenance', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle maintenance', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle maintenance', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:complete vehicle maintenance', ['only' => ['completeMaintenance']]);
+        $this->middleware('permission:cancel vehicle maintenance', ['only' => ['cancelMaintenance']]);
+        $this->middleware('permission:delete vehicle maintenance', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -145,8 +155,8 @@ class VehicleMaintenanceController extends Controller
 
     public function exportPdf($id)
     {
-        $vehicle = VehicleMaintenance::find($id);
-        $pdf = PDF::loadHTML(view('vehicles.maintenance.pdf', compact('vehicle'))->render());
+        $vehicles = VehicleMaintenance::with('vehicle')->findOrFail($id);
+        $pdf = PDF::loadView('vehicles.maintenance.pdf', compact('vehicles'));
         return $pdf->stream('maintenance.pdf');
     }
 }

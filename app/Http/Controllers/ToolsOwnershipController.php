@@ -8,6 +8,14 @@ use App\Models\ToolsOwners;
 
 class ToolsOwnershipController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view tools ownership', ['only' => ['index']]);
+        $this->middleware('permission:create tools ownership', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update tools ownership', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete tools ownership', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

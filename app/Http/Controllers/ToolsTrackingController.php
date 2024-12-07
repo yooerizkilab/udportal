@@ -81,9 +81,11 @@ class ToolsTrackingController extends Controller
                 $query->where('code', $code);
             })
             ->get();
+
         if ($toolsTracking->isEmpty()) {
-            return redirect()->back()->with('error', 'Data tidak ditemukan');
+            return response()->json(['error' => true, 'message' => 'Data not found']);
         }
+
         return response()->json(['success' => true, 'data' => $toolsTracking]);
     }
 }

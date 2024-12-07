@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Contract;
+use App\Models\User;
+use App\Models\Tools;
+use App\Models\Vehicle;
 
 class HomeController extends Controller
 {
@@ -25,10 +28,15 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::count();
+        $contracts = Contract::count();
+        $tools = Tools::count();
+        $vehicles = Vehicle::count();
 
         $widget = [
             'users' => $users,
-            //...
+            'contracts' => $contracts,
+            'tools' => $tools,
+            'vehicles' => $vehicles
         ];
 
         return view('home', compact('widget'));

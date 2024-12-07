@@ -140,20 +140,16 @@
 
         <section class="vehicle-details">
             <div class="detail-item">
-                <span class="detail-item-label">Jenis Kendaraan</span>
-                <span class="detail-item-value">{jenis_kendaraan}</span>
+                <span class="detail-item-label">Nomor Polisi :</span>
+                <span class="detail-item-value">{{ $vehicles->vehicle->license_plate }}</span>
             </div>
             <div class="detail-item">
-                <span class="detail-item-label">Nomor Polisi</span>
-                <span class="detail-item-value">{nomor_polisi}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-item-label">Merk</span>
-                <span class="detail-item-value">{merk_kendaraan}</span>
+                <span class="detail-item-label">Merk Kendaraan :</span>
+                <span class="detail-item-value">{{ $vehicles->vehicle->model }}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-item-label">Tahun</span>
-                <span class="detail-item-value">{tahun_kendaraan}</span>
+                <span class="detail-item-value">{{ $vehicles->vehicle->year }}</span>
             </div>
         </section>
 
@@ -161,30 +157,30 @@
             <h2 class="section-title">Riwayat Service Terakhir</h2>
             <div class="maintenance-record">
                 <div class="record-label">Tanggal Service</div>
-                <div class="record-details">{tanggal_service_terakhir}</div>
+                <div class="record-details">{{ $vehicles->maintenance_date }}</div>
             </div>
             <div class="maintenance-record">
                 <div class="record-label">Kilometer</div>
-                <div class="record-details">{km_service_terakhir} km</div>
+                <div class="record-details">{{ $vehicles->kilometer }} km</div>
             </div>
         </section>
 
         <section class="maintenance-section">
             <h2 class="section-title">Riwayat Penggantian Komponen</h2>
             <div class="maintenance-record">
-                {riwayat_penggantian_komponen}
+                {{ $vehicles->description }}
             </div>
         </section>
 
         <section class="maintenance-section">
             <h2 class="section-title">Catatan Maintenance</h2>
             <div class="maintenance-record">
-                {catatan_maintenance}
+                {{ $vehicles->notes }}
             </div>
         </section>
 
         <footer class="document-footer">
-            <p>Dicetak: {tanggal_cetak} | Nomor Dokumen: {nomor_dokumen}</p>
+            <p>Dicetak: {{ date('Y-m-d') }} | Nomor Dokumen: {{ $vehicles->code }}</p>
         </footer>
     </div>
 </body>

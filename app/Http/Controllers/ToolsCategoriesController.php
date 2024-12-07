@@ -11,6 +11,10 @@ class ToolsCategoriesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view tools categories', ['only' => ['index']]);
+        $this->middleware('permission:create tools categories', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update tools categories', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete tools categories', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.

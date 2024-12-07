@@ -48,9 +48,11 @@
                                     <input type="date" class="form-control" id="next_maintenances" name="next_maintenances" placeholder="Enter Next Maintenances">
                                 </div>
                             </form>
+                            @can('create vehicle maintenance')
                             <div class="float-right mt-3">
                                 <button type="button" class="btn btn-primary" onclick="confirmAddMaintenances()"><i class="fas fa-check"></i> Save</button>
                             </div>
+                            @endcan
                         </div>
                         <!--- List Car Maintenances --->
                         <div class="col-8">
@@ -84,15 +86,20 @@
                                                             <i class="fas fa-download"></i>
                                                         </a>
                                                         @if ($maintenance->status != 'Completed')
+                                                        @can('complete vehicle maintenance')
                                                         <form action="{{ route('vehicles-maintenances.completeMaintenance', $maintenance->id) }}" method="POST" id="completeMaintenancesForm">
                                                             @csrf
                                                             <button type="button" class="btn btn-sm btn-success mr-1 btn-circle" onclick="confirmCompleteMaintenances()">
                                                                 <i class="fas fa-check"></i>
                                                             </button>
                                                         </form>
+                                                        @endcan
+                                                        @can('cancel vehicle maintenance')
                                                         {{-- <button type="button" class="btn btn-sm btn-danger mr-1 btn-circle" onclick="confirmCancelledMaintenances({{ $maintenance->id }})">
                                                             <i class="fas fa-times"></i>
                                                         </button> --}}
+                                                        @endcan
+                                                        @can('update vehicle maintenance')
                                                         <button type="button" class="btn btn-sm btn-warning btn-circle"
                                                             data-toggle="modal"
                                                             data-id="{{ $maintenance->id }}"
@@ -104,6 +111,7 @@
                                                             data-target="#updateMaintenancesModal">
                                                             <i class="fas fa-pencil"></i>
                                                         </button>
+                                                        @endcan
                                                         @endif
                                                     </div>
                                                 </td>

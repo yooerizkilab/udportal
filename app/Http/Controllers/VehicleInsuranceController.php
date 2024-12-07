@@ -16,6 +16,10 @@ class VehicleInsuranceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view vehicle insurance', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle insurance', ['only' => ['store']]);
+        $this->middleware('permission:update vehicle insurance', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete vehicle insurance', ['only' => ['destroy']]);
     }
 
     /**
@@ -24,6 +28,7 @@ class VehicleInsuranceController extends Controller
     public function index()
     {
         $insurances = VehicleInsurance::with('vehicle')->get();
+        // return $insurances;
         return view('vehicles.insurence.insurances', compact('insurances'));
     }
 
@@ -143,7 +148,7 @@ class VehicleInsuranceController extends Controller
 
     public function exportPdf($id)
     {
-        $insurances = VehicleInsurance::findOrFail($id);
+        $insurances = VehicleInsurance::with('vehicle')->findOrFail($id);
         $pdf = PDF::loadView('vehicles.insurence.pdf', compact('insurances'));
         return $pdf->stream('insurance.pdf');
     }

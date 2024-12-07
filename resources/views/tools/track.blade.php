@@ -5,33 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan QR Code</title>
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.4/html5-qrcode.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #reader {
-            width: 300px;
+            width: 100%;
+            max-width: 400px;
             margin: auto;
             display: none; /* Scanner hidden until button is clicked */
         }
 
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        #tool-container {
+            margin-top: 20px;
         }
     </style>
 </head>
-<body>
-    <h1 style="text-align: center;">Scan QR Code</h1>
-    <button id="startButton">Start Scanning</button>
-    <div id="reader"></div>
-    <p style="text-align: center;">
-        <strong>Result:</strong>
-        <span id="result">No QR Code scanned</span><br>
-        <a href="{{ url('/') }}">Kembali</a>
-    </p>
-    
-
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Scan QR Code</h1>
+        <div class="text-center">
+            <button id="startButton" class="btn btn-primary">Start Scanning</button>
+        </div>
+        <div id="reader" class="mt-4"></div>
+        <div class="text-center mt-4">
+            <p>
+                <strong>Result:</strong>
+                <span id="result" class="text-secondary">No QR Code scanned</span>
+            </p>
+            <a href="{{ url('/') }}" class="btn btn-link">Back</a>
+            <a href="{{ route('track.tools') }}" class="btn btn-link">Reload</a>
+        </div>
+        <div id="tool-container" class="bg-white p-4 rounded shadow-sm"></div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -49,7 +53,6 @@
                 document.getElementById("result").innerHTML = qrCodeMessage;
 
                 html5QrCode.stop().then(() => {
-                    console.log("Scanner stopped successfully.");
                     readerDiv.style.display = "none";
 
                     // Kirim data QR Code ke backend
@@ -64,63 +67,85 @@
                             if (response.success) {
                                 const data = response.data;
 
-                                // Bersihkan konten lama jika perlu
+                                // Hapus konten lama jika ada
                                 const existingContainer = document.getElementById('tool-container');
                                 if (existingContainer) {
                                     existingContainer.remove();
                                 }
 
-                                // Buat elemen container untuk menampung semua data
-                                const container = document.createElement('div');
-                                container.id = 'tool-container';
-                                container.style.padding = '20px';
-                                container.style.border = '1px solid #ccc';
-                                container.style.marginTop = '20px';
-                                container.style.backgroundColor = '#f9f9f9';
+                                // Buat elemen container card
+                                const cardContainer = document.createElement('div');
+                                cardContainer.id = 'tool-container';
+                                cardContainer.classList.add('card', 'mt-2');
 
-                                // Loop melalui data
+                                // Tambahkan header card
+                                const cardHeader = `
+                                    <div class="card-header bg-primary text-white">
+                                        <h5>Item & Transaction Details</h5>
+                                    </div>
+                                `;
+                                cardContainer.innerHTML += cardHeader;
+
+                                // Tambahkan body card
+                                let cardBody = `
+                                    <div class="card-body">
+                                        <h5 class="text-secondary">Item Details</h5>
+                                        <p><strong>Tool Name:</strong> ${data[0]?.tools?.name || 'N/A'}</p>
+                                        <p><strong>Code:</strong> ${data[0]?.tools?.code || 'N/A'}</p>
+                                        <p><strong>Brand:</strong> ${data[0]?.tools?.brand || 'N/A'}</p>
+                                        <p><strong>Condition:</strong> ${data[0]?.tools?.condition || 'N/A'}</p>
+                                        <p><strong>Model:</strong> ${data[0]?.tools?.model || 'N/A'}</p>
+                                        <p><strong>Year:</strong> ${data[0]?.tools?.year || 'N/A'}</p>
+                                        
+                                        <hr>
+                                        
+                                        <h5 class="text-secondary">Transaction Details</h5>
+                                        <table class="table table-bordered table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Activity</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Type</th>
+                                                    <th>Transaction Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                `;
+
+                                // Tambahkan isi tabel aktivitas (berulang)
                                 data.forEach(item => {
-                                    const tool = item.tools;
-
-                                    // Validasi apakah tools ada di dalam data
-                                    if (!tool) {
-                                        console.warn('Tool data is missing for item:', item);
-                                        return;
-                                    }
-                                    // Buat elemen HTML untuk item ini
-                                    const toolHTML = `
-                                        <div style="margin-bottom: 20px;">
-                                            <p><strong>Activity:</strong> ${item.activity || 'N/A'}</p>
-                                            <p><strong>From:</strong> ${item.from || 'N/A'}</p>
-                                            <p><strong>To:</strong> ${item.to || 'N/A'}</p>
-                                            <p><strong>Type:</strong> ${item.type || 'N/A'}</p>
-                                            <p><strong>Transaction Date:</strong> ${item.transaction_date || 'N/A'}</p>
-                                            <p><strong>Tool Name:</strong> ${tool.name || 'N/A'}</p>
-                                            <p><strong>Code:</strong> ${tool.code || 'N/A'}</p>
-                                            <p><strong>Brand:</strong> ${tool.brand || 'N/A'}</p>
-                                            <p><strong>Condition:</strong> ${tool.condition || 'N/A'}</p>
-                                            <p><strong>Model:</strong> ${tool.model || 'N/A'}</p>
-                                            <p><strong>Year:</strong> ${tool.year || 'N/A'}</p>
-                                            <hr>
-                                        </div>
+                                    cardBody += `
+                                        <tr>
+                                            <td>${item.activity || 'N/A'}</td>
+                                            <td>${item.from || 'N/A'}</td>
+                                            <td>${item.to || 'N/A'}</td>
+                                            <td>${item.type || 'N/A'}</td>
+                                            <td>${item.transaction_date || 'N/A'}</td>
+                                        </tr>
                                     `;
-
-                                    // Tambahkan elemen ke dalam container
-                                    container.innerHTML += toolHTML;
                                 });
 
-                                // Tambahkan container ke dalam body atau lokasi lain yang diinginkan
-                                document.body.appendChild(container);
+                                cardBody += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                `;
+
+                                // Tambahkan body ke dalam card
+                                cardContainer.innerHTML += cardBody;
+
+                                // Tambahkan card ke dalam body
+                                document.body.appendChild(cardContainer);
                             } else {
                                 alert(response.message || "Failed to fetch data.");
                             }
                         },
                         error: function (xhr, status, error) {
                             console.error(error);
-                            alert("An error occurred. Please try again.");
+                            alert( xhr.responseJSON.message || "An error occurred. Please try again.");
                         }
                     });
-
 
                 }).catch(err => {
                     console.error("Failed to stop scanner:", err);
@@ -129,8 +154,6 @@
                 console.error(errorMessage);
             });
         });
-
-
     </script>
 </body>
 </html>

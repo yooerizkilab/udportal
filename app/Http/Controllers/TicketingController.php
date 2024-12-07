@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tickets;
 use Illuminate\Http\Request;
 
 class TicketingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -19,7 +25,9 @@ class TicketingController extends Controller
      */
     public function create()
     {
-        //
+        $tickets = Tickets::with('category', 'assignee', 'user', 'fixed', 'comments')->get();
+        // return $tickets;
+        return view('ticketing.create', compact('tickets'));
     }
 
     /**

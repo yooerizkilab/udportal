@@ -20,8 +20,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('send-mail', [MailController::class, 'index']);
-
 // Test Trecking
 Route::get('track/tools', 'ToolsTrackingController@track')->name('track.tools');
 Route::post('tracking/tools', 'ToolsTrackingController@tracking')->name('tracking.tools');
@@ -75,6 +73,8 @@ Route::group(['middleware' => 'auth'], function () {
         // Vehicles Management
         Route::resource('vehicles', 'VehiclesController');
         Route::post('assign', 'VehiclesController@assign')->name('vehicles.assign');
+        // Vehicles Assign Management
+        Route::resource('vehicles-assign', 'VehicleAssignmentController');
         // Vehicle Type Management
         Route::resource('types', 'VehicleTypeController');
         // Vehicle Ownership Management

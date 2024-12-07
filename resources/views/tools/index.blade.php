@@ -60,6 +60,7 @@
                                 <th>Code</th>
                                 <th>Serial Number</th>
                                 <th>Name</th>
+                                <th>Unit</th>
                                 <th>Quantity</th>
                                 <th>Condition</th>
                                 <th>Status</th>
@@ -73,6 +74,7 @@
                                     <td>{{ $tool->code }}</td>
                                     <td>{{ $tool->serial_number }}</td>
                                     <td>{{ $tool->name }}</td>
+                                    <td>{{ $tool->unit }}</td>
                                     <td>{{ $tool->quantity }}</td>
                                     <td><span class="badge badge-{{ $tool->badge }}">{{ $tool->condition }}</span></td>
                                     <td><span class="badge badge-{{ $tool->badgeClass }}">{{ $tool->status }}</span></td>
