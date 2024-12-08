@@ -15,6 +15,7 @@ class TicketsCategoriesSeeder extends Seeder
     {
         // 
         TicketsCategories::insert([
+            // Technical Issue
             [
                 'name' => 'Technical Issue',
                 'slug' => 'technical-issue',
@@ -22,6 +23,7 @@ class TicketsCategoriesSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // Billing Issue
             [
                 'name' => 'Billing Issue',
                 'slug' => 'billing-issue',
@@ -29,6 +31,7 @@ class TicketsCategoriesSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // Account Issue
             [
                 'name' => 'Account Issue',
                 'slug' => 'account-issue',
@@ -36,6 +39,39 @@ class TicketsCategoriesSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            // Security Issue
+            [
+                'name' => 'Security Issue',
+                'slug' => 'security-issue',
+                'description' => 'This is a description of the Security Issue category',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Insfrastructure Issue
+            [
+                'name' => 'Infrastructure Issue',
+                'slug' => 'infrastructure-issue',
+                'description' => 'This is a description of the Infrastructure Issue category',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Support Issue
+            [
+                'name' => 'Support Issue',
+                'slug' => 'support-issue',
+                'description' => 'This is a description of the Support Issue category',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // General Issue
+            [
+                'name' => 'General Issue',
+                'slug' => 'general-issue',
+                'description' => 'This is a description of the General Issue category',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            // Other Issue
             [
                 'name' => 'Other Issue',
                 'slug' => 'other-issue',

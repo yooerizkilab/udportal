@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('attachment')->nullable();
             $table->date('closed_date')->nullable();
             $table->enum('priority', ['Low', 'Medium', 'High'])->default('Low');
-            $table->enum('status', ['Open', 'Closed', 'In Progress'])->default('Open');
+            $table->enum('status', ['Open', 'Closed', 'In Progress', 'Cancelled'])->default('Open');
             $table->softDeletes();
             $table->timestamps();
         });

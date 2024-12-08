@@ -1,78 +1,177 @@
 @extends('layouts.admin')
 
 @push('css')
-   <!-- Custom styles for this page -->
-   <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('main-content')
-                    
-<!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                <div class="d-flex align-items-center flex-wrap">
-                    <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
-                    <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    <!-- Tombol PDF dengan AJAX -->
-                    <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
-                        <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button>
-                    <!-- Tombol Excel dengan AJAX -->
-                    <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
-                        <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
-                    </button>
-                    
-                    <!-- Tombol Import Data -->
-                    <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
-                        <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
-                    </button>
-                    <!-- Tombol Add Users -->
-                    <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addUsersModal">
-                        <i class="fas fa-truck-fast fa-md white-50"></i> Add Vehicles
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Ticketing Management') }}</h1>
+
+    <!-- Cek Role if Superadmin or Admin show widget -->
+    @if(auth()->user()->role_id === 1 || auth()->user()->role_id === 2)
+    <!-- Ticket Widget -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ticket Open</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['open'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Ticket In Progress</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['inprogress'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ticket Closed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['closed'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ticket Cancelled</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cencelled'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                 
+    @endif
+
+    <div class="card shadow mb-4 mt-4">
+        <div class="card-header py-3 d-flex bg-gradient-primary align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-white">Tickets</h6>
+            <button type="button" class="btn btn-success " data-toggle="modal" data-target="#exampleModal">
+                Create Ticket
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @forelse ($tickets as $ticket)
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-{{ $ticket->badgeClass }} shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="d-flex justify-content-between">
+                                        <!-- Ticket Code -->
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
+                                            {{ $ticket->code }}
+                                        </div> 
+                                        <!-- Ticket Priority -->
+                                        <p class="mb-0">
+                                            <span class="badge badge-{{ $ticket->priorityClass }} text-capitalize">
+                                                {{ $ticket->priority }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <!-- Ticket Title -->
+                                    <h6 class="h5 font-weight-bold text-gray-800 mb-1">
+                                        {{ $ticket->title }}
+                                    </h6>        
+                                    <!-- User Name -->
+                                    <p class="text-gray-700 mb-1">
+                                        <i class="fas fa-user mr-1"></i> {{ $ticket->user->name }}
+                                    </p>
+                                    <!-- User Department -->
+                                    <p class="text-gray-700 mb-1">
+                                        <i class="fas fa-building mr-1"></i> {{ $ticket->department->name }}
+                                    </p>
+                                    <!-- Ticket Status -->
+                                    <p class="mb-0">
+                                        <span class="badge badge-{{ $ticket->badgeClass }} text-capitalize">
+                                            {{ $ticket->status }}
+                                        </span>
+                                    </p>                         
+                                </div>
+                                <!-- Action Section -->
+                                <div class="col-auto text-center">
+                                    <p class="text-muted small mb-2">
+                                        {{ $ticket->created_at->diffForHumans() }}
+                                    </p>
+                                    <a href="{{ route('ticketing.show', $ticket->id) }}" class="btn btn-{{ $ticket->badgeClass }} btn-sm" aria-label="View Ticket">
+                                        <i class="fas fa-receipt fa-lg text-gray-300"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                    <p class="text-center text-muted">No tickets available.</p>
+                @endforelse
+            </div>
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+                {{ $tickets->links('pagination::bootstrap-4') }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Create Tickets -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            </div> 
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="modal-body">
+                    <form action="" method="post">
+                        @csrf
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')
-    <!-- Page level plugins -->
+<!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>

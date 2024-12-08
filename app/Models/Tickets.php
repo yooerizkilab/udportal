@@ -12,7 +12,7 @@ class Tickets extends Model
 
     protected $table = 'tickets';
 
-    protected $appends = ['badgeClass'];
+    protected $appends = ['badgeClass', 'priorityClass'];
 
     protected $fillable = [
         'user_id',
@@ -32,7 +32,13 @@ class Tickets extends Model
     public function getBadgeClassAttribute()
     {
         // Status Open : primary Status Closed : success Status In Progress : secondary Status Cancelled : danger
-        return $this->status == 'Open' ? 'primary' : ($this->status == 'Closed' ? 'success' : ($this->status == 'In Progress' ? 'secondary' : 'danger'));
+        return $this->status == 'Open' ? 'info' : ($this->status == 'Closed' ? 'success' : ($this->status == 'In Progress' ? 'secondary' : 'danger'));
+    }
+
+    public function getPriorityClassAttribute()
+    {
+        // Priority High : danger Priority Medium : warning Priority Low : primary
+        return $this->priority == 'High' ? 'danger' : ($this->priority == 'Medium' ? 'warning' : 'primary');
     }
 
     public function user()
@@ -58,5 +64,10 @@ class Tickets extends Model
     public function comments()
     {
         return $this->hasMany(TicketsComments::class, 'ticket_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'assignee_id', 'id');
     }
 }
