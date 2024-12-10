@@ -9,8 +9,6 @@
 
     <h1 class="h3 mb-4 text-gray-800">{{ __('Ticketing Management') }}</h1>
 
-    <!-- Cek Role if Superadmin or Admin show widget -->
-    @if(auth()->user()->role_id === 1 || auth()->user()->role_id === 2)
     <!-- Ticket Widget -->
     <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
@@ -22,7 +20,9 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['open'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                            <button type="button" class="btn btn-info">
+                                <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,9 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['inprogress'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -52,7 +54,9 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['closed'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                            <button type="button" class="btn btn-success">
+                                <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -67,14 +71,15 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cencelled'] }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-truck-fast fa-2x text-gray-300"></i>
+                            <button type="button" class="btn btn-danger">
+                                <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>                 
-    @endif
 
     <div class="card shadow mb-4 mt-4">
         <div class="card-header py-3 d-flex bg-gradient-primary align-items-center justify-content-between">
@@ -93,8 +98,8 @@
                                 <div class="col">
                                     <div class="d-flex justify-content-between">
                                         <!-- Ticket Code -->
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
-                                            {{ $ticket->code }}
+                                        <div class="text-xs font-weight-bold text-uppercase mb-2">
+                                            <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-primary text-800">{{ $ticket->code }}</a>
                                         </div> 
                                         <!-- Ticket Priority -->
                                         <p class="mb-0">

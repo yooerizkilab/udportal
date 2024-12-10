@@ -3,6 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon">
+            {{-- <i class="fas fa-code"></i> --}}
             <i class="fas fa-star-of-david"></i>
         </div>
         <div class="sidebar-brand-text mx-3">UDPORTAL</div>
@@ -19,7 +20,7 @@
     </li>
 
     <!-- Nav Item - Kontract Management-->
-    <li class="nav-item">
+    <li class="nav-item {{ Nav::isRoute('ticketing.create') }}">
         <a class="nav-link" href="{{ route('ticketing.create') }}">
             <i class="fas fa-fw fa-receipt"></i>
             <span>Ticketing</span></a>
@@ -49,6 +50,7 @@
                 @can('view tracking')
                 <a class="collapse-item {{ request()->routeIs('tracking.index') ? 'active' : '' }}" href="{{ route('tracking.index') }}">Tracking</a>
                 @endcan
+                <a class="collapse-item {{ request()->routeIs('tools.*') ? 'active' : '' }}" href="">Transfer</a>
                 @can('view dn-transport')
                 <a class="collapse-item {{ request()->routeIs('dn-transport.index') ? 'active' : '' }}" href="{{ route('dn-transport.index') }}">Transport</a>
                 @endcan
@@ -84,8 +86,8 @@
     </li>
     @endcan
 
-    <!-- Nav Item - Vehicles Management Collapse Menu -->
-    @can('view vouchers')
+    <!-- Nav Item - Vouchers Management Collapse Menu -->
+    {{-- @can('view vouchers')
     <li class="nav-item {{ request()->routeIs('vouchers.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVouchers"
             aria-expanded="true" aria-controls="collapseVouchers">
@@ -99,10 +101,11 @@
             </div>
         </div>
     </li>
-    @endcan
+    @endcan --}}
     
     <!-- Nav Item - Equipment Management Collapse Menu -->
-    {{-- <li class="nav-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}">
+    {{-- @can('view equipments')
+    <li class="nav-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEquipment"
             aria-expanded="true" aria-controls="collapseEquipment">
             <i class="fas fa-fw fa-screwdriver-wrench"></i>
@@ -111,12 +114,11 @@
         <div id="collapseEquipment" class="collapse {{ request()->routeIs('equipments.index') ? 'show' : '' }}" aria-labelledby="headingEquipment"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                @can('view equipments')
                 <a class="collapse-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}" href="{{ route('equipments.index') }}">Equipment</a>
-                @endcan
             </div>
         </div>
-    </li> --}}
+    </li>
+    @endcan --}}
 
     <!-- Nav Item - Tickecting Management Collapse Menu -->
     <li class="nav-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}">
@@ -128,7 +130,7 @@
         <div id="collapseTicketing" class="collapse {{ request()->routeIs('ticketing.index') ? 'show' : '' }}" aria-labelledby="headingTicketing"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                @can('view ticketing')
+                @can('view ticket')
                 <a class="collapse-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}" href="{{ route('ticketing.index') }}">{{ __('Ticketing') }}</a>
                 @endcan
             </div>

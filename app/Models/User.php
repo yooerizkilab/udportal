@@ -62,17 +62,6 @@ class User extends Authenticatable
         return "{$this->name} {$this->last_name}";
     }
 
-    /**
-     * Set the user's password.
-     *
-     * @param string $value
-     * @return void
-     */
-    // public function setPasswordAttribute($value)
-    // {
-    //     $this->attributes['password'] = Hash::make($value);
-    // }
-
     public function getBadgeClassAttribute()
     {
         $statusColor = [

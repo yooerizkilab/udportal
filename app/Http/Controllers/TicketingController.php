@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tickets;
 use App\Models\TicketsCategories;
 use App\Models\Department;
+use App\Models\User;
+use PHPUnit\Framework\Attributes\Ticket;
 
 class TicketingController extends Controller
 {
@@ -16,10 +18,10 @@ class TicketingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view tickets', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create tickets', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update tickets', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:delete tickets', ['only' => ['destroy']]);
+        $this->middleware('permission:view ticket', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create ticket', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update ticket', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete ticket', ['only' => ['destroy']]);
     }
 
     /**
@@ -27,58 +29,35 @@ class TicketingController extends Controller
      */
     public function index()
     {
-        // Pastikan pengguna sudah login
-        if (!auth()->check()) {
-            abort(403, 'Unauthorized access');
+        // Ambil user yang sedang login dan relasi employe
+        $user = User::with(['employe', 'roles'])->find(auth()->user()->id);
+        $isSuperadmin = $user->roles->contains('name', 'Superadmin');
+
+        // Query dasar untuk tiket
+        $ticketsQuery = Tickets::with('category', 'assignee', 'user', 'fixed')
+            ->orderBy('id', 'desc');
+        // Filter tiket berdasarkan role user
+        if ($isSuperadmin) {
+            // Superadmin melihat semua tiket
+            $tickets = $ticketsQuery->paginate(12);
+        } else {
+            // Admin melihat tiket berdasarkan department_id dari assignee
+            $tickets = $ticketsQuery->whereHas('assignee', function ($query) use ($user) {
+                $query->where('assignee_id', $user->employe->department_id);
+            })->paginate(12);
         }
 
-        $user = auth()->user();
-
-        // Query dasar untuk tiket dengan eager loading
-        $query = Tickets::with([
-            'category',
-            'assignee',
-            'user'
-        ])->withCount('comments');
-
-        // Logika berdasarkan peran pengguna
-        if ($user->hasRole('Superadmin')) {
-            // Superadmin melihat semua tiket
-            $tickets = $query->orderBy('id', 'desc')->paginate(12);
-
-            // Hitung widget untuk superadmin
-            $widget = Tickets::selectRaw('
-            SUM(CASE WHEN status = "Open" THEN 1 ELSE 0 END) as open,
-            SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed,
-            SUM(CASE WHEN status = "In Progress" THEN 1 ELSE 0 END) as inprogress,
-            SUM(CASE WHEN status = "Cancelled" THEN 1 ELSE 0 END) as cancelled
-        ')->first();
-        } elseif ($user->hasRole('Admin')) {
-            // Admin melihat tiket yang di-assign kepadanya
-            $tickets = $query
-                ->where('assignee_to', $user->id)
-                ->orderBy('id', 'desc')
-                ->paginate(12);
-
-            // Hitung widget untuk admin (hanya tiket yang di-assign)
-            $widget = Tickets::where('assignee_to', $user->id)
-                ->selectRaw('
+        // Hitung widget berdasarkan status tiket
+        $widget = Tickets::where('assignee_id', $user->employe->id)->selectRaw('
                 SUM(CASE WHEN status = "Open" THEN 1 ELSE 0 END) as open,
                 SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed,
                 SUM(CASE WHEN status = "In Progress" THEN 1 ELSE 0 END) as inprogress,
                 SUM(CASE WHEN status = "Cancelled" THEN 1 ELSE 0 END) as cancelled
             ')->first();
-        } else {
-            // Pengguna biasa hanya melihat tiket miliknya
-            $tickets = $query
-                ->where('user_id', $user->id)
-                ->orderBy('id', 'desc')
-                ->paginate(12);
-        }
 
+        // Tampilkan view dengan data tiket dan widget
         return view('ticketing.index', compact('tickets', 'widget'));
     }
-
 
     /**
      * Show the form for creating a new resource.

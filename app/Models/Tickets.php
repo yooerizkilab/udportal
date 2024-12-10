@@ -53,7 +53,7 @@ class Tickets extends Model
 
     public function assignee()
     {
-        return $this->belongsTo(Department::class, 'assignee_to', 'id');
+        return $this->belongsTo(Department::class, 'assignee_id', 'id');
     }
 
     public function fixed()

@@ -52,6 +52,7 @@
                             </div>
                         </form>
                         <div class="d-flex justify-content-center">
+                            <a href="{{ url('/') }}" class="btn btn-info mr-2">Kembali</a>
                             <button type="button" class="btn btn-success mr-2" id="startScan">Scan QR</button>
                             <button type="button" class="btn btn-primary" id="saveData">Save Data</button>
                         </div>
