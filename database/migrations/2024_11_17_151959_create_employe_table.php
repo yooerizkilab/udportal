@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('code', 20)->unique();
             $table->string('nik', 20)->unique();
             $table->string('full_name', 50);
-            $table->string('gender', 10);
+            $table->enum('gender', ['Male', 'Female']);
             $table->string('phone', 20);
             $table->string('address', 100);
             $table->string('position', 50);

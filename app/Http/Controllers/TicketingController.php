@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use DOMDocument;
 use App\Models\Tickets;
 use App\Models\TicketsCategories;
 use App\Models\Department;
 use App\Models\User;
-use PHPUnit\Framework\Attributes\Ticket;
 
 class TicketingController extends Controller
 {
@@ -81,32 +81,51 @@ class TicketingController extends Controller
             'assignee_to' => 'required|exists:department,id',
             'title' => 'required|string|max:100',
             'priority' => 'required|string|in:Low,Medium,High',
-            'description' => 'required|string',
+            'description' => 'required',
         ]);
-        // Generate code Ticket EX : Ticket-00001
+
+        $dom = new \DomDocument();
+        $dom->loadHtml($request->description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $images = $dom->getElementsByTagName('img');
+        foreach ($images as $image) {
+            $data = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+            $imageName = "/upload//" . time() . '.png';
+            file_put_contents(public_path($imageName), $data);
+            $image->removeAttribute('src');
+            $image->setAttribute('src', $imageName);
+        }
+
+        $request->merge([
+            'description' => $dom->saveHTML(),
+        ]);
+
+        // Generate code Ticket EX: Ticket-00001
         $code = 'Ticket-' . str_pad(Tickets::count() + 1, 5, '0', STR_PAD_LEFT);
 
         // Store data
         $data = [
             'user_id' => auth()->user()->id,
             'category_id' => $request->category_id,
-            'assignee_to' => $request->assignee_to,
+            'assignee_id' => $request->assignee_to,
             'code' => $code,
             'title' => $request->title,
             'description' => $request->description, // From summernote
             'priority' => $request->priority,
         ];
 
+        // return $data;
+
         DB::beginTransaction();
         try {
-            Tickets::create($data);
+            $ticket = Tickets::create($data); // Save ticket with attachments
             DB::commit();
-            return redirect()->back()->with('success', 'Ticket created successfully');
+            return redirect()->back()->with('success', 'Ticket' . $ticket->code . 'created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
 
     /**
      * Display the specified resource.

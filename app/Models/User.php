@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $appends = ['badgeClass'];
+    protected $appends = ['badgeClass', 'fullName'];
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +23,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'username',
         'last_name',
         'email',
         'password',

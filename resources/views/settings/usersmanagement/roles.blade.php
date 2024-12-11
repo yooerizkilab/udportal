@@ -18,111 +18,115 @@
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Role</h6>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addRoleModal">
-                        <i class="fas fa-plus"></i> Add Role
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>Name</th>
-                                    <th width="15%" class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($roles as $role)
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Role</h6>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addRoleModal">
+                            <i class="fas fa-plus"></i> Add Role
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $role->name }}</td>
-                                        <td>
-                                            <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-info mr-1 btn-circle" data-toggle="modal" 
-                                                        data-id="{{ $role->id }}" 
-                                                        data-name="{{ $role->name }}" 
-                                                        data-permissions="{{ $role->permissions->pluck('id')->join(',') }}" 
-                                                        data-target="#viewRolePermissionModal">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                @if ($role->name != 'Superadmin')
-                                                    <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal"
-                                                        data-id="{{ $role->id }}"
-                                                        data-name="{{ $role->name }}" 
-                                                        data-target="#editRoleModal">
-                                                        <i class="fas fa-edit"></i>
+                                        <th width="5%">No</th>
+                                        <th>Name</th>
+                                        <th width="15%" class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($roles as $role)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $role->name }}</td>
+                                            <td>
+                                                <div class="d-inline-flex">
+                                                    <button type="button" class="btn btn-info mr-1 btn-circle" data-toggle="modal" 
+                                                            data-id="{{ $role->id }}" 
+                                                            data-name="{{ $role->name }}" 
+                                                            data-permissions="{{ $role->permissions->pluck('id')->join(',') }}" 
+                                                            data-target="#viewRolePermissionModal">
+                                                        <i class="fas fa-eye"></i>
                                                     </button>
-                                                    <form action="{{ route('roles.destroy', $role->id) }}" method="post" id="deleteRoleForm" class="d-inline">
-                                                        @csrf
-                                                        <button type="button" onclick="confirmDeleteRole()" class="btn btn-danger btn-circle">
-                                                            <i class="fas fa-trash"></i>
+                                                    @if ($role->name != 'Superadmin')
+                                                        <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal"
+                                                            data-id="{{ $role->id }}"
+                                                            data-name="{{ $role->name }}" 
+                                                            data-target="#editRoleModal">
+                                                            <i class="fas fa-pencil-alt"></i>
                                                         </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center">No Data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                                        <form action="{{ route('roles.destroy', $role->id) }}" method="post" id="deleteRoleForm" class="d-inline">
+                                                            @csrf
+                                                            <button type="button" onclick="confirmDeleteRole()" class="btn btn-danger btn-circle">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center">No Data</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Permission</h6>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addPermissionModal">
-                        <i class="fas fa-plus"></i> Add Permission
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>Name</th>
-                                    <th width="15%" class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($permissions as $permission)
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Permission</h6>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addPermissionModal">
+                            <i class="fas fa-plus"></i> Add Permission
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $permission->name }}</td>
-                                        <td>
-                                            <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-warning mr-2 btn-circle" data-toggle="modal"
-                                                    data-id="{{ $permission->id }}"
-                                                    data-name="{{ $permission->name }}"
-                                                    data-target="#editPermissionModal">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="" method="post" id="deletePermissionForm" class="d-inline">
-                                                    @csrf
-                                                    <button type="button" onclick="confirmPermissionDelete()" class="btn btn-danger btn-circle">
-                                                        <i class="fas fa-trash"></i>
+                                        <th width="5%">No</th>
+                                        <th>Name</th>
+                                        <th width="15%" class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($permissions as $permission)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $permission->name }}</td>
+                                            <td>
+                                                <div class="d-inline-flex">
+                                                    <button type="button" class="btn btn-warning mr-2 btn-circle" data-toggle="modal"
+                                                        data-id="{{ $permission->id }}"
+                                                        data-name="{{ $permission->name }}"
+                                                        data-target="#editPermissionModal">
+                                                        <i class="fas fa-pencil"></i>
                                                     </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                                    <form action="" method="post" id="deletePermissionForm" class="d-inline">
+                                                        @csrf
+                                                        <button type="button" onclick="confirmPermissionDelete()" class="btn btn-danger btn-circle">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="text-center">No Data</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -130,37 +134,39 @@
 
         <div class="col-lg-6">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Assign Role to Permission</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('roles.assignPermissions') }}" method="post" id="assignRoleToPermissionForm">
-                        @csrf
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
-                                <option value="" disabled selected>Select Role</option>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}" data-permissions="{{ $role->permissions->pluck('id')->join(',') }}">
-                                        {{ $role->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <label for="permissions">Permissions</label>
-                        <div class="row" id="permissionCheckboxes">
-                            @foreach ($permissions as $permission)
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="permissions[]" id="permission{{ $permission->id }}" value="{{ $permission->id }}">
-                                        <label class="form-check-label" for="permission{{ $permission->id }}">{{ $permission->name }}</label>
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Assign Role to Permission</h6>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('roles.assignPermissions') }}" method="post" id="assignRoleToPermissionForm">
+                            @csrf
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
+                                    <option value="" disabled selected>Select Role</option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}" data-permissions="{{ $role->permissions->pluck('id')->join(',') }}">
+                                            {{ $role->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <label for="permissions">Permissions</label>
+                            <div class="row" id="permissionCheckboxes">
+                                @foreach ($permissions as $permission)
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="permissions[]" id="permission{{ $permission->id }}" value="{{ $permission->id }}">
+                                            <label class="form-check-label" for="permission{{ $permission->id }}">{{ $permission->name }}</label>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
+                        </form>
+                        <div class="float-right mt-3">
+                            <button type="button" class="btn btn-primary" onclick="confirmAssignRoleToPermission()"><i class="fas fa-lock"></i> Assign Permissions</button>
                         </div>
-                    </form>
-                    <div class="float-right mt-3">
-                        <button type="button" class="btn btn-primary" onclick="confirmAssignRoleToPermission()"><i class="fas fa-check"></i> Assign Permissions</button>
                     </div>
                 </div>
             </div>

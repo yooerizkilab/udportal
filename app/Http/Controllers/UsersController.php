@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Branch;
 
 class UsersController extends Controller
 {
@@ -33,8 +38,10 @@ class UsersController extends Controller
         // Get all users & roles
         $users = User::all();
         $roles = Role::all();
-
-        return view('settings.usersmanagement.index', compact('users', 'roles'));
+        $companies = Company::all();
+        $departments = Department::all();
+        $branches = Branch::all();
+        return view('settings.usersmanagement.index', compact('users', 'roles', 'companies', 'departments', 'branches'));
     }
 
     /**
@@ -51,32 +58,78 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         // Validasi input dari form
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+        $request->validate([
+            'nik' => 'required|string|max:16|unique:employe,nik',
+            'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
             'roles' => 'required|exists:roles,id',
+            'phone' => 'required|numeric|unique:employe,phone|min:10',
+            'gender' => 'required|in:Male,Female',
+            'age' => 'required|integer|min:0',
+            'position' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'company_id' => 'required|exists:company,id',
+            'department_id' => 'required|exists:department,id',
+            'branch_id' => 'required|exists:branch,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = [
-            'name' => $validatedData['name'],
-            'last_name' => $validatedData['last_name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
+        // Generate randomstring for employee
+        $randomString = substr(str_shuffle(str_repeat($x = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil(4 / strlen($x)))), 1, 3);
+        // Generate code default employe
+        $code = 'EMP' . $randomString  . str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT);
+
+        // Upload photo
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $fileName = $request->first_name . '-' . $request->last_name . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/users'), $fileName);
+            $request->merge(['photo' => $fileName]);
+        }
+
+        // Users
+        $users = [
+            'name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'email_verified_at' => now(),
+            'remember_token' => Str::random(10),
         ];
 
+        // Employe
+        $employe = [
+            'user_id' => User::latest()->first()->id,
+            'company_id' => $request->company_id,
+            'department_id' => $request->department_id,
+            'branch_id' => $request->branch_id,
+            'code' => $code,
+            'nik' => $request->nik,
+            'full_name' => $request->first_name . ' ' . $request->last_name,
+            'gender' => $request->gender,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'position' => $request->position,
+            'age' => $request->age,
+            'photo' => $request->photo
+        ];
+
+        // Insert into database
         DB::beginTransaction();
         try {
-            $user = User::create($data);
-            $role = Role::findById($validatedData['roles']);
+            $user = User::create($users);
+            $user->employe()->create($employe);
+            $role = Role::findById($request->roles);
             $user->assignRole($role->name);
             DB::commit();
-            return redirect()->route('users.index')->with('success', 'User ' . $user->name . ' created successfully.');
+            return redirect()->route('users.index')->with('success', 'User ' . $user->fullName . ' created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -101,37 +154,81 @@ class UsersController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Get the user & employe data
+        $users = User::with('employe')->findOrFail($id);
+
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nik' => 'required|string|max:16|unique:employe,nik,' . $users->employe->id,
+            'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed', // Password opsional
-            'roles' => 'required|exists:roles,id', // Pastikan role valid
+            'username' => 'required|string|max:255|unique:users,username,' . $users->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $users->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'roles' => 'required|exists:roles,id',
+            'phone' => 'required|numeric|unique:employe,phone,' . $users->employe->id,
+            'gender' => 'required|in:Male,Female',
+            'age' => 'required|integer|min:0',
+            'position' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'company_id' => 'required|exists:company,id',
+            'department_id' => 'required|exists:department,id',
+            'branch_id' => 'required|exists:branch,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Get the user
-        $users = User::findOrFail($id);
+        // Jika photo diubah maka hapus photo lama
+        if ($request->hasFile('photo')) {
+            if ($users->employe->photo) {
+                Storage::disk('public')->delete('uploads/users/' . $users->employe->photo);
+            }
+            $fileName = $request->first_name . '-' . $request->last_name . '.' . $request->file('photo')->getClientOriginalExtension();
+            $request->file('photo')->storeAs('uploads/users', $fileName, 'public');
+            $request->merge(['photo' => $fileName]);
+        }
 
-        // Data the user
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'last_name' => $request->last_name,
-            'password' => $request->password ? Hash::make($request->password) : $users->password,
-            'roles' => $request->roles,
-        ];
+        // Jika password tidak diubah, gunakan password lama
+        $request->merge(['password' => $request->password ? Hash::make($request->password) : $users->password]);
 
+        // Data untuk update user
+        $userUpdate = $request->only([
+            'username',
+            'email',
+            'password',
+            'last_name'
+        ]);
+        $userUpdate['name'] = $request->first_name;
+
+        // Data untuk update employe
+        $employeUpdate = $request->only([
+            'company_id',
+            'department_id',
+            'branch_id',
+            'nik',
+            'gender',
+            'phone',
+            'address',
+            'position',
+            'age',
+            'photo'
+        ]);
+        $employeUpdate['full_name'] = $request->first_name . ' ' . $request->last_name;
+
+        // Update data to database
         DB::beginTransaction();
         try {
-            $users->update($data);
+            $users->update($userUpdate);
+            $users->employe()->update($employeUpdate);
+
+            // Sinkronisasi role
             $role = Role::findById($request->roles);
             $users->syncRoles([$role->name]);
+
             DB::commit();
-            return redirect()->back()->with('success', 'User ' . $users->name . ' updated successfully.');
+            return redirect()->back()->with('success', 'User ' . $users->employe->full_name . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while updating the user.');
+            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
         }
     }
 
@@ -140,12 +237,16 @@ class UsersController extends Controller
      */
     public function destroy(string $id)
     {
+        // Delete user
+        DB::beginTransaction();
         try {
             $user = User::findOrFail($id);
             $user->delete();
-            return redirect()->back()->with('success', 'User ' . $user->name . ' deleted successfully.');
+            DB::commit();
+            return redirect()->back()->with('success', 'User ' . $user->fullName . ' deleted successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting the user.');
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 

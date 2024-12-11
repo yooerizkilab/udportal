@@ -17,7 +17,7 @@ class Tickets extends Model
     protected $fillable = [
         'user_id',
         'category_id',
-        'assignee_to',
+        'assignee_id',
         'fixed_by',
         'code',
         'title',

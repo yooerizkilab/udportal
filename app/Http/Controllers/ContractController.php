@@ -57,7 +57,7 @@ class ContractController extends Controller
             'name' => $request->name,
             'nama_perusahaan' => $request->nama_perusahaan,
             'nama_pekerjaan' => $request->nama_pekerjaan,
-            'status_kontrak' => $request->stattus_kontrak,
+            'status_kontrak' => $request->status_kontrak,
             'jenis_pekerjaan' => $request->jenis_pekerjaan,
             'nominal_kontrak' => $request->nominal_kontrak,
             'tanggal_kontrak' => $request->tanggal_kontrak,

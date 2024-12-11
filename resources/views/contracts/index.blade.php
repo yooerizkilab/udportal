@@ -10,9 +10,8 @@
 @section('main-content')
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Contracts Management</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="{{ route('contract.exportPdf') }}">official DataTables documentation</a>.
+    <p class="mb-4">
+        This page is used to manage contracts.
     </p>
 
     <!-- DataTales Example -->
@@ -116,13 +115,13 @@
                                                 data-target="#editContractsModal">
                                                 <i class="fas fa-pencil"></i>
                                             </button>
-                                            {{-- <form action="{{ route('contract.destroy', $contract->id) }}" method="post" id="deleteContractsForm" class="d-inline">
+                                            <form action="{{ route('contract.destroy', $contract->id) }}" method="post" id="deleteContractsForm-{{ $contract->id }}" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteContract()">
+                                                <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteContract({{ $contract->id }})">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
-                                            </form> --}}
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>   
@@ -142,8 +141,8 @@
     <div class="modal fade" id="addContractsModal" tabindex="-1" role="dialog" aria-labelledby="addContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title font-weight-bold text-primary" id="addContractsModalLabel">Modal Add Contracts</h5>
+                <div class="modal-header text-primary">
+                    <h5 class="modal-title font-weight-bold text-primary" id="addContractsModalLabel">Add Contracts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -155,21 +154,21 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="code">Code</label>
-                                    <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code') }}">
+                                    <input type="text" class="form-control" id="code" name="code" value="{{ old('code') }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_perusahaan">Nama Perusahaan</label>
-                                    <input type="text" class="form-control @error('nama_perusahaan') is-invalid @enderror" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}">
+                                    <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_pekerjaan">Nama Pekerjaan / Proyek</label>
-                                    <input type="text" class="form-control @error('nama_pekerjaan') is-invalid @enderror" id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}">
+                                    <input type="text" class="form-control" id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}">
                                 </div>
                             </div>
                         </div>
@@ -207,7 +206,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="jenis_pekerjaan">Jenis Pekerjaan</label>
-                                    <select name="jenis_pekerjaan" id="jenis_pekerjaan" class="form-control @error('jenis_pekerjaan') is-invalid @enderror">
+                                    <select name="jenis_pekerjaan" id="jenis_pekerjaan" class="form-control">
                                         <option value="" disabled selected>Select Jenis Pekerjaan</option>
                                         <option value="-">-</option>
                                         <option value="CO LICENSING">CO LICENSING</option>
@@ -234,7 +233,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="mata_uang">Mata Uang</label>
-                                    <select name="mata_uang" id="mata_uang" class="form-control @error('mata_uang') is-invalid @enderror">
+                                    <select name="mata_uang" id="mata_uang" class="form-control">
                                         <option value="" disabled selected>Select Mata Uang</option>
                                         <option value="-">-</option>
                                         <option value="IDR">IDR</option>
@@ -266,7 +265,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="status_proyek">Status Proyek</label>
-                                    <select name="status_proyek" id="status_proyek" class="form-control @error('status_proyek') is-invalid @enderror">
+                                    <select name="status_proyek" id="status_proyek" class="form-control">
                                         <option value="" disabled selected>Select Status Proyek</option>
                                         <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
@@ -289,7 +288,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="status_retensi">Status Retensi</label>
-                                    <select name="status_retensi" id="status_retensi" class="form-control @error('status_retensi') is-invalid @enderror">
+                                    <select name="status_retensi" id="status_retensi" class="form-control">
                                         <option value="" disabled selected>Select Status Retensi</option>
                                         <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
@@ -318,8 +317,8 @@
     <div class="modal fade" id="editContractsModal" tabindex="-1" role="dialog" aria-labelledby="editContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title font-weight-bold text-primary" id="editContractsModalLabel">Modal Edit Contracts</h5>
+                <div class="modal-header text-primary">
+                    <h5 class="modal-title font-weight-bold text-primary" id="editContractsModalLabel">Update Contracts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -495,8 +494,8 @@
     <div class="modal fade" id="importContractsModal" tabindex="-1" role="dialog" aria-labelledby="importContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="importContractsModalLabel">Modal Import Contracts</h5>
+                <div class="modal-header text-primary">
+                    <h5 class="modal-title" id="importContractsModalLabel">Import Contracts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -505,7 +504,7 @@
                     <form action="{{ route('contract.importContract') }}" method="post" enctype="multipart/form-data" id="importContractsForm">
                         @csrf
                         <div class="form-group">
-                            <label for="file">File Excel</label>
+                            <label for="file">File</label>
                             <input type="file" class="form-control" id="file" name="file">
                             <p class="text-danger">*Format file .xlsx .xls .csv</p>
                         </div>
@@ -661,8 +660,8 @@
         })
     }
 
-    function confirmDeleteContract() {
-        // Konfirmasi pengguna sebelum menghapus data
+    // Konfirmasi pengguna sebelum menghapus data
+    function confirmDeleteContract(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -673,9 +672,9 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('deleteContractsForm').submit();
+                document.getElementById(`deleteContractsForm-${id}`).submit(); // Perbaikan tanda backtick
             }
-        })
+        });
     }
 
     function confirmImportContracts() {

@@ -18,6 +18,7 @@ class Employe extends Model
         'user_id',
         'company_id',
         'department_id',
+        'branch_id',
         'code',
         'nik',
         'full_name',

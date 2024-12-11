@@ -106,6 +106,7 @@ class UserSeeder extends Seeder
         // Buat User Super Admin
         $super = User::create([
             'name' => 'Super',
+            'username' => 'superadmin',
             'last_name' => 'Admin',
             'email' => 'superadmin@example.com',
             'email_verified_at' => now(),
@@ -118,6 +119,7 @@ class UserSeeder extends Seeder
         // Buat Users
         $users = User::create([
             'name' => 'User',
+            'username' => 'user',
             'last_name' => 'ABC',
             'email' => 'user@example.com',
             'email_verified_at' => now(),

@@ -6,8 +6,10 @@
 
 @section('main-content')
 
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Ticket Details') }}</h1>
-    <p class="mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet distinctio nostrum officia deserunt excepturi porro, quod vero culpa sequi quaerat repellat tenetur recusandae cupiditate officiis maxime perferendis ex vitae? Enim.</p>
+    <h1 class="h3 mb-2 text-gray-800">{{ __('Ticket Details') }}</h1>
+    <p class="mb-4">
+        This page is used to view ticket details. Tickets are used to track issues and problems with the system.
+    </p>
 
     <div class="row">
         <!-- Ticket Details Card -->
@@ -17,9 +19,28 @@
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-ticket-alt mr-2"></i>Ticket Information
                     </h6>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#solvedModal"><i class="fas fa-check-circle"></i>
-                        Solved Ticket
-                    </button>
+                    <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#solvedModal"><i class="fas fa-check-circle"></i>
+                            Solved Ticket
+                        </button>
+                        @if ($tickets->status == 'Open')
+                        <form action="" method="post" id="handleTicketForm">
+                            @csrf
+                            <button type="button" data-user="{{ auth()->user()->id }}" onclick="confirmHandleTicket()" class="btn btn-warning mr-2">
+                                <i class="fas fa-handshake"></i> Handle Tickets
+                            </button>
+                        </form>
+                        @endif
+                        @if(Auth::user()->hasRole('Superadmin'))
+                        <a href="{{ route('ticketing.index') }}" class="btn btn-light">
+                            <i class="fas fa-reply"></i> Back
+                        </a>
+                        @else
+                            <a href="{{ route('ticketing.create') }}" class="btn btn-light">
+                                <i class="fas fa-reply"></i> Back
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -46,10 +67,10 @@
                         <div class="col-md-6">
                             <dl class="row">
                                 <dt class="col-6">Assigned To:</dt>
-                                <dd class="col-6">{{ $tickets->assignedTo->name ?? 'Unassigned' }}</dd>
+                                <dd class="col-6">{{ $tickets->department->name ?? 'Unassigned' }}</dd>
 
                                 <dt class="col-6">Created By:</dt>
-                                <dd class="col-6">{{ $tickets->user->name }}</dd>
+                                <dd class="col-6">{{ $tickets->user->fullName }}</dd>
 
                                 <dt class="col-6">Created At:</dt>
                                 <dd class="col-6">{{ $tickets->created_at->format('d M Y') }}</dd>
@@ -61,7 +82,7 @@
 
                     <h6 class="font-weight-bold mb-3">Description</h6>
                     <div class="card bg-light p-3">
-                        <p class="text-gray-800 mb-0">{{ $tickets->description }}</p>
+                        <p class="text-gray-800 mb-0">{!! $tickets->description !!}</p>
                     </div>
                 </div>
             </div>
@@ -139,9 +160,24 @@
         </div>
         @endif
     </div>
-
 @endsection
 
 @push('scripts')
-
+<script>
+    function confirmHandleTicket() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, handle it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('handleTicketForm').submit();
+            }
+        })
+    }
+</script>
 @endpush

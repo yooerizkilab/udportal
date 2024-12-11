@@ -18,6 +18,7 @@ class EmployeSeeder extends Seeder
                 'user_id' => 1,
                 'company_id' => 1,
                 'department_id' => 1,
+                'branch_id' => 1,
                 'code' => 'A001',
                 'nik' => '1234567890',
                 'full_name' => 'John Doe',
@@ -35,6 +36,7 @@ class EmployeSeeder extends Seeder
                 'user_id' => 2,
                 'company_id' => 1, // Assuming company with ID 1 exists
                 'department_id' => 2,
+                'branch_id' => 1,
                 'code' => 'A002',
                 'nik' => '9876543210',
                 'full_name' => 'Jane Smith',
