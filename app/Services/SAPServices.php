@@ -54,7 +54,7 @@ class SAPServices
         ])->withHeaders([
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'odata.maxpagesize=1000'
+            'Prefer' => 'odata.maxpagesize=10'
             // 'Prefer' => 'odata.maxpagesize=2'
         ])->get($this->baseUrl . $endpoint, $parameters);
 

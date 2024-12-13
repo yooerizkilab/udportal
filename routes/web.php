@@ -105,6 +105,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ticketings'], function () {
         // Ticketing Management
         Route::resource('ticketing', 'TicketingController');
+        Route::post('ticketing/handle/{id}', 'TicketingController@handle')->name('ticketing.handle');
+        Route::post('ticketing/comment/{id}', 'TicketingController@comment')->name('ticketing.comment');
+        Route::post('ticketing/solved/{id}', 'TicketingController@solved')->name('ticketing.solved');
+        Route::post('ticketing/cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
     });
 
     Route::group(['prefix' => 'settings'], function () {

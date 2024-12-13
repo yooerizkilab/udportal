@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @push('css')
-
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.css" rel="stylesheet">
 @endpush
 
 @section('main-content')
@@ -20,13 +20,25 @@
                         <i class="fas fa-ticket-alt mr-2"></i>Ticket Information
                     </h6>
                     <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#solvedModal"><i class="fas fa-check-circle"></i>
+                        @can('cancle ticket')
+                        @if($tickets->status == 'Open')
+                        <form action="{{ route('ticketing.cancled', $tickets->id) }}" method="post" id="cancelTicketForm{{ $tickets->id }}">
+                            @csrf
+                            <button type="button" class="btn btn-danger mr-2" onclick="confirmCancelTicket({{ $tickets->id }})"><i class="fas fa-trash"></i>
+                                Cancelled
+                            </button>
+                        </form>
+                        @endif
+                        @endcan
+                        @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled')
+                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#solvedModal"><i class="fas fa-check-circle"></i>
                             Solved Ticket
                         </button>
+                        @endif
                         @if ($tickets->status == 'Open')
-                        <form action="" method="post" id="handleTicketForm">
+                        <form action="{{ route('ticketing.handle', $tickets->id) }}" method="post" id="handleTicketForm{{ $tickets->id }}">
                             @csrf
-                            <button type="button" data-user="{{ auth()->user()->id }}" onclick="confirmHandleTicket()" class="btn btn-warning mr-2">
+                            <button type="button" onclick="confirmHandleTicket({{ $tickets->id }})" class="btn btn-warning mr-2">
                                 <i class="fas fa-handshake"></i> Handle Tickets
                             </button>
                         </form>
@@ -89,6 +101,8 @@
         </div>
     </div>
     <div class="row">
+        @can('comment ticket')
+        @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled' && $tickets->status == 'In Progress')
         <!-- Comments Section -->
         <div class="col-lg-5">
             <div class="card shadow-sm mb-4">
@@ -125,8 +139,9 @@
                     </div>
 
                     <!-- Add Comment Form -->
-                    <form action="" method="POST" class="mt-4">
+                    <form action="{{ route('ticketing.comment', $tickets->id) }}" method="POST" class="mt-4">
                         @csrf
+                        @method('POST')
                         <div class="form-group">
                             <label for="comment" class="font-weight-bold">Add a Comment</label>
                             <textarea id="comment" name="comment" class="form-control @error('comment') is-invalid @enderror" rows="3" placeholder="Write your comment here..."required></textarea>
@@ -134,37 +149,123 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm">
+                        <button type="submit" class="btn btn-primary btn-sm float-right">
                             <i class="fas fa-paper-plane mr-1"></i>Submit Comment
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+        @endif
+        @endcan
 
+        @can('solved ticket')
         @if ($tickets->status == 'Closed')
         <!-- Solved ticket Section --> 
-        <div class="col-lg-7">
+        <div class="col-lg-12">
             <div class="card shadow-sm mb-4">
                 <div class="card-header py-3 bg-gradient-info text-white">
-                    <h6 class="m-0 font-weight-bold">
-                        <i class="fas fa-ticket-alt mr-2"></i>Solved Ticket
-                    </h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold">
+                            <i class="fas fa-ticket-alt mr-2"></i>Solved Ticket
+                        </h6>
+                        <span class="badge badge-light text-dark">
+                            {{ Carbon\Carbon::parse($tickets->closed_at)->diffForHumans() }}
+                        </span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <p class="text-gray-800 mb-0">
-                        {{ $tickets->solved_ticket }}
+                        {!! $tickets->solution !!}
                     </p>
+                    
+                    @if ($tickets->attachment)
+                        <div class="mt-3">
+                            <a href="{{ route('ticketing.download', $tickets->id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-download mr-2"></i>Download Attachment
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
         @endif
+        @endcan
+    </div>
+
+    <!-- Solved ticket -->
+    <div class="modal fade" id="solvedModal" tabindex="-1" role="dialog" aria-labelledby="solvedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-primary">
+                    <h5 class="modal-title" id="solvedModalLabel">Solved Ticket</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('ticketing.solved', ':id') }}" method="post" id="closeTicketForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="solution">Solution</label>
+                            <textarea id="summernoteTree" class="form-control" name="solution"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="attachment">Attachment</label>
+                            <input type="file" class="form-control" id="attachment" name="attachment">
+                            <p class="text-danger">Format: .pdf .doc .docx .pdf</p>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                        <button type="button" class="btn btn-primary" onclick="confirmCloseTicket()"><i class="fas fa-check"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs4.min.js"></script>
 <script>
-    function confirmHandleTicket() {
+    $(document).ready(function () {
+
+        $('#solvedModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+
+            var modal = $(this);
+            modal.find('.modal-body #summernoteTree').summernote('code', '');
+            
+            // replace action attribute
+            var action = $('#closeTicketForm').attr('action');
+            var newAction = action.replace(':id', id);
+            $('#closeTicketForm').attr('action', newAction);
+        });
+
+    
+        $('#summernoteTree').summernote({
+            height: 300,                 // Set height
+            tabsize: 2,                  // Tab size
+            placeholder: 'Write your content here...',
+            toolbar: [
+                // Custom toolbar options
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']],
+            ],
+        });
+    });
+
+    
+    function confirmHandleTicket(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -175,7 +276,39 @@
             confirmButtonText: 'Yes, handle it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('handleTicketForm').submit();
+                document.getElementById('handleTicketForm' + id).submit();
+            }
+        })
+    }
+
+    function confirmCloseTicket() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, close it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('closeTicketForm').submit();
+            }
+        })
+    }
+
+    function confirmCancelTicket(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('cancelTicketForm' + id).submit();
             }
         })
     }

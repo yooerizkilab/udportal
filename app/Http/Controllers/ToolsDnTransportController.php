@@ -11,15 +11,18 @@ use Illuminate\Http\Request;
 use App\Services\QontakSevices;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\SAPServices;
 
 class ToolsDnTransportController extends Controller
 {
     protected $QontakSevices;
+    protected $SapSevices;
 
-    public function __construct(QontakSevices $QontakSevices)
+    public function __construct(QontakSevices $QontakSevices, SAPServices $SapSevices)
     {
         // $this->middleware('auth');
         $this->QontakSevices = $QontakSevices;
+        $this->SapSevices = $SapSevices;
     }
     /**
      * Display a listing of the resource.
@@ -30,6 +33,17 @@ class ToolsDnTransportController extends Controller
         $trans = ToolsTransaction::with(['tools', 'employee'])
             ->whereIn('type', ['Out', 'In'])
             ->get();
+
+        // $id = 'SJ24000012';
+        // $data = [
+        //     'U_ApvBy' => date('Y-m-d'),
+        // ];
+        // $id = 'VL00000117';
+        // $endpoint = 'U_HR_CLAIM_APPROVAL';
+        // $endpoint = 'BusinessPartners';
+        // $response = $this->SapSevices->get($endpoint)->json()['value'] ?? [];
+        // $response = $this->SapSevices->patch($endpoint, $id, $data)->json();
+        // return $response;
         // return $trans;
         return view('tools.dntransport', compact('trans'));
     }

@@ -10,6 +10,7 @@
     <h1 class="h3 mb-4 text-gray-800">{{ __('Ticketing Management') }}</h1>
 
     <!-- Ticket Widget -->
+    @if(auth()->user()->role != 'user')
     <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
@@ -68,7 +69,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ticket Cancelled</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cencelled'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cancelled'] }}</div>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-danger">
@@ -79,14 +80,18 @@
                 </div>
             </div>
         </div>
-    </div>                 
+    </div>
+    @endif                 
 
     <div class="card shadow mb-4 mt-4">
         <div class="card-header py-3 d-flex bg-gradient-primary align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-white">Tickets</h6>
-            <button type="button" class="btn btn-success " data-toggle="modal" data-target="#exampleModal">
+            {{-- <button type="button" class="btn btn-success " data-toggle="modal" data-target="#exampleModal">
                 Create Ticket
-            </button>
+            </button> --}}
+            <a href="{{ route('ticketing.create') }}" class="btn btn-success">
+                Create Ticket
+            </a>
         </div>
         <div class="card-body">
             <div class="row">
@@ -109,9 +114,11 @@
                                         </p>
                                     </div>
                                     <!-- Ticket Title -->
+                                    {{-- @if() --}}
                                     <h6 class="h5 font-weight-bold text-gray-800 mb-1">
-                                        {{ $ticket->title }}
-                                    </h6>        
+                                        <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-dark text-800">{{ strlen($ticket->title) > 10 ? substr($ticket->title, 0, 10) . '...' : $ticket->title }}</a>
+                                    </h6> 
+                                    {{-- @endif        --}}
                                     <!-- User Name -->
                                     <p class="text-gray-700 mb-1">
                                         <i class="fas fa-user mr-1"></i> {{ $ticket->user->name }}

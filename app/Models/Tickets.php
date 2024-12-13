@@ -14,6 +14,8 @@ class Tickets extends Model
 
     protected $appends = ['badgeClass', 'priorityClass'];
 
+    protected $dates = ['closed_date'];
+
     protected $fillable = [
         'user_id',
         'category_id',

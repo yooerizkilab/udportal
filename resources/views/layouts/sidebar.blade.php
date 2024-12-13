@@ -19,14 +19,16 @@
             <span>{{ __('Dashboard') }}</span></a>
     </li>
 
+    @can('create ticket')
     <!-- Nav Item - Kontract Management-->
     <li class="nav-item {{ Nav::isRoute('ticketing.create') }}">
         <a class="nav-link" href="{{ route('ticketing.create') }}">
             <i class="fas fa-fw fa-receipt"></i>
             <span>Ticketing</span></a>
     </li>
+    @endcan
 
-    @can('view contract')
+    @can('view contracts')
     <!-- Nav Item - Kontract Management-->
     <li class="nav-item {{ Nav::isRoute('contract.index') }}">
         <a class="nav-link" href="{{ route('contract.index') }}">
@@ -120,6 +122,7 @@
     </li>
     @endcan --}}
 
+    @can('view ticket')
     <!-- Nav Item - Tickecting Management Collapse Menu -->
     <li class="nav-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicketing"
@@ -130,12 +133,11 @@
         <div id="collapseTicketing" class="collapse {{ request()->routeIs('ticketing.index') ? 'show' : '' }}" aria-labelledby="headingTicketing"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                @can('view ticket')
                 <a class="collapse-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}" href="{{ route('ticketing.index') }}">{{ __('Ticketing') }}</a>
-                @endcan
             </div>
         </div>
     </li>
+    @endcan
 
     <!-- Divider -->
     <hr class="sidebar-divider">

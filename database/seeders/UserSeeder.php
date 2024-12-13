@@ -92,16 +92,20 @@ class UserSeeder extends Seeder
         // Buat Role atau cek apakah role sudah ada
         $superAdminRole = Role::firstOrCreate(['name' => 'Superadmin']);
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $adminAccounting = Role::firstOrCreate(['name' => 'Admin Accounting']);
+        $adminPurchasing = Role::firstOrCreate(['name' => 'Admin Purchasing']);
+        $adminFinance = Role::firstOrCreate(['name' => 'Admin Finance']);
+        $adminLegal = Role::firstOrCreate(['name' => 'Admin Legal']);
+        $adminSales = Role::firstOrCreate(['name' => 'Admin Sales']);
+        $adminIT = Role::firstOrCreate(['name' => 'Admin IT']);
+        $adminGA = Role::firstOrCreate(['name' => 'Admin General Affairs']);
+        $adminHR = Role::firstOrCreate(['name' => 'Admin HR']);
         $staffRole = Role::firstOrCreate(['name' => 'Staff']);
         $userRole = Role::firstOrCreate(['name' => 'User']);
 
         // Berikan semua permissions ke role Superadmin
         $allPermissions = Permission::all();
         $superAdminRole->syncPermissions($allPermissions);
-
-        // Berikan permissions tertentu ke role User
-        $userPermissions = Permission::whereIn('name', ['view ticket', 'create ticket', 'update ticket', 'delete ticket', 'view ticket reply', 'create ticket reply', 'update ticket reply', 'delete ticket reply'])->get();
-        $userRole->syncPermissions($userPermissions);
 
         // Buat User Super Admin
         $super = User::create([
@@ -115,18 +119,5 @@ class UserSeeder extends Seeder
         ]);
 
         $super->assignRole($superAdminRole);
-
-        // Buat Users
-        $users = User::create([
-            'name' => 'User',
-            'username' => 'user',
-            'last_name' => 'ABC',
-            'email' => 'user@example.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            // 'remember_token' => Str::random(10),
-        ]);
-
-        $users->assignRole($userRole);
     }
 }

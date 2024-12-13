@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($trans as $item)
+                        {{-- @forelse ($trans as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->code }}</td>
@@ -50,7 +50,7 @@
                             <tr>
                                 <td colspan="6" class="text-center">Data Not Found</td>
                             </tr>
-                        @endforelse
+                        @endforelse --}}
                     </tbody>
                 </table>
             </div>
