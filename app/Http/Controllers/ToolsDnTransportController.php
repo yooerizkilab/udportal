@@ -15,15 +15,15 @@ use App\Services\SAPServices;
 
 class ToolsDnTransportController extends Controller
 {
-    protected $QontakSevices;
-    protected $SapSevices;
+    // protected $QontakSevices;
+    // protected $SapSevices;
 
-    public function __construct(QontakSevices $QontakSevices, SAPServices $SapSevices)
-    {
-        // $this->middleware('auth');
-        $this->QontakSevices = $QontakSevices;
-        $this->SapSevices = $SapSevices;
-    }
+    // public function __construct(QontakSevices $QontakSevices, SAPServices $SapSevices)
+    // {
+    //     // $this->middleware('auth');
+    //     $this->QontakSevices = $QontakSevices;
+    //     $this->SapSevices = $SapSevices;
+    // }
     /**
      * Display a listing of the resource.
      */
@@ -34,17 +34,6 @@ class ToolsDnTransportController extends Controller
             ->whereIn('type', ['Out', 'In'])
             ->get();
 
-        // $id = 'SJ24000012';
-        // $data = [
-        //     'U_ApvBy' => date('Y-m-d'),
-        // ];
-        // $id = 'VL00000117';
-        // $endpoint = 'U_HR_CLAIM_APPROVAL';
-        // $endpoint = 'BusinessPartners';
-        // $response = $this->SapSevices->get($endpoint)->json()['value'] ?? [];
-        // $response = $this->SapSevices->patch($endpoint, $id, $data)->json();
-        // return $response;
-        // return $trans;
         return view('tools.dntransport', compact('trans'));
     }
 
@@ -61,60 +50,7 @@ class ToolsDnTransportController extends Controller
      */
     public function store(Request $request)
     {
-        // $payload = [
-        //     'to_number' => '62895341341001',
-        //     'to_name' => 'Rizki',
-        //     'message_template_id' => 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba',
-        //     'channel_integration_id' => '0a62d1f1-bfc6-4d82-8197-9dbfda6ba41a',
-        //     'language' => [
-        //         'code' => 'id',
-        //     ],
-        //     'parameters' => [
-        //         'body' => [
-        //             [
-        //                 'key' => '1',
-        //                 'value_text' => 'test',
-        //                 'value' => 'proyek'
-        //             ],
-        //             [
-        //                 'key' => '2',
-        //                 'value_text' => 'test',
-        //                 'value' => 'namaperusahaan'
-        //             ],
-        //             [
-        //                 'key' => '3',
-        //                 'value_text' => 'test',
-        //                 'value' => 'tanggal'
-        //             ],
-
-        //         ],
-        //     ],
-        // ];
-        $hp = ['62895341341001', '6285904253752'];
-        foreach ($hp as $value) {
-            $phone = $value;
-            $name = 'Rizki';
-            $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
-            $body = [
-                [
-                    'key' => '1',
-                    'value_text' => 'test',
-                    'value' => 'proyek'
-                ],
-                [
-                    'key' => '2',
-                    'value_text' => 'test',
-                    'value' => 'namaperusahaan'
-                ],
-                [
-                    'key' => '3',
-                    'value_text' => 'test',
-                    'value' => 'tanggal'
-                ],
-            ];
-            $response =  $this->QontakSevices->sendMessage($phone, $name, $templateId, $body);
-        }
-        return redirect()->back()->with('success', 'Success' . $response);
+        //
     }
 
     /**
@@ -151,11 +87,6 @@ class ToolsDnTransportController extends Controller
 
     public function dnTransport()
     {
-        $code = 'USR01';
-        // $filteredUser = User::whereHas('employe', function ($query) use ($code) {
-        //     $query->where('code', $code);
-        // })->with('employe')->first();
-        // return $filteredUser;
         return view('tools.dntrans');
     }
 

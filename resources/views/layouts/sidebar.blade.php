@@ -24,7 +24,7 @@
     <li class="nav-item {{ Nav::isRoute('ticketing.create') }}">
         <a class="nav-link" href="{{ route('ticketing.create') }}">
             <i class="fas fa-fw fa-receipt"></i>
-            <span>Ticketing</span></a>
+            <span>{{ __('Create Ticketing') }}</span></a>
     </li>
     @endcan
 
@@ -52,7 +52,7 @@
                 @can('view tracking')
                 <a class="collapse-item {{ request()->routeIs('tracking.index') ? 'active' : '' }}" href="{{ route('tracking.index') }}">Tracking</a>
                 @endcan
-                <a class="collapse-item {{ request()->routeIs('tools.*') ? 'active' : '' }}" href="">Transfer</a>
+                <a class="collapse-item" href="">Transactions</a>
                 @can('view dn-transport')
                 <a class="collapse-item {{ request()->routeIs('dn-transport.index') ? 'active' : '' }}" href="{{ route('dn-transport.index') }}">Transport</a>
                 @endcan
@@ -124,16 +124,17 @@
 
     @can('view ticket')
     <!-- Nav Item - Tickecting Management Collapse Menu -->
-    <li class="nav-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['ticketing.index', 'ticketing-categories.index']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicketing"
             aria-expanded="true" aria-controls="collapseTicketing">
             <i class="fas fa-fw fa-hands-holding-child"></i>
             <span>Ticketing Management</span>
         </a>
-        <div id="collapseTicketing" class="collapse {{ request()->routeIs('ticketing.index') ? 'show' : '' }}" aria-labelledby="headingTicketing"
+        <div id="collapseTicketing" class="collapse {{ request()->routeIs(['ticketing.index', 'ticketing-categories.index']) ? 'show' : '' }}" aria-labelledby="headingTicketing"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}" href="{{ route('ticketing.index') }}">{{ __('Ticketing') }}</a>
+                <a class="collapse-item {{ request()->routeIs('ticketing-categories.index') ? 'active' : '' }}" href="{{ route('ticketing-categories.index') }}">{{ __('Ticketing Category') }}</a>
             </div>
         </div>
     </li>

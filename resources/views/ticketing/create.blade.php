@@ -91,7 +91,7 @@
                                     @forelse ($tickets as $ticket)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $ticket->title }}</td>
+                                            <td>{{ strlen($ticket->title) > 20 ? substr($ticket->title, 0, 20) . '...' : $ticket->title }}</td>
                                             <td><span class="badge badge-{{ $ticket->priorityClass }}">{{ $ticket->priority }}</span></td>
                                             <td><span class="badge badge-{{ $ticket->badgeClass }}">{{ $ticket->status }}</span></td>
                                             <td class="text-center">

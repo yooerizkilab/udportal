@@ -185,32 +185,6 @@ class ContractController extends Controller
         return $pdf->stream('contracts.pdf');
     }
 
-    public function exportPdf(Request $request)
-    {
-        $startDate = Carbon::parse($request->start_date)->startOfDay();
-        $endDate = Carbon::parse($request->end_date)->endOfDay();
-
-        if (!$startDate || !$endDate) {
-            return redirect()->back()->withErrors(['error' => 'Start date and end date are required.']);
-        }
-
-        // Fetch data sesuai kebutuhan
-        $contracts = Contract::whereBetween('created_at', [$startDate, $endDate])->get();
-
-        // Data untuk PDF
-        $data = [
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'contracts' => $contracts,
-        ];
-
-        // return $data;
-        // Generate PDF
-        $pdf = PDF::loadView('contracts.pdf', compact('data'));
-        return $pdf->stream('contracts.pdf');
-        // return $pdf->download('contracts.pdf');
-    }
-
     public function exportExcel(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -233,15 +207,5 @@ class ContractController extends Controller
         Excel::import(new ContractImport, $file);
 
         return redirect()->back()->with('success', 'Data berhasil diimport.');
-    }
-
-    public function exportStatusContract(Request $request)
-    {
-        // 
-    }
-
-    public function exportStatusProject(Request $request)
-    {
-        // 
     }
 }

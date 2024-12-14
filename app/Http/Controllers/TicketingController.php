@@ -317,13 +317,21 @@ class TicketingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function cancled($id)
+    public function cancled(Request $request, $id)
     {
+        // Validation request
+        $request->validate([
+            'resason' => 'required|string',
+        ]);
+
         DB::beginTransaction();
         try {
             $ticket = Tickets::findOrFail($id);
             $ticket->update([
+                'fixed_by' => auth()->user()->id,
+                'solution' => $request->resason,
                 'status' => 'Cancelled',
+                'close_date' => now(),
             ]);
             DB::commit();
             return redirect()->back()->with('success', 'Ticket ' . $ticket->code . ' cancled successfully');

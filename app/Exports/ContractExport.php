@@ -27,7 +27,6 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
     {
         return Contract::query()
             ->select([
-                'id',
                 'code',
                 'name',
                 'nama_perusahaan',
@@ -54,7 +53,8 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
                 'keterangan',
                 'memo',
             ])
-            ->whereBetween('created_at', [$this->startDate, $this->endDate]);
+            ->whereBetween('created_at', [$this->startDate, $this->endDate])
+            ->whereNull('deleted_at');
     }
 
     /**
@@ -73,7 +73,6 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             'Nominal Kontrak',
             'Tanggal Kontrak',
             'Masa Berlaku',
-            'Status Kontrak',
             'Retensi',
             'Masa Retensi',
             'Status Retensi',
@@ -92,13 +91,16 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
         ];
     }
 
+    private $counter = 0;
     /**
      * Mapping data untuk setiap baris.
      */
     public function map($contract): array
     {
+        $this->counter++;
+
         return [
-            $contract->id,
+            $this->counter,
             $contract->code,
             $contract->name,
             $contract->nama_perusahaan,
@@ -108,7 +110,6 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             number_format($contract->nominal_kontrak, 2),
             $contract->tanggal_kontrak ? \Carbon\Carbon::parse($contract->tanggal_kontrak)->format('Y-m-d') : '',
             $contract->masa_berlaku,
-            $contract->status_kontrak,
             $contract->retensi,
             $contract->masa_retensi,
             $contract->status_retensi,
@@ -117,9 +118,9 @@ class ContractExport implements FromQuery, WithHeadings, WithMapping, WithStyles
             $contract->pic_customer,
             $contract->mata_uang,
             $contract->bast_1,
-            $contract->bast_1_nomor ? \Carbon\Carbon::parse($contract->bast_1_nomor)->format('d-m-Y') : '',
+            $contract->bast_1_nomor,
             $contract->bast_2,
-            $contract->bast_2_nomor ? \Carbon\Carbon::parse($contract->bast_2_nomor)->format('d-m-Y') : '',
+            $contract->bast_2_nomor,
             $contract->overall_status,
             $contract->kontrak_milik,
             $contract->keterangan,

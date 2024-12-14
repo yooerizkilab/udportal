@@ -22,12 +22,9 @@
                     <div class="d-flex align-items-center">
                         @can('cancle ticket')
                         @if($tickets->status == 'Open')
-                        <form action="{{ route('ticketing.cancled', $tickets->id) }}" method="post" id="cancelTicketForm{{ $tickets->id }}">
-                            @csrf
-                            <button type="button" class="btn btn-danger mr-2" onclick="confirmCancelTicket({{ $tickets->id }})"><i class="fas fa-trash"></i>
-                                Cancelled
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal"><i class="fas fa-trash"></i>
+                            Cancelled
+                        </button>
                         @endif
                         @endcan
                         @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled')
@@ -38,6 +35,7 @@
                         @if ($tickets->status == 'Open')
                         <form action="{{ route('ticketing.handle', $tickets->id) }}" method="post" id="handleTicketForm{{ $tickets->id }}">
                             @csrf
+                            @method('PATCH')
                             <button type="button" onclick="confirmHandleTicket({{ $tickets->id }})" class="btn btn-warning mr-2">
                                 <i class="fas fa-handshake"></i> Handle Tickets
                             </button>
@@ -159,7 +157,6 @@
         @endif
         @endcan
 
-        @can('solved ticket')
         @if ($tickets->status == 'Closed')
         <!-- Solved ticket Section --> 
         <div class="col-lg-12">
@@ -190,7 +187,31 @@
             </div>
         </div>
         @endif
-        @endcan
+        
+        @if ($tickets->status == 'Cancelled')
+        <!-- Cancelled ticket Section --> 
+        <div class="col-lg-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 bg-gradient-danger text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold">
+                            <i class="fas fa-ticket-alt mr-2"></i>Cancelled Ticket
+                        </h6>
+                        <span class="badge badge-light text-dark">
+                            {{ Carbon\Carbon::parse($tickets->cancelled_at)->diffForHumans() }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-gray-800 mb-0">
+                        {!! $tickets->solution !!}
+                    </p>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        
     </div>
 
     <!-- Solved ticket -->
@@ -206,6 +227,7 @@
                 <div class="modal-body">
                     <form action="{{ route('ticketing.solved', ':id') }}" method="post" id="closeTicketForm">
                         @csrf
+                        @method('PATCH')
                         <div class="form-group">
                             <label for="solution">Solution</label>
                             <textarea id="summernoteTree" class="form-control" name="solution"></textarea>
@@ -219,6 +241,34 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
                         <button type="button" class="btn btn-primary" onclick="confirmCloseTicket()"><i class="fas fa-check"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancelled ticket -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-danger">
+                    <h5 class="modal-title" id="cancelModalLabel">Cancelled Ticket</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('ticketing.cancled', ':id') }}" method="post" id="cancelTicketForm">
+                        @csrf
+                        @method('PATCH')
+                        <div class="form-group">
+                            <label for="reason">Reason</label>
+                            <textarea name="reason" id="reason" class="form-control" cols="30" rows="5"></textarea>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmCancelTicket()"><i class="fas fa-check"></i> Save</button>
                     </div>
                 </div>
             </div>
@@ -243,7 +293,6 @@
             var newAction = action.replace(':id', id);
             $('#closeTicketForm').attr('action', newAction);
         });
-
     
         $('#summernoteTree').summernote({
             height: 300,                 // Set height
@@ -297,7 +346,19 @@
         })
     }
 
-    function confirmCancelTicket(id) {
+    $('#cancelModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+
+        var modal = $(this);
+
+        // replace action attribute
+        var action = $('#cancelTicketForm').attr('action');
+        var newAction = action.replace(':id', id);
+        $('#cancelTicketForm').attr('action', newAction);
+    });
+
+    function confirmCancelTicket() {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -308,7 +369,7 @@
             confirmButtonText: 'Yes, cancel it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('cancelTicketForm' + id).submit();
+                document.getElementById('cancelTicketForm').submit();
             }
         })
     }
