@@ -15,35 +15,40 @@ class DepartmentSeeder extends Seeder
     {
         Department::insert([
             [
-                'code' => '001',
+                'code' => 'D001',
+                'company_id' => 1,
                 'name' => 'Department A',
                 'description' => 'Description for Department A',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code' => '002',
+                'code' => 'D002',
+                'company_id' => 1,
                 'name' => 'Department B',
                 'description' => 'Description for Department B',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code' => '003',
+                'code' => 'D003',
+                'company_id' => 1,
                 'name' => 'Department C',
                 'description' => 'Description for Department C',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code' => '004',
+                'code' => 'D004',
+                'company_id' => 1,
                 'name' => 'Department D',
                 'description' => 'Description for Department D',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code_department' => '005',
+                'code_department' => 'D005',
+                'company_id' => 1,
                 'name_department' => 'Department E',
                 'description' => 'Description for Department E',
                 'created_at' => now(),

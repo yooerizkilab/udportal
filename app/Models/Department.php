@@ -10,11 +10,17 @@ class Department extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'department';
+    protected $table = 'departments';
 
     protected $fillable = [
+        'company_id',
         'code',
         'name',
         'description'
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

@@ -27,7 +27,7 @@ class ToolsController extends Controller
     public function index()
     {
         // generate default code
-        $tools = Tools::all();
+        $tools = Tools::with('categorie', 'owner')->get();
         $categories = ToolsCategorie::all();
         $ownerships = ToolsOwners::all();
         return view('tools.index', compact('tools', 'categories', 'ownerships'));
@@ -49,7 +49,7 @@ class ToolsController extends Controller
         // Validate request data
         $request->validate([
             'ownership' => 'required|exists:tools_ownership,id',
-            'categories' => 'required|exists:tools_categorie,id',
+            'categories' => 'required|exists:tools_categories,id',
             'serial_number' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
             'brand' => 'nullable|string|max:255',
@@ -71,13 +71,13 @@ class ToolsController extends Controller
         // Generate default code where category is selected
         $getCategory = ToolsCategorie::where('id', $request->categories)->first();
         // Ambil 3 huruf pertama nama kategori
-        $prefix = strtoupper(substr($getCategory->name, 0, 4));
+        $prefix = strtoupper(substr($getCategory->code, 0, 4));
         // Cari item terakhir yang memiliki prefix sama
         $lastItem = Tools::where('code', 'LIKE', $prefix . '%')->latest('id')->first();
         // Ambil angka terakhir dari kode, jika ada
         $lastNumber = $lastItem ? intval(substr($lastItem->code, strlen($prefix))) : 0;
         // Tambahkan 1 ke angka terakhir
-        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         // Gabungkan prefix dengan angka baru
         $code = $prefix . $newNumber;
 
@@ -91,7 +91,7 @@ class ToolsController extends Controller
 
         $tools = [
             'owner_id' => $request->ownership,
-            'categorie_id' => $request->categories,
+            'category_id' => $request->categories,
             'code' => $code,
             'serial_number' => $request->serial_number,
             'name' => $request->name,

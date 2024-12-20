@@ -12,22 +12,27 @@ class Employe extends Model
 
     protected $guarded = [];
 
-    protected $table = 'employe';
+    protected $table = 'employees';
 
     protected $fillable = [
         'user_id',
         'company_id',
-        'department_id',
         'branch_id',
+        'department_id',
         'code',
         'nik',
         'full_name',
         'gender',
-        'phone',
-        'address',
-        'position',
         'age',
+        'phone',
+        'position',
+        'address',
         'status',
         'photo',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

@@ -15,13 +15,13 @@ class ToolsMaintenance extends Model
     protected $append = ['badgeClass'];
 
     protected $fillable = [
-        'tools_id',
+        'tool_id',
         'code',
         'maintenance_date',
         'cost',
-        'completion_date',
         'status',
         'description',
+        'completion_date',
     ];
 
     public function getBadgeClassAttribute()
@@ -39,6 +39,6 @@ class ToolsMaintenance extends Model
 
     public function tools()
     {
-        return $this->belongsTo(Tools::class);
+        return $this->belongsTo(Tools::class, 'tool_id', 'id');
     }
 }

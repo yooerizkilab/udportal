@@ -106,7 +106,7 @@
                                                     <th>Activity</th>
                                                     <th>From</th>
                                                     <th>To</th>
-                                                    <th>Type</th>
+                                                    <th>Location</th>
                                                     <th>Transaction Date</th>
                                                 </tr>
                                             </thead>
@@ -117,11 +117,11 @@
                                 data.forEach(item => {
                                     cardBody += `
                                         <tr>
-                                            <td>${item.activity || 'N/A'}</td>
-                                            <td>${item.from || 'N/A'}</td>
-                                            <td>${item.to || 'N/A'}</td>
                                             <td>${item.type || 'N/A'}</td>
-                                            <td>${item.transaction_date || 'N/A'}</td>
+                                            <td>${item.source_project_id || 'N/A'}</td>
+                                            <td>${item.destination_project_id || 'N/A'}</td>
+                                            <td>${item.last_location || 'N/A'}</td>
+                                            <td>${item.created_at || 'N/A'}</td>
                                         </tr>
                                     `;
                                 });

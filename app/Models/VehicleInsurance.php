@@ -10,7 +10,7 @@ class VehicleInsurance extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'vehicle_insurance_policie';
+    protected $table = 'vehicle_insurance_policy';
 
     protected $appends = ['status'];
 

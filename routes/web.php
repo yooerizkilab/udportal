@@ -27,6 +27,8 @@ Route::post('tracking/tools', 'ToolsTrackingController@tracking')->name('trackin
 // Test DN Transport
 Route::get('dn-transport/tools', 'ToolsDnTransportController@dnTransport')->name('dn-transport.tools');
 Route::post('dn-trans/tools', 'ToolsDnTransportController@dnTransporting')->name('dntrans.store');
+// Print PDF DN Transport
+Route::get('dn-transport/pdf', 'ToolsDnTransportController@pdf')->name('dn-transport.pdf');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -51,12 +53,17 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Tools Management
     Route::group(['prefix' => 'tools'], function () {
-        Route::resource('tools', 'ToolsController');
-        Route::post('transfer', 'ToolsController@transfer')->name('tools.transfer');
-        Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('owners', 'ToolsOwnershipController');
-        Route::resource('tracking', 'ToolsTrackingController');
-        Route::resource('dn-transport', 'ToolsDnTransportController');
+        Route::resource('categories', 'ToolsCategoriesController');
+        Route::resource('tools', 'ToolsController');
+        Route::resource('projects', 'ProjectsController');
+        Route::post('transfer', 'ToolsController@transfer')->name('tools.transfer'); // development
+        Route::resource('transactions', 'ToolsTransactionController'); // development
+        Route::get('transactions-dn/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
+
+        Route::resource('tracking', 'ToolsTrackingController'); // development
+        Route::resource('dn-transport', 'ToolsDnTransportController'); // development
+
         Route::resource('tools-maintenances', 'ToolsMaintenanceController');
         Route::post('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
         Route::post('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');

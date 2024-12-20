@@ -24,11 +24,11 @@ class Tickets extends Model
         'code',
         'title',
         'description',
+        'priority',
+        'status',
         'solution',
         'attachment',
         'closed_date',
-        'priority',
-        'status',
     ];
 
     public function getBadgeClassAttribute()

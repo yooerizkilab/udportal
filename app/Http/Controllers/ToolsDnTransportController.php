@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Projects;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Services\SAPServices;
+use App\Services\QontakSevices;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Tools;
 use App\Models\ToolsTransaction;
 use App\Models\User;
 use App\Models\ToolsStock;
 use App\Models\Vehicle;
-use Illuminate\Http\Request;
-use App\Services\QontakSevices;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Services\SAPServices;
 
 class ToolsDnTransportController extends Controller
 {
@@ -87,88 +89,111 @@ class ToolsDnTransportController extends Controller
 
     public function dnTransport()
     {
-        return view('tools.dntrans');
+        $projects = Projects::all();
+        return view('tools.dntrans', compact('projects'));
     }
 
     public function dnTransporting(Request $request)
     {
-        $request->validate([
-            'codeEmploye' => 'required|string',
-            'from' => 'required|string',
-            'to' => 'required|string',
-            'activity' => 'required|string',
-            'note' => 'nullable|string',
-            'items' => 'required|array',
-            'items.*.qr' => 'required|string', // Validasi QR di dalam array items
-            'items.*.location' => 'required|string', // Validasi lokasi
-        ]);
+        // $request->validate([
+        //     'codeEmploye' => 'required|string',
+        //     'delivery_date' => 'required|date',
+        //     'driver_name' => 'required|string|max:255',
+        //     'driver_phone' => 'required|string|max:15',
+        //     'source_project_id' => 'required|exists:projects,id',
+        //     'destination_project_id' => 'required|exists:projects,id',
+        //     'type_delivery' => 'required|string|in:Delivery Note,Transfer,Return',
+        //     'notes' => 'nullable|string',
+        //     'items' => 'required|array',
+        //     'items.*.qr' => 'required|string', // Validasi QR di dalam array items
+        //     'items.*.location' => 'required|string', // Validasi lokasi
+        // ]);
 
-        // Generate default code Dn Transport Ex: UD/DN/2024/DN0001
-        $number = ToolsTransaction::count() + 1; // Tambah 1 untuk kode baru
-        $transactionCode = 'UD/DN/' . date('Y') . '/' . 'DN' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        // Generate transaction code based on type and year
+        $typeMap = [
+            'Delivery Note' => 'DN',
+            'Transfer' => 'TR',
+            'Return' => 'RT'
+        ];
+        $transactionCount = ToolsTransaction::where('type', $request->type_delivery)
+            ->count() + 1;
+        $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . str_pad($transactionCount, 3, '0', STR_PAD_LEFT);
 
+        // Cari user berdasarkan code employe 
         $user = User::whereHas('employe', function ($query) use ($request) {
             $query->where('code', $request->codeEmploye);
         })->with('employe')->firstOrFail();
 
-        DB::beginTransaction();
-        try {
-            foreach ($request->items as $item) {
-                $tools = Tools::where('code', $item['qr'])->firstOrFail();
+        foreach ($request->items as $item) {
 
-                if ($tools->quantity <= 0) {
-                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is out of stock.');
-                }
+            // Cari tools berdasarkan QR code
+            $tools = Tools::where('code', $item['qr'])->firstOrFail();
 
-                if ($tools->condition == 'Broken') {
-                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is broken.');
-                }
-
-                if ($tools->status == 'Maintenance' || $tools->status == 'Inactive') {
-                    return redirect()->back()->with('error', 'Tools ' . $tools->name . ' is maintenance or inactive.');
-                }
-
-                $existingTransaction = ToolsTransaction::where('tools_id', $tools->id)
-                    ->where('location', $item['location'])
-                    ->where('type', 'Out')
-                    ->exists();
-
-                if ($existingTransaction) {
-                    return redirect()->back()->with('error', 'location ' . $item['location'] . ' already used. Please choose another location.');
-                }
-
-                // Tentukan tipe transaksi (In/Out) berdasarkan kondisi saat ini
-                $currentTransaction = ToolsTransaction::where('tools_id', $tools->id)
-                    ->latest('created_at')
-                    ->first();
-
-                $newTransactionType = $currentTransaction && $currentTransaction->type === 'Out' ? 'In' : 'Out';
-
-                // Buat transaksi baru
-                ToolsTransaction::create([
-                    'tools_id' => $tools->id,
-                    'user_id' => $user->id,
-                    'code' => $transactionCode,
-                    'type' => $newTransactionType,
-                    'from' => $request->from,
-                    'to' => $request->to,
-                    'quantity' => $currentTransaction->quantity,
-                    'location' => $item['location'],
-                    'activity' => $request->activity,
-                    'notes' => $request->note
-                ]);
-
-                // Update kondisi tools
-                $tools->update([
-                    'condition' => $newTransactionType === 'Out' ? 'Used' : 'New',
-                ]);
+            // if qr code not found
+            if (!$tools) {
+                return response()->json(['message' => 'QR code not found.'], 404);  // 404 Not Found
             }
 
+            if ($tools->condition == 'Broken') {
+                return response()->json(['message' => 'Tools ' . $tools->name . ' is broken.'], 400);
+            }
+            if ($tools->status == 'Maintenance' || $tools->status == 'Inactive') {
+                return response()->json(['message' => 'Tools ' . $tools->name . ' is in maintenance or inactive.'], 400);
+            }
+
+            $data = [
+                'user_id' => $user->id,
+                'tool_id' => $tools->id,
+                'source_project_id' => $request->source_project_id,
+                'destination_project_id' => $request->destination_project_id,
+                'document_code' => $code,
+                'document_date' => now(),
+                'delivery_date' => $request->delivery_date,
+                'quantity' => $tools->quantity,
+                'unit' => $tools->unit,
+                'driver' => $request->driver_name,
+                'driver_phone' => $request->driver_phone,
+                'last_location' => $item['location'],
+                'type' => $request->type_delivery,
+                'notes' => $request->notes
+            ];
+        }
+
+        DB::beginTransaction();
+        try {
+            // Simpan transaksi
+            $transaction = ToolsTransaction::create($data);
+            // Update kondisi tools
+            $tools->update(['condition' => 'Used',]);
             DB::commit();
-            return redirect()->back()->with('success', 'Data berhasil disimpan.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Data ' . $transaction->document_code . ' berhasil disimpan.',
+                'data' => $transaction
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return response()->json(['message' => 'Data ' . $e->getMessage() . ' gagal disimpan.'], 400);
         }
+    }
+
+    public function pdf(Request $request)
+    {
+        $data = $this->dnTransporting($request);
+        // $data = [
+        //     'document_code' => 'DN/2024/004'
+        // ];
+
+        if (!$data) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
+
+        $deliveryNote = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
+            ->where('document_code', $data['document_code'])
+            ->get();
+
+        // Generate PDF
+        $pdf = PDF::loadView('tools.transaction.dn', compact('deliveryNote'));
+        return $pdf->stream('delivery-note.pdf');
     }
 }

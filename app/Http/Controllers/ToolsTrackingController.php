@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ToolsTransaction;
 use Illuminate\Http\Request;
+use App\Models\ToolsTransaction;
 
 class ToolsTrackingController extends Controller
 {
@@ -16,8 +16,9 @@ class ToolsTrackingController extends Controller
      */
     public function index()
     {
-        $toolsTracking = ToolsTransaction::with('tools')->get();
-        return view('tools.tracking', compact('toolsTracking'));
+        $trackings = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')->get();
+        // return $trackings;
+        return view('tools.tracking', compact('trackings'));
     }
 
     /**
@@ -76,7 +77,7 @@ class ToolsTrackingController extends Controller
     public function tracking(Request $request)
     {
         $code = $request->qrCodeData;
-        $toolsTracking = ToolsTransaction::with('tools')
+        $toolsTracking = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')
             ->whereHas('tools', function ($query) use ($code) {
                 $query->where('code', $code);
             })

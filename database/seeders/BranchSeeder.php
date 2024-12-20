@@ -15,9 +15,10 @@ class BranchSeeder extends Seeder
     {
         Branch::insert([
             [
+                'company_id' => 1,
                 'code' => 'B001',
                 'name' => 'Branch 1',
-                'type' => 'Warehouse XYZ',
+                'type' => 'Head Office',
                 'address' => 'Address 1',
                 'phone' => '1234567890',
                 'status' => 'Active',
@@ -27,9 +28,10 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 1,
                 'code' => 'B002',
                 'name' => 'Branch 2',
-                'type' => 'Warehouse ABC',
+                'type' => 'Head Office',
                 'address' => 'Address 2',
                 'phone' => '9876543210',
                 'status' => 'Inactive',
@@ -39,9 +41,10 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 1,
                 'code' => 'B003',
                 'name' => 'Branch 3',
-                'type' => 'Warehouse DEF',
+                'type' => 'Head Office',
                 'address' => 'Address 3',
                 'phone' => '5555555555',
                 'status' => 'Active',
@@ -51,9 +54,10 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 1,
                 'code' => 'B004',
                 'name' => 'Branch 4',
-                'type' => 'Warehouse GHI',
+                'type' => 'Branch Office',
                 'address' => 'Address 4',
                 'phone' => '9999999999',
                 'status' => 'Inactive',
@@ -63,9 +67,10 @@ class BranchSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
+                'company_id' => 1,
                 'code' => 'B005',
                 'name' => 'Branch 5',
-                'type' => 'Warehouse JKL',
+                'type' => 'Branch Office',
                 'address' => 'Address 5',
                 'phone' => '7777777777',
                 'status' => 'Active',

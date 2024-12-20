@@ -2,7 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Projects;
 use App\Models\Tools;
+use App\Models\ToolsCategorie;
+use App\Models\ToolsMaintenance;
+use App\Models\ToolsOwners;
+use App\Models\ToolsTransaction;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,132 +18,133 @@ class ToolsSeeder extends Seeder
      */
     public function run(): void
     {
+
+        Projects::insert([
+            [
+                'code' => 'PRJ001',
+                'name' => 'Project Alpha',
+                'address' => '123 Main Street',
+                'phone' => '1234567890',
+                'email' => 'alpha@project.com',
+                'ppic' => 'John Doe',
+                'description' => 'This is the first project.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'code' => 'PRJ002',
+                'name' => 'Project Beta',
+                'address' => '456 Another St',
+                'phone' => '0987654321',
+                'email' => 'beta@project.com',
+                'ppic' => 'Jane Smith',
+                'description' => 'This is the second project.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        ToolsOwners::insert([
+            [
+                'name' => 'Owner Alpha',
+                'address' => '789 Tool Lane',
+                'phone' => '1122334455',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Owner Beta',
+                'address' => '321 Wrench Way',
+                'phone' => '5566778899',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        ToolsCategorie::insert([
+            [
+                'code' => 'TC001',
+                'name' => 'Electrical',
+                'description' => 'Tools for electrical works.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'code' => 'TC002',
+                'name' => 'Mechanical',
+                'description' => 'Tools for mechanical works.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
         Tools::insert([
             [
                 'owner_id' => 1,
-                'categorie_id' => 1,
-                'code' => 'T001',
-                'serial_number' => 'SN001',
-                'name' => 'Tool 1',
-                'brand' => 'Brand 1',
-                'type' => 'Type 1',
-                'model' => 'Model 1',
-                'year' => '2022',
-                'quantity' => 10,
-                'unit' => 'Pcs',
-                'origin' => 'Office A',
+                'category_id' => 1,
+                'code' => 'TOOL001',
+                'serial_number' => 'SN12345',
+                'name' => 'Drill Machine',
+                'brand' => 'Bosch',
+                'type' => 'Electrical',
+                'year' => 2020,
+                'quantity' => 5,
                 'condition' => 'New',
                 'status' => 'Active',
-                'description' => 'Description 1',
-                'purchase_date' => '2022-01-01',
-                'purchase_price' => 100.00,
-                'warranty' => 'Warranty 1',
-                'warranty_start' => '2023-01-01',
-                'warranty_end' => '2024-01-01',
-                'photo' => 'photo1.jpg',
+                'purchase_price' => 150.75,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ],
             [
-                'owner_id' => 1,
-                'categorie_id' => 2,
-                'code' => 'T002',
-                'serial_number' => 'SN002',
-                'name' => 'Tool 2',
-                'brand' => 'Brand 2',
-                'type' => 'Type 2',
-                'model' => 'Model 2',
-                'year' => '2023',
-                'quantity' => 5,
-                'unit' => 'Set',
-                'origin' => 'Office B',
+                'owner_id' => 2,
+                'category_id' => 2,
+                'code' => 'TOOL002',
+                'serial_number' => 'SN67890',
+                'name' => 'Wrench Set',
+                'brand' => 'Stanley',
+                'type' => 'Mechanical',
+                'year' => 2019,
+                'quantity' => 10,
                 'condition' => 'Used',
                 'status' => 'Active',
-                'description' => 'Description 2',
-                'purchase_date' => '2023-01-01',
-                'purchase_price' => 200.00,
-                'warranty' => 'Warranty 2',
-                'warranty_start' => '2024-01-01',
-                'warranty_end' => '2025-01-01',
-                'photo' => 'photo2.jpg',
+                'purchase_price' => 80.50,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ],
+        ]);
+
+        ToolsMaintenance::insert([
             [
-                'owner_id' => 1,
-                'categorie_id' => 3,
-                'code' => 'T003',
-                'serial_number' => 'SN003',
-                'name' => 'Tool 3',
-                'brand' => 'Brand 3',
-                'type' => 'Type 3',
-                'model' => 'Model 3',
-                'year' => '2021',
-                'quantity' => 8,
-                'unit' => 'Unit',
-                'origin' => 'Office C',
-                'condition' => 'Used',
-                'status' => 'Active',
-                'description' => 'Description 3',
-                'purchase_date' => '2021-01-01',
-                'purchase_price' => 300.00,
-                'warranty' => 'Warranty 3',
-                'warranty_start' => '2022-01-01',
-                'warranty_end' => '2023-01-01',
-                'photo' => 'photo3.jpg',
+                'tool_id' => 1,
+                'code' => 'MAINT001',
+                'maintenance_date' => now(),
+                'cost' => 50.00,
+                'status' => 'Completed',
+                'description' => 'Routine maintenance.',
+                'completion_date' => now(),
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ],
+        ]);
+
+        ToolsTransaction::insert([
             [
-                'owner_id' => 1,
-                'categorie_id' => 1,
-                'code' => 'T004',
-                'serial_number' => 'SN004',
-                'name' => 'Tool 4',
-                'brand' => 'Brand 4',
-                'type' => 'Type 4',
-                'model' => 'Model 4',
-                'year' => '2020',
-                'quantity' => 6,
-                'unit' => 'Rol',
-                'origin' => 'Office D',
-                'condition' => 'Broken',
-                'status' => 'Maintenance',
-                'description' => 'Description 4',
-                'purchase_date' => '2020-01-01',
-                'purchase_price' => 400.00,
-                'warranty' => 'Warranty 4',
-                'warranty_start' => '2021-01-01',
-                'warranty_end' => '2022-01-01',
-                'photo' => 'photo4.jpg',
+                'user_id' => 1,
+                'tool_id' => 1,
+                'source_project_id' => 1,
+                'destination_project_id' => 2,
+                'document_code' => 'TRX001',
+                'document_date' => now(),
+                'delivery_date' => now(),
+                'quantity' => 1,
+                'type' => 'Delivery Note',
+                'driver' => 'Driver A',
+                'driver_phone' => '1231231234',
+                'plate_number' => 'B1234ABC',
+                'notes' => 'Delivering drill machine.',
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ],
-            [
-                'owner_id' => 1,
-                'categorie_id' => 2,
-                'code' => 'T005',
-                'serial_number' => 'SN005',
-                'name' => 'Tool 5',
-                'brand' => 'Brand 5',
-                'type' => 'Type 5',
-                'model' => 'Model 5',
-                'year' => '2019',
-                'quantity' => 4,
-                'unit' => 'Pcs',
-                'origin' => 'Office E',
-                'condition' => 'Broken',
-                'status' => 'Inactive',
-                'description' => 'Description 5',
-                'purchase_date' => '2019-01-01',
-                'purchase_price' => 500.00,
-                'warranty' => 'Warranty 5',
-                'warranty_start' => '2020-01-01',
-                'warranty_end' => '2021-01-01',
-                'photo' => 'photo5.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
         ]);
     }
 }

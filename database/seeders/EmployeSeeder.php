@@ -21,7 +21,7 @@ class EmployeSeeder extends Seeder
                 'branch_id' => 1,
                 'code' => 'A001',
                 'nik' => '1234567890',
-                'full_name' => 'John Doe',
+                'full_name' => 'SUPER ADMIN',
                 'gender' => 'Male',
                 'phone' => '1234567890',
                 'address' => '123 Main St',
@@ -32,24 +32,24 @@ class EmployeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
-            [
-                'user_id' => 2,
-                'company_id' => 1, // Assuming company with ID 1 exists
-                'department_id' => 2,
-                'branch_id' => 1,
-                'code' => 'A002',
-                'nik' => '9876543210',
-                'full_name' => 'Jane Smith',
-                'gender' => 'Female',
-                'phone' => '9876543210',
-                'address' => '456 Elm St',
-                'position' => 'Developer',
-                'age' => '25',
-                'status' => 'Active',
-                'photo' => 'photo2.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
+            // [
+            //     'user_id' => 2,
+            //     'company_id' => 1,
+            //     'department_id' => 2,
+            //     'branch_id' => 1,
+            //     'code' => 'A002',
+            //     'nik' => '9876543210',
+            //     'full_name' => 'Jane Smith',
+            //     'gender' => 'Male',
+            //     'phone' => '9876543210',
+            //     'address' => '456 Elm St',
+            //     'position' => 'Developer',
+            //     'age' => '25',
+            //     'status' => 'Active',
+            //     'photo' => 'photo2.jpg',
+            //     'created_at' => now(),
+            //     'updated_at' => now()
+            // ],
         ]);
     }
 }

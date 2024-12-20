@@ -16,7 +16,7 @@ class Tools extends Model
 
     protected $fillable = [
         'owner_id',
-        'categorie_id',
+        'category_id',
         'code',
         'serial_number',
         'name',
@@ -62,11 +62,11 @@ class Tools extends Model
 
     public function categorie()
     {
-        return $this->belongsTo(ToolsCategorie::class);
+        return $this->belongsTo(ToolsCategorie::class, 'category_id', 'id');
     }
 
     public function owner()
     {
-        return $this->belongsTo(ToolsOwners::class);
+        return $this->belongsTo(ToolsOwners::class, 'owner_id', 'id');
     }
 }

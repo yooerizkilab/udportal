@@ -59,7 +59,7 @@ class ToolsCategoriesController extends Controller
             return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while creating the tool category');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -106,7 +106,7 @@ class ToolsCategoriesController extends Controller
             return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while updating the tool category');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ class ToolsCategoriesController extends Controller
             return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while deleting the tool category');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

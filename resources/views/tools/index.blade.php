@@ -83,12 +83,12 @@
                                             <a href="{{ route('tools.show', $tool->id) }}" class="btn btn-info mr-1 btn-circle">
                                                 <i class="fas fa-eye fa-md white-50"></i>
                                             </a>
-                                            <button type="button" class="btn btn-secondary mr-1 btn-circle"
+                                            {{-- <button type="button" class="btn btn-secondary mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
                                                 data-target="#transferToolsModal">
                                                 <i class="fas fa-exchange fa-md white-50"></i>
-                                            </button>
+                                            </button> --}}
                                             <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
@@ -113,10 +113,10 @@
                                                 data-target="#editToolsModal">
                                                 <i class="fas fa-pencil fa-md white-50"></i>
                                             </button>
-                                            <form action="{{ route('tools.destroy', $tool->id) }}" method="post" id="formDeleteTools">
+                                            <form action="{{ route('tools.destroy', $tool->id) }}" method="post" id="formDeleteTools-{{ $tool->id }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-danger mr-1 btn-circle" onclick="confirmToolsDelete()">
+                                                <button type="button" class="btn btn-danger mr-1 btn-circle" onclick="confirmToolsDelete({{ $tool->id }})">
                                                     <i class="fas fa-trash fa-md white-50"></i>
                                                 </button>
                                             </form>
@@ -173,10 +173,10 @@
                                                         data-target="#editCategoryModal">
                                                         <i class="fas fa-pencil fa-md white-50"></i>
                                                     </button>
-                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="post" id="deleteCategoryForm" class="d-inline">
+                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="post" id="deleteCategoryForm-{{ $category->id }}" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" onclick="confirmDeleteCategory()" class="btn btn-danger btn-circle">
+                                                        <button type="button" onclick="confirmDeleteCategory({{ $category->id }})" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash fa-md white-50"></i>
                                                         </button>
                                                     </form>
@@ -239,10 +239,10 @@
                                                         data-target="#editOwnershipModal">
                                                         <i class="fas fa-pencil fa-md white-50"></i>
                                                     </button>
-                                                    <form action="{{ route('owners.destroy', $ownership->id) }}" method="post" id="deleteOwnershipForm" class="d-inline">
+                                                    <form action="{{ route('owners.destroy', $ownership->id) }}" method="post" id="deleteOwnershipForm-{{ $ownership->id }}" class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" onclick="confirmOwnershipDelete()" class="btn btn-danger btn-circle">
+                                                        <button type="button" onclick="confirmOwnershipDelete({{ $ownership->id }})" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash fa-md white-50"></i>
                                                         </button>
                                                     </form>
@@ -758,7 +758,6 @@
         $('#dataTable2').DataTable();
     })
 </script>
-
 <script>
 
     $('#viewOwnerModal').on('show.bs.modal', function (event) {
@@ -959,7 +958,7 @@
         });
     }
 
-    function confirmDeleteCategory() {
+    function confirmDeleteCategory(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -970,12 +969,12 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#deleteCategoryForm').submit();
+                $('#deleteCategoryForm-' + id).submit();
             }
         });
     }
 
-    function confirmOwnershipDelete() {
+    function confirmOwnershipDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -986,12 +985,12 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#deleteOwnershipForm').submit();
+                $('#deleteOwnershipForm-' + id).submit();
             }
         });
     }
 
-    function confirmToolsDelete() {
+    function confirmToolsDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -1002,7 +1001,7 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#formDeleteTools').submit();
+                $('#formDeleteTools-' + id).submit();
             }
         });
     }

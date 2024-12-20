@@ -9,11 +9,16 @@ class ToolsCategorie extends Model
 {
     use HasFactory;
 
-    protected $table = 'tools_categorie';
+    protected $table = 'tools_categories';
 
     protected $fillable = [
         'code',
         'name',
         'description',
     ];
+
+    public function tools()
+    {
+        return $this->hasMany(Tools::class);
+    }
 }

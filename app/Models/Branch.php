@@ -10,16 +10,22 @@ class Branch extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'branch';
+    protected $table = 'branches';
 
     protected $fillable = [
+        'company_id',
         'code',
-        'name',
         'type',
-        'address',
+        'name',
         'phone',
+        'address',
         'status',
         'description',
         'photo'
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }

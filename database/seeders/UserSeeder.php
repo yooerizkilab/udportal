@@ -78,10 +78,6 @@ class UserSeeder extends Seeder
             'create ticket',
             'update ticket',
             'delete ticket',
-            'view ticket reply',
-            'create ticket reply',
-            'update ticket reply',
-            'delete ticket reply',
         ];
 
         // Buat atau cek apakah permissions sudah ada
@@ -91,7 +87,6 @@ class UserSeeder extends Seeder
 
         // Buat Role atau cek apakah role sudah ada
         $superAdminRole = Role::firstOrCreate(['name' => 'Superadmin']);
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
         $adminAccounting = Role::firstOrCreate(['name' => 'Admin Accounting']);
         $adminPurchasing = Role::firstOrCreate(['name' => 'Admin Purchasing']);
         $adminFinance = Role::firstOrCreate(['name' => 'Admin Finance']);
@@ -100,7 +95,6 @@ class UserSeeder extends Seeder
         $adminIT = Role::firstOrCreate(['name' => 'Admin IT']);
         $adminGA = Role::firstOrCreate(['name' => 'Admin General Affairs']);
         $adminHR = Role::firstOrCreate(['name' => 'Admin HR']);
-        $staffRole = Role::firstOrCreate(['name' => 'Staff']);
         $userRole = Role::firstOrCreate(['name' => 'User']);
 
         // Berikan semua permissions ke role Superadmin
@@ -115,7 +109,7 @@ class UserSeeder extends Seeder
             'email' => 'superadmin@example.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            // 'remember_token' => Str::random(10),
+            'remember_token' => Str::random(10),
         ]);
 
         $super->assignRole($superAdminRole);

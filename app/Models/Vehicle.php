@@ -22,18 +22,18 @@ class Vehicle extends Model
         'brand',
         'model',
         'color',
+        'license_plate',
         'transmission',
         'fuel',
         'year',
-        'license_plate',
         'tax_year',
         'tax_five_year',
         'inspected',
         'purchase_date',
         'purchase_price',
-        'status',
         'description',
         'origin',
+        'status',
         'photo',
     ];
 
@@ -64,11 +64,6 @@ class Vehicle extends Model
         return $this->hasOneThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id')->latest('vehicle_assignment.created_at');
         // return $this->hasManyThrough(Employe::class, VehicleAssignment::class, 'vehicle_id', 'id', 'id', 'user_id');
     }
-
-    // public function getAssignedEmployeAttribute()
-    // {
-    //     return $this->assigned()->orderBy('assignment_date', 'desc')->first();
-    // }
 
     public function maintenanceRecords()
     {

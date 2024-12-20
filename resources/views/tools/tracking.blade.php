@@ -29,32 +29,23 @@
                             <th>Tools</th>
                             <th>Location</th>
                             <th>Activity</th>
-                            <th>Quantity</th>
-                            <th>Type</th>
                             <th>Transaction Date</th>
                             {{-- <th width="10%" class="text-center">Action</th> --}}
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($toolsTracking as $tracking)
+                        @forelse ($trackings as $tracking)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $tracking->tools->code }}</td>
-                                <td>{{ $tracking->tools->name }}</td>
-                                <td>{{ $tracking->location }}</td>
-                                <td>{{ $tracking->activity }}</td>
-                                <td>{{ $tracking->quantity }}</td>
-                                <td><span class="badge badge-{{ $tracking->badgeClass }}">{{ $tracking->type }}</span></td>
-                                <td>{{ date('d F Y', strtotime($tracking->transaction_date)) }}</td>
-                                {{-- <td class="text-center">
-                                    <div class="d-inline-flex">
-                                        <a href="{{ route('tracking.show', $tracking->id) }}" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
-                                    </div>
-                                </td> --}}
+                                <td>{{ $tracking->tools->code ?? 'N/A' }}</td>
+                                <td>{{ $tracking->tools->name ?? 'N/A' }}</td>
+                                <td>{{ $tracking->last_location ?? 'N/A' }}</td>
+                                <td><span class="badge badge-{{ $tracking->badgeClass }}">{{ $tracking->type ?? 'N/A' }} <i class="fas fa-arrow-right"></i></span> : {{ $tracking->sourceTransactions->name ?? 'N/A' }} <i class="fas fa-arrow-right"></i> {{ $tracking->destinationTransactions->name ?? 'N/A' }}</td>
+                                <td>{{ date('d M Y', strtotime($tracking->created_at)) }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center">No data found</td>
+                                <td colspan="8" class="text-center">Data Not Found</td>
                             </tr>
                         @endforelse
                     </tbody>

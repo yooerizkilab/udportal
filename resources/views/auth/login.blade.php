@@ -7,7 +7,8 @@
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/SAP_2011_logo.svg/1200px-SAP_2011_logo.svg.png" width="50%" height="50%" alt="">
+                        {{-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> --}}
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">

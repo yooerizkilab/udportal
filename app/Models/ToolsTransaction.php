@@ -10,27 +10,41 @@ class ToolsTransaction extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'tools_transaction';
+    protected $table = 'tools_transactions';
 
     protected $appends = ['badgeClass'];
 
     protected $fillable = [
-        'tools_id',
         'user_id',
-        'code',
-        'type',
-        'from',
-        'to',
+        'tool_id',
+        'source_project_id',
+        'destination_project_id',
+        'document_code',
+        'document_date',
+        'delivery_date',
         'quantity',
-        'location',
-        'activity',
-        'transaction_date',
+        'unit',
+        'driver',
+        'driver_phone',
+        'plate_number',
+        'last_location',
+        'type',
         'notes',
     ];
 
     public function tools()
     {
-        return $this->belongsTo(Tools::class);
+        return $this->belongsTo(Tools::class, 'tool_id', 'id');
+    }
+
+    public function sourceTransactions()
+    {
+        return $this->belongsTo(Projects::class, 'source_project_id', 'id');
+    }
+
+    public function destinationTransactions()
+    {
+        return $this->belongsTo(Projects::class, 'destination_project_id', 'id');
     }
 
     public function user()
@@ -53,13 +67,12 @@ class ToolsTransaction extends Model
     public function getBadgeClassAttribute()
     {
         $statusColor = [
-            'In' => 'secondary',
-            'Out' => 'danger',
-            'Return' => 'success',
+            'Return' => 'secondary',
+            'Delivery Note' => 'success',
             'Transfer' => 'primary',
         ];
 
         // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->type] ?? 'secondary';
+        return $statusColor[$this->type] ?? 'success';
     }
 }

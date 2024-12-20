@@ -10,16 +10,31 @@ class Company extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'company';
+    protected $table = 'companies';
 
     protected $fillable = [
         'code',
         'company',
         'name',
         'password',
-        'full_name',
         'email',
-        'address',
         'phone',
+        'address',
+        'description'
     ];
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employe::class);
+    }
+
+    public function branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
 }
