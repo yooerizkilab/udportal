@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="category_code">Description</label>
+                                    <label for="description">Description</label>
                                     <input type="text" class="form-control" name="description" id="description" placeholder="Description">
                                 </div>
                             </div>

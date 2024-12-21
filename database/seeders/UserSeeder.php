@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -20,7 +19,7 @@ class UserSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Daftar permissions yang ingin dibuat
+        // Define permissions
         $permissions = [
             'view roles',
             'create roles',
@@ -80,38 +79,116 @@ class UserSeeder extends Seeder
             'delete ticket',
         ];
 
-        // Buat atau cek apakah permissions sudah ada
+        // Create or update permissions
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Buat Role atau cek apakah role sudah ada
-        $superAdminRole = Role::firstOrCreate(['name' => 'Superadmin']);
-        $adminAccounting = Role::firstOrCreate(['name' => 'Admin Accounting']);
-        $adminPurchasing = Role::firstOrCreate(['name' => 'Admin Purchasing']);
-        $adminFinance = Role::firstOrCreate(['name' => 'Admin Finance']);
-        $adminLegal = Role::firstOrCreate(['name' => 'Admin Legal']);
-        $adminSales = Role::firstOrCreate(['name' => 'Admin Sales']);
-        $adminIT = Role::firstOrCreate(['name' => 'Admin IT']);
-        $adminGA = Role::firstOrCreate(['name' => 'Admin General Affairs']);
-        $adminHR = Role::firstOrCreate(['name' => 'Admin HR']);
-        $userRole = Role::firstOrCreate(['name' => 'User']);
+        // Create roles
+        $rolesPermissions = [
+            'Superadmin' => Permission::all(),
+            'Admin Legal' => [
+                'view contracts',
+                'create contracts',
+                'update contracts',
+                'delete contracts',
+                'view ticket',
+                'create ticket',
+                'update ticket',
+                'delete ticket',
+            ],
+            'Admin GA' => [
+                'view tools',
+                'create tools',
+                'update tools',
+                'delete tools',
+                'view tools categories',
+                'create tools categories',
+                'update tools categories',
+                'delete tools categories',
+                'view tools ownership',
+                'create tools ownership',
+                'update tools ownership',
+                'delete tools ownership',
+                'view tools transaction',
+                'create tools transaction',
+                'update tools transaction',
+                'delete tools transaction',
+                'view tools maintenance',
+                'create tools maintenance',
+                'update tools maintenance',
+                'delete tools maintenance',
+                'view vehicle',
+                'create vehicle',
+                'update vehicle',
+                'delete vehicle',
+                'view vehicle maintenance',
+                'create vehicle maintenance',
+                'update vehicle maintenance',
+                'delete vehicle maintenance',
+                'view vehicle insurance',
+                'create vehicle insurance',
+                'update vehicle insurance',
+                'delete vehicle insurance',
+                'view vehicle transaction',
+                'create vehicle transaction',
+                'update vehicle transaction',
+                'delete vehicle transaction',
+                'view ticket',
+                'create ticket',
+                'update ticket',
+                'delete ticket',
+            ],
+            'Admin IT' => [], // Define specific permissions here if needed
+            'User' => [], // Define specific permissions here if needed
+        ];
 
-        // Berikan semua permissions ke role Superadmin
-        $allPermissions = Permission::all();
-        $superAdminRole->syncPermissions($allPermissions);
+        foreach ($rolesPermissions as $roleName => $rolePermissions) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role->syncPermissions($rolePermissions);
+        }
 
-        // Buat User Super Admin
-        $super = User::create([
-            'name' => 'Super',
-            'username' => 'superadmin',
-            'last_name' => 'Admin',
-            'email' => 'superadmin@example.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            'remember_token' => Str::random(10),
-        ]);
+        // Create users
+        $users = [
+            [
+                'name' => 'Super',
+                'username' => 'superadmin',
+                'last_name' => 'Admin',
+                'email' => 'superadmin@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'Superadmin',
+            ],
+            [
+                'name' => 'Admin',
+                'username' => 'adminlegal',
+                'last_name' => 'Legal',
+                'email' => 'adminlegal@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'Admin Legal',
+            ],
+            [
+                'name' => 'Admin',
+                'username' => 'adminga',
+                'last_name' => 'GA',
+                'email' => 'adminga@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'Admin GA',
+            ],
+        ];
 
-        $super->assignRole($superAdminRole);
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'name' => $userData['name'],
+                    'username' => $userData['username'],
+                    'last_name' => $userData['last_name'],
+                    'password' => $userData['password'],
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                ]
+            );
+            $user->assignRole($userData['role']);
+        }
     }
 }

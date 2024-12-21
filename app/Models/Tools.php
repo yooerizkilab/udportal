@@ -69,4 +69,10 @@ class Tools extends Model
     {
         return $this->belongsTo(ToolsOwners::class, 'owner_id', 'id');
     }
+
+    // change owner to company
+    public function owners()
+    {
+        return $this->belongsTo(Company::class, 'owner_id', 'id');
+    }
 }

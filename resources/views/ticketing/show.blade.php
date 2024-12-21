@@ -20,6 +20,7 @@
                         <i class="fas fa-ticket-alt mr-2"></i>Ticket Information
                     </h6>
                     <div class="d-flex align-items-center">
+                        {{-- @if($tickets->user_id != auth()->user()->id) --}}
                         @can('cancle ticket')
                         @if($tickets->status == 'Open')
                         <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal"><i class="fas fa-trash"></i>
@@ -50,6 +51,7 @@
                                 <i class="fas fa-reply"></i> Back
                             </a>
                         @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -164,7 +166,7 @@
                 <div class="card-header py-3 bg-gradient-info text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold">
-                            <i class="fas fa-ticket-alt mr-2"></i>Solved Ticket
+                            <i class="fas fa-ticket-alt mr-2"></i>Solved Ticket by {{ $tickets->user->name }}
                         </h6>
                         <span class="badge badge-light text-dark">
                             {{ Carbon\Carbon::parse($tickets->closed_at)->diffForHumans() }}
@@ -178,7 +180,8 @@
                     
                     @if ($tickets->attachment)
                         <div class="mt-3">
-                            <a href="{{ route('ticketing.download', $tickets->id) }}" class="btn btn-primary btn-sm">
+                            {{-- <a href="{{ route('ticketing.download', $tickets->id) }}" class="btn btn-primary btn-sm"> --}}
+                            <a href="" class="btn btn-primary btn-sm">
                                 <i class="fas fa-download mr-2"></i>Download Attachment
                             </a>
                         </div>
@@ -195,7 +198,7 @@
                 <div class="card-header py-3 bg-gradient-danger text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold">
-                            <i class="fas fa-ticket-alt mr-2"></i>Cancelled Ticket
+                            <i class="fas fa-ticket-alt mr-2"></i>Cancelled Ticket by {{ $tickets->fixed->fullName }}
                         </h6>
                         <span class="badge badge-light text-dark">
                             {{ Carbon\Carbon::parse($tickets->cancelled_at)->diffForHumans() }}

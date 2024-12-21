@@ -49,12 +49,12 @@ class TicketingController extends Controller
         } else {
             // Admin melihat tiket berdasarkan department_id dari assignee
             $tickets = $ticketsQuery->whereHas('assignee', function ($query) use ($user) {
-                $query->where('assignee_id', $user->employe->department_id);
+                $query->where('assigned_id', $user->employe->department_id);
             })->paginate(12);
 
             $widgetQuery = clone $ticketsQuery;
             $widgetQuery->whereHas('assignee', function ($query) use ($user) {
-                $query->where('assignee_id', $user->employe->department_id);
+                $query->where('assigned_id', $user->employe->department_id);
             });
         }
 
@@ -119,7 +119,7 @@ class TicketingController extends Controller
         $data = [
             'user_id' => auth()->user()->id,
             'category_id' => $request->category_id,
-            'assignee_id' => $request->assignee_to,
+            'assigned_id' => $request->assignee_to,
             'code' => $code,
             'title' => $request->title,
             'description' => $request->description, // From summernote
@@ -163,7 +163,7 @@ class TicketingController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:tickets_categories,id',
-            'assignee_to' => 'required|exists:department,id',
+            'assignee_to' => 'required|exists:departments,id',
             'title' => 'required|string|max:100',
             'priority' => 'required|string|in:Low,Medium,High',
             'description' => 'required',
@@ -188,7 +188,7 @@ class TicketingController extends Controller
 
         $data = [
             'category_id' => $request->category_id,
-            'assignee_id' => $request->assignee_to,
+            'assigned_id' => $request->assignee_to,
             'title' => $request->title,
             'description' => $request->description,
             'priority' => $request->priority,

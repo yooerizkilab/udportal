@@ -106,5 +106,34 @@
 <!-- Sweet Alert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 @stack('scripts')
+<script>
+    @if (session('success'))
+         Swal.fire({
+             icon: 'success',
+             title: 'Success',
+             text: '{{ session('success') }}',
+             showConfirmButton: false,
+             timer: 1500
+         });
+     @endif
+ 
+     @if (session('error'))
+         Swal.fire({
+             icon: 'error',
+             title: 'Error',
+             text: '{{ session('error') }}',
+             showConfirmButton: true,
+         });
+     @endif
+ 
+     @if ($errors->any())
+         Swal.fire({
+             icon: 'error',
+             title: 'Error',
+             text: '{{ $errors->first() }}',
+             showConfirmButton: true,
+         });
+     @endif
+</script>
 </body>
 </html>

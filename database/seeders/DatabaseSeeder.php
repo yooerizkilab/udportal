@@ -40,14 +40,14 @@ class DatabaseSeeder extends Seeder
             // AssignmentsSeeder::class,
             // InsurancePoliciesSeeder::class,
             // VehicleTransactionSeeder::class,
-            // ToolsCategorieSeeder::class,
-            // ToolsOwnersSeeder::class,
+            ToolsCategorieSeeder::class,
+            ToolsOwnersSeeder::class,
             ToolsSeeder::class,
             // ToolsMaintenanceSeeder::class,
             // ToolsTransactionSeeder::class,
-            // TicketsCategoriesSeeder::class,
-            // TicketsSeeder::class,
-            // TicketsCommentsSeeder::class,
+            TicketsCategoriesSeeder::class,
+            TicketsSeeder::class,
+            TicketsCommentsSeeder::class,
         ]);
     }
 }

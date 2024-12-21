@@ -1,123 +1,312 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Jalan</title>
+    <meta charset="utf-8">
+    <title>Delivery Note</title>
     <style>
+        @page {
+            margin: 0.5cm 1cm;
+        }
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
-            font-size: 14px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            padding: 10px;
         }
         .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .company-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .company-details {
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-        .document-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 20px 0;
-            text-align: center;
-            text-decoration: underline;
-        }
-        .info-section {
+            position: relative;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
             margin-bottom: 20px;
         }
-        .info-row {
-            margin-bottom: 8px;
+        .company-logo {
+            position: absolute;
+            left: 0;
+            top: 0;
         }
-        table {
+        .document-title {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .document-title h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+        .document-title p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+        .doc-info {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .doc-info table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
         }
-        table th, table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
+        .doc-info td {
+            padding: 4px 8px;
+            vertical-align: top;
         }
-        table th {
-            background-color: #f0f0f0;
+        .doc-info .label {
+            font-weight: bold;
+            width: 120px;
         }
-        .footer {
-            margin-top: 50px;
+        .address-section {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
         }
-        .signature-section {
-            float: right;
-            width: 200px;
+        .address-box {
+            border: 1px solid #999;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        .address-box h3 {
+            margin: 0 0 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ccc;
+            font-size: 12px;
+            color: #333;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #999;
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+        .items-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .items-table td {
+            vertical-align: top;
+        }
+        .items-table .center {
             text-align: center;
         }
-        .signature-line {
-            margin-top: 80px;
-            border-top: 1px solid #000;
+        .items-table .right {
+            text-align: right;
         }
-        .clear {
-            clear: both;
+        .notes-section {
+            margin-bottom: 30px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        .notes-section h3 {
+            margin: 0 0 5px;
+            font-size: 12px;
+        }
+        .signatures {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+        .signature-grid {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .signature-box {
+            display: table-cell;
+            width: 33.33%;
+            padding: 10px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+        .signature-line {
+            margin-top: 60px;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 9px;
+            color: #666;
+            border-top: 1px solid #ccc;
+        }
+        .stamp-box {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            border: 2px solid #999;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            font-style: italic;
+            color: #999;
+            transform: rotate(-15deg);
+        }
+        .qr-code {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: white;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        {{-- <div class="company-name">{{ $company_name }}</div>
-        <div class="company-details">{{ $company_address }}</div>
-        <div class="company-details">Telp: {{ $company_phone }}</div> --}}
-    </div>
+    <div class="container">
+        <div class="header">
+            <div class="company-logo">
+                <!-- Logo placeholder -->
+                <div style="width: 150px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">LOGO</div>
+            </div>
+            <div class="document-title">
+                <h1>DELIVERY NOTE</h1>
+                <p>Document Number: {{ $deliveryNote->first()->document_code }}</p>
+            </div>
+            <div class="qr-code">
+                <!-- QR Code placeholder -->
+                <div style="width: 50px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">QR</div>
+            </div>
+        </div>
 
-    <div class="document-title">SURAT JALAN</div>
-
-    <div class="info-section">
-        {{-- <div class="info-row">No. Surat Jalan: {{ $no_surat }}</div>
-        <div class="info-row">Tanggal: {{ $tanggal }}</div> --}}
-    </div>
-
-    <div class="info-section">
-        <div class="info-row">Kepada Yth:</div>
-        {{-- <div class="info-row">{{ $customer_name }}</div>
-        <div class="info-row">{{ $customer_address }}</div>
-        <div class="info-row">Telp: {{ $customer_phone }}</div> --}}
-    </div>
-
-    <table>
-        <thead>
+        <table class="doc-info">
             <tr>
-                <th>No.</th>
-                <th>Nama Barang</th>
-                <th>Jumlah</th>
-                <th>Satuan</th>
-                <th>Keterangan</th>
+                <td class="label">Document Date</td>
+                <td>: {{ $deliveryNote->first()->document_date }}</td>
+                <td class="label">{{ $deliveryNote->first()->type }}</td>
+                <td>: {{ $deliveryNote->first()->delivery_date }}</td>
             </tr>
-        </thead>
-        <tbody>
-            {{-- @foreach($items as $index => $item)
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $item->nama_barang }}</td>
-                <td>{{ $item->jumlah }}</td>
-                <td>{{ $item->satuan }}</td>
-                <td>{{ $item->keterangan }}</td>
+                <td class="label">Driver Name</td>
+                <td>: {{ $deliveryNote->first()->driver }}</td>
+                <td class="label">Driver Phone</td>
+                <td>: {{ $deliveryNote->first()->driver_phone }}</td>
             </tr>
-            @endforeach --}}
-        </tbody>
-    </table>
+            <tr>
+                <td class="label">Transportation</td>
+                <td colspan="3">: -</td>
+            </tr>
+        </table>
+
+        <table class="address-section">
+            <tr>
+                <td width="48%">
+                    <div class="address-box">
+                        <h3>FROM (Source Location)</h3>
+                        <strong>{{ $deliveryNote->first()->sourceTransactions->name }} ({{ $deliveryNote->first()->sourceTransactions->code }})</strong><br>
+                        {{ $deliveryNote->first()->sourceTransactions->address }}<br><br>
+                        <strong>Contact Person:</strong> {{ $deliveryNote->first()->sourceTransactions->ppic }} (PPIC)<br>
+                        <strong>Phone:</strong> {{ $deliveryNote->first()->sourceTransactions->phone }}<br>
+                        <strong>Email:</strong> {{ $deliveryNote->first()->sourceTransactions->email }}
+                    </div>
+                </td>
+                <td width="4%"></td>
+                <td width="48%">
+                    <div class="address-box">
+                        <h3>TO (Destination)</h3>
+                        <strong>Project Beta (PRJ002)</strong><br>
+                        456 Another St<br><br>
+                        <strong>Contact Person:</strong> Jane Smith (PPIC)<br>
+                        <strong>Phone:</strong> 0987654321<br>
+                        <strong>Email:</strong> beta@project.com
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="15%">Tool Code</th>
+                    <th width="25%">Name</th>
+                    <th width="15%">Brand</th>
+                    <th width="15%">Serial Number</th>
+                    <th width="10%">Condition</th>
+                    <th width="7%">Qty</th>
+                    <th width="8%">Unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($deliveryNote as $item)
+                <tr>
+                    <td class="center">{{ $loop->iteration }}</td>
+                    <td>{{ $item->tools->code }}</td>
+                    <td>{{ $item->tools->name }}</td>
+                    <td>{{ $item->tools->brand }}</td>
+                    <td>{{ $item->tools->serial_number }}</td>
+                    <td class="center">{{ $item->tools->condition }}</td>
+                    <td class="center">{{ $item->quantity }}</td>
+                    <td class="center">{{ $item->tools->unit }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="notes-section">
+            <h3>Notes & Instructions:</h3>
+            <p>{{ $deliveryNote->first()->notes }}</p>
+        </div>
+
+        <hr>
+
+        <div class="signatures">
+            <div class="signature-grid">
+                <div class="signature-box">
+                    <strong>Delivered By: </strong>
+                    <div class="signature-line">
+                        Name: _________________<br>
+                        Date: __________________<br>
+                        Time: __________________
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <strong>Received By:</strong>
+                    <div class="signature-line">
+                        Name: _________________<br>
+                        Date: __________________<br>
+                        Time: __________________
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <strong>Approved By:</strong>
+                    <div class="signature-line">
+                        Name: _________________<br>
+                        Date: __________________<br>
+                        Position: ______________
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <strong>Approved By:</strong>
+                    <div class="signature-line">
+                        Name: _________________<br>
+                        Date: __________________<br>
+                        Position: ______________
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="footer">
-        <div class="signature-section">
-            {{-- <div>{{ $kota }}, {{ $tanggal }}</div> --}}
-            <div>Hormat Kami,</div>
-            <div class="signature-line"></div>
-            {{-- <div>{{ $nama_pengirim }}</div> --}}
-        </div>
-        <div class="clear"></div>
+        This delivery note is computer generated and is valid without signature. | Page 1 of 1 | Generated on: <?php echo date('d/m/Y H:i:s'); ?>
     </div>
 </body>
 </html>

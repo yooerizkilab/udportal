@@ -55,7 +55,7 @@ class Tickets extends Model
 
     public function assignee()
     {
-        return $this->belongsTo(Department::class, 'assignee_id', 'id');
+        return $this->belongsTo(Department::class, 'assigned_id', 'id');
     }
 
     public function fixed()
@@ -70,6 +70,6 @@ class Tickets extends Model
 
     public function department()
     {
-        return $this->belongsTo(Department::class, 'assignee_id', 'id');
+        return $this->belongsTo(Department::class, 'assigned_id', 'id');
     }
 }

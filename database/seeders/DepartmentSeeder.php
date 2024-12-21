@@ -17,43 +17,35 @@ class DepartmentSeeder extends Seeder
             [
                 'code' => 'D001',
                 'company_id' => 1,
-                'name' => 'Department A',
-                'description' => 'Description for Department A',
+                'name' => 'Head Office',
+                'description' => 'Description for Head Office',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'code' => 'D002',
                 'company_id' => 1,
-                'name' => 'Department B',
-                'description' => 'Description for Department B',
+                'name' => 'IT',
+                'description' => 'Description for Department IT',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'code' => 'D003',
                 'company_id' => 1,
-                'name' => 'Department C',
-                'description' => 'Description for Department C',
+                'name' => 'Legal',
+                'description' => 'Description for Department Legal',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
                 'code' => 'D004',
                 'company_id' => 1,
-                'name' => 'Department D',
-                'description' => 'Description for Department D',
+                'name' => 'GA',
+                'description' => 'Description for Department GA',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
-            [
-                'code_department' => 'D005',
-                'company_id' => 1,
-                'name_department' => 'Department E',
-                'description' => 'Description for Department E',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
         ]);
     }
 }

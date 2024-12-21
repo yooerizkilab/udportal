@@ -56,7 +56,7 @@
                                 <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title">
                             </div>
                             <div class="form-group">
-                                <label for="description">Description Tickets</label>
+                                <label for="descriptionOne">Description Tickets</label>
                                 <textarea id="summernoteOne" name="description"></textarea>
                             </div>
                         </form>
@@ -192,7 +192,7 @@
                             <input type="text" class="form-control" id="titleUpdate" name="title" placeholder="Enter Title">
                         </div>
                         <div class="form-group">
-                            <label for="description">Description Tickets</label>
+                            <label for="descriptionTwo">Description Tickets</label>
                             <textarea id="summernoteTwo" class="form-control" name="description"></textarea>
                         </div>
                     </form>
@@ -331,33 +331,5 @@
             }
         })
     }
-
-    @if (session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '{{ session('success') }}',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    @endif
-
-    @if (session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-            showConfirmButton: true,
-        });
-    @endif
-
-    @if ($errors->any())
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ $errors->first() }}',
-            showConfirmButton: true,
-        });
-    @endif
 </script>
 @endpush

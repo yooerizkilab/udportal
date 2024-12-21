@@ -3,8 +3,8 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon">
-            {{-- <i class="fas fa-code"></i> --}}
-            <i class="fas fa-star-of-david"></i>
+            <i class="fas fa-code"></i>
+            {{-- <i class="fas fa-star-of-david"></i> --}}
         </div>
         <div class="sidebar-brand-text mx-3">UDPORTAL</div>
     </a>
@@ -121,13 +121,13 @@
 
     @can('view ticket')
     <!-- Nav Item - Tickecting Management Collapse Menu -->
-    <li class="nav-item {{ request()->routeIs(['ticketing.index', 'ticketing-categories.index']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['ticketing.index', 'ticketing-categories.*']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicketing"
             aria-expanded="true" aria-controls="collapseTicketing">
             <i class="fas fa-fw fa-hands-holding-child"></i>
             <span>Ticketing Management</span>
         </a>
-        <div id="collapseTicketing" class="collapse {{ request()->routeIs(['ticketing.index', 'ticketing-categories.index']) ? 'show' : '' }}" aria-labelledby="headingTicketing"
+        <div id="collapseTicketing" class="collapse {{ request()->routeIs(['ticketing.index', 'ticketing-categories.*']) ? 'show' : '' }}" aria-labelledby="headingTicketing"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('ticketing.index') ? 'active' : '' }}" href="{{ route('ticketing.index') }}">{{ __('Ticketing') }}</a>

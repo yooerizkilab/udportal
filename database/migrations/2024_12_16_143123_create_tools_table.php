@@ -104,7 +104,7 @@ return new class extends Migration
             $table->string('driver', 50)->nullable();
             $table->string('driver_phone', 20)->nullable();
             $table->string('plate_number', 50)->nullable();
-            $table->string('last_location', 100)->nullable();
+            $table->string('last_location', 255)->nullable();
             $table->enum('type', ['Delivery Note', 'Transfer', 'Return'])->default('Delivery Note');
             $table->longText('notes')->nullable();
             $table->timestamps();
@@ -117,11 +117,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
-        Schema::dropIfExists('tools_categories');
-        Schema::dropIfExis☻ts('tools_ownership');
+        Schema::dropIfExists('tools_transactions');
         Schema::dropIfExists('tools_maintenance');
         Schema::dropIfExists('tools');
-        Schema::dropIfExists('tools_transactions');
+        Schema::dropIfExists('projects');
+        Schema::dropIfExists('tools_categories');
+        Schema::dropIfExists('tools_ownership');
     }
 };
