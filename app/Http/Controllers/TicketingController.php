@@ -44,7 +44,7 @@ class TicketingController extends Controller
         // Filter tiket berdasarkan role user
         if ($isSuperadmin) {
             // Superadmin melihat semua tiket
-            $tickets = $ticketsQuery->paginate(12);
+            $tickets = $ticketsQuery->paginate(8);
             $widgetQuery = clone $ticketsQuery;
         } else {
             // Admin melihat tiket berdasarkan department_id dari assignee
@@ -91,7 +91,7 @@ class TicketingController extends Controller
         // Validation request
         $request->validate([
             'category_id' => 'required|exists:tickets_categories,id',
-            'assignee_to' => 'required|exists:department,id',
+            'assignee_to' => 'required|exists:departments,id',
             'title' => 'required|string|max:100',
             'priority' => 'required|string|in:Low,Medium,High',
             'description' => 'required',
@@ -130,7 +130,7 @@ class TicketingController extends Controller
         try {
             $ticket = Tickets::create($data); // Save ticket with attachments
             DB::commit();
-            return redirect()->back()->with('success', 'Ticket' . $ticket->code . 'created successfully');
+            return redirect()->back()->with('success', 'Ticket ' . $ticket->code . ' created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());

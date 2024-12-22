@@ -18,7 +18,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ticket Open</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['open'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['open'] ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-info">
@@ -35,7 +35,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">Ticket In Progress</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['inprogress'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['inprogress'] ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-secondary">
@@ -52,7 +52,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ticket Closed</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['closed'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['closed'] ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-success">
@@ -69,7 +69,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ticket Cancelled</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cancelled'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $widget['cancelled'] ?? 0 }}</div>
                         </div>
                         <div class="col-auto">
                             <button type="button" class="btn btn-danger">
