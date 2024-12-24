@@ -37,20 +37,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @forelse ($trans as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->code }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center">Data Not Found</td>
-                            </tr>
-                        @endforelse --}}
+                        
                     </tbody>
                 </table>
             </div>
@@ -67,34 +54,5 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
-</script>
-<script>
-   @if (session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '{{ session('success') }}',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    @endif
-
-    @if (session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-            showConfirmButton: true,
-        });
-    @endif
-
-    @if ($errors->any())
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ $errors->first() }}',
-            showConfirmButton: true,
-        });
-    @endif
 </script>
 @endpush

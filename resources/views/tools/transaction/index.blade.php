@@ -42,7 +42,7 @@
                                         <div class="d-inline-flex">
                                             <a href="{{ route('transactions.generateDN', $transaction->id) }}" class="btn btn-success btn-circle mr-2"><i class="fas fa-print"></i></a>
                                             <a href="{{ route('transactions.show', $transaction->id) }}" class="btn btn-info btn-circle mr-2"><i class="fas fa-eye"></i></a>
-                                            <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-warning btn-circle mr-2"><i class="fas fa-edit"></i></a>
+                                            <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-warning btn-circle mr-2"><i class="fas fa-pencil"></i></a>
                                             <form action="{{ route('transactions.destroy', $transaction->id) }}" method="post" id="deleteDeliveryNoteForm-{{ $transaction->id }}">
                                                 @csrf
                                                 @method('DELETE')
@@ -69,11 +69,13 @@
 @endsection
 
 @push('scripts')
-
 <!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
     function confirmDeleteDeliveryNote(deliveryNoteId) {
         Swal.fire({
             title: 'Are you sure?',

@@ -59,21 +59,21 @@ class UsersController extends Controller
     {
         // Validasi input dari form
         $request->validate([
-            'nik' => 'required|string|max:16|unique:employe,nik',
+            'nik' => 'required|string|max:16|unique:employees,nik',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'roles' => 'required|exists:roles,id',
-            'phone' => 'required|numeric|unique:employe,phone|min:10',
+            'phone' => 'required|numeric|unique:employees,phone|min:10',
             'gender' => 'required|in:Male,Female',
             'age' => 'required|integer|min:0',
             'position' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'company_id' => 'required|exists:company,id',
-            'department_id' => 'required|exists:department,id',
-            'branch_id' => 'required|exists:branch,id',
+            'company_id' => 'required|exists:companies,id',
+            'department_id' => 'required|exists:departments,id',
+            'branch_id' => 'required|exists:branches,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

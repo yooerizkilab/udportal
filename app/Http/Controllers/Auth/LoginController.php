@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use App\Providers\RouteServiceProvider;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -48,8 +49,17 @@ class LoginController extends Controller
 
     protected function sendFailedLoginResponse(Request $request)
     {
+        $loginField = $this->username();
+        $userExists = User::where($loginField, $request->username)->exists();
+
+        if (!$userExists) {
+            throw ValidationException::withMessages([
+                $loginField => ['Akun dengan username atau email ini tidak ditemukan.'],
+            ]);
+        }
+
         throw ValidationException::withMessages([
-            'username' => [trans('auth.failed')],
+            'password' => ['Password yang dimasukkan salah.'],
         ]);
     }
 

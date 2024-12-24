@@ -25,10 +25,10 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th>Code</th>
-                            <th>Tools</th>
-                            <th>Location</th>
-                            <th>Activity</th>
+                            <th width="10%">Code</th>
+                            <th width="15%">Tools</th>
+                            <th class="text-center">Last Location</th>
+                            <th width="25%" class="text-center">Activity</th>
                             <th>Transaction Date</th>
                             {{-- <th width="10%" class="text-center">Action</th> --}}
                         </tr>
@@ -40,7 +40,7 @@
                                 <td>{{ $tracking->tools->code ?? 'N/A' }}</td>
                                 <td>{{ $tracking->tools->name ?? 'N/A' }}</td>
                                 <td>{{ $tracking->last_location ?? 'N/A' }}</td>
-                                <td><span class="badge badge-{{ $tracking->badgeClass }}">{{ $tracking->type ?? 'N/A' }} <i class="fas fa-arrow-right"></i></span> : {{ $tracking->sourceTransactions->name ?? 'N/A' }} <i class="fas fa-arrow-right"></i> {{ $tracking->destinationTransactions->name ?? 'N/A' }}</td>
+                                <td><span class="badge badge-{{ $tracking->badgeClass }}">{{ $tracking->type ?? 'N/A' }}</span> : {{ $tracking->sourceTransactions->name ?? 'N/A' }} <i class="fas fa-arrow-right text-primary"></i> {{ $tracking->destinationTransactions->name ?? 'N/A' }}</td>
                                 <td>{{ date('d M Y', strtotime($tracking->created_at)) }}</td>
                             </tr>
                         @empty

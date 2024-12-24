@@ -41,24 +41,25 @@ class TicketingController extends Controller
         $ticketsQuery = Tickets::with(['category', 'assignee', 'user', 'fixed'])
             ->orderBy('id', 'desc');
 
-        // Filter tiket berdasarkan role user
-        if ($isSuperadmin) {
-            // Superadmin melihat semua tiket
-            $tickets = $ticketsQuery->paginate(8);
-            $widgetQuery = clone $ticketsQuery;
-        } else {
-            // Admin melihat tiket berdasarkan department_id dari assignee
-            $tickets = $ticketsQuery->whereHas('assignee', function ($query) use ($user) {
-                $query->where('assigned_id', $user->employe->department_id);
-            })->paginate(12);
+        // Clone query untuk widget sebelum paginasi
+        $widgetQuery = clone $ticketsQuery;
 
-            $widgetQuery = clone $ticketsQuery;
+        // Filter tiket berdasarkan role user 
+        if (!$isSuperadmin) {
+            // Admin melihat tiket berdasarkan department_id dari assignee
+            $ticketsQuery->whereHas('assignee', function ($query) use ($user) {
+                $query->where('assigned_id', $user->employe->department_id);
+            });
+
             $widgetQuery->whereHas('assignee', function ($query) use ($user) {
                 $query->where('assigned_id', $user->employe->department_id);
             });
         }
 
-        // Buat widget untuk menampilkan jumlah tiket
+        // Paginasi tiket setelah filtering
+        $tickets = $ticketsQuery->paginate(12);
+
+        // Hitung widget setelah filtering
         $widget = $widgetQuery->selectRaw('
             SUM(CASE WHEN status = "Open" THEN 1 ELSE 0 END) as open,
             SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed,
@@ -70,7 +71,6 @@ class TicketingController extends Controller
         // Tampilkan view dengan data tiket dan widget
         return view('ticketing.index', compact('tickets', 'widget'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -136,7 +136,6 @@ class TicketingController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
-
 
     /**
      * Display the specified resource.

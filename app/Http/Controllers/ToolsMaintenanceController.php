@@ -15,8 +15,8 @@ class ToolsMaintenanceController extends Controller
         $this->middleware('permission:view tools maintenance', ['only' => ['index']]);
         $this->middleware('permission:create tools maintenance', ['only' => ['create', 'store']]);
         $this->middleware('permission:update tools maintenance', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:complete tools maintenance', ['only' => ['completeMaintenance']]);
-        $this->middleware('permission:cancel tools maintenance', ['only' => ['cancelMaintenance']]);
+        // $this->middleware('permission:complete tools maintenance', ['only' => ['completeMaintenance']]);
+        // $this->middleware('permission:cancel tools maintenance', ['only' => ['cancelMaintenance']]);
         $this->middleware('permission:delete tools maintenance', ['only' => ['destroy']]);
     }
     /**
@@ -77,7 +77,7 @@ class ToolsMaintenanceController extends Controller
 
         // Siapkan data untuk maintenance
         $data = [
-            'tools_id' => $tools->id,
+            'tool_id' => $tools->id,
             'code' => $defaultCode,
             'maintenance_date' => date('Y-m-d', strtotime($request->maintenance_date)),
             'cost' => $request->cost,

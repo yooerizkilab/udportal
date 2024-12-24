@@ -54,8 +54,7 @@ class SAPServices
         ])->withHeaders([
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'odata.maxpagesize=10'
-            // 'Prefer' => 'odata.maxpagesize=2'
+            'Prefer' => 'odata.maxpagesize=100'
         ])->get($this->baseUrl . $endpoint, $parameters);
 
         if ($response->successful()) {
@@ -79,7 +78,7 @@ class SAPServices
         ])->withHeaders([
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'OData.MaxPageSize=1'
+            'Prefer' => 'odata.maxpagesize=1'
         ])->get($this->baseUrl . $endpoint . "('" . $id . "')", $parameters);
 
         if ($response->successful()) {
@@ -206,42 +205,5 @@ class SAPServices
         } catch (\Exception $e) {
             throw new \Exception("Error during logout: " . $e->getMessage());
         }
-    }
-
-    /**
-     * Call SAP B1 stored procedure
-     * 
-     * @param string $procedureName
-     * @param array $parameters
-     * @return array
-     * @throws Exception
-     */
-    public function callStoredProcedure(string $procedureName, array $parameters = [])
-    {
-        try {
-            // Build the parameter string
-            $paramString = $this->buildParameterString($parameters);
-
-            // Construct the SQL query
-            $query = "EXEC {$procedureName} {$paramString}";
-
-            // Execute the stored procedure
-            $result = DB::connection('sapb1')->select($query, $parameters);
-
-            return $result;
-        } catch (Exception $e) {
-            throw new Exception("Error calling SAP B1 stored procedure: " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Build parameter string for stored procedure
-     * 
-     * @param array $parameters
-     * @return string
-     */
-    private function buildParameterString(array $parameters): string
-    {
-        return implode(', ', array_fill(0, count($parameters), '?'));
     }
 }

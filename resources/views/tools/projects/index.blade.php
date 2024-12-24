@@ -45,13 +45,13 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <textarea name="address" id="address" class="form-control" cols="30" rows="5"></textarea>
+                            <textarea name="address" id="address" class="form-control" cols="30" rows="5" placeholder="Enter address"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" cols="30" rows="5"></textarea>
+                            <textarea name="description" id="description" class="form-control" cols="30" rows="5" placeholder="Enter description (optional)"></textarea>
                         </div>
                     </div> 
                 </div>
@@ -156,13 +156,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="address">Address</label>
-                                    <textarea name="address" id="address" class="form-control" cols="30" rows="5"></textarea>
+                                    <textarea name="address" id="address" class="form-control" cols="30" rows="5" required placeholder="Enter address"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control" cols="30" rows="5"></textarea>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="5" placeholder="Enter description (optional)"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -35,4 +35,14 @@ class Employe extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
+    }
 }

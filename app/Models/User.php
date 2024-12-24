@@ -78,7 +78,7 @@ class User extends Authenticatable
 
     public function employe()
     {
-        return $this->hasOne(Employe::class);
+        return $this->hasOne(Employe::class, 'user_id', 'id');
     }
 
     public function assignments()

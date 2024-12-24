@@ -1,0 +1,1 @@
+<a href="{{ route('transactions.index') }}">Back</a>
