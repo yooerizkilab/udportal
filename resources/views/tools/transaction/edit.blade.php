@@ -6,9 +6,9 @@
 @endpush
 
 @section('main-content')
-    <h1 class="h3 mb-0 text-gray-800">{{ __('Update Delivery Note') }}</h1>
+    <h1 class="h3 mb-0 text-gray-800">{{ __('Edit Delivery Note') }}</h1>
     <p class="mb-4">
-        This page is used to update delivery note.
+        This page is used to edit delivery note.
     </p>
 
     <div class="card shadow">
@@ -19,7 +19,7 @@
             </a>
         </div>
         <div class="card-body">
-            <form action="" method="POST" id="deliveryNoteForm">
+            <form action="{{ route('transactions.update', $transaction[0]->id) }}" method="POST" id="deliveryNoteForm">
                 @csrf
                 @method('PUT')
                 <div class="row mb-4">
@@ -28,9 +28,9 @@
                         <label for="type_delivery">Type of Delivery</label>
                         <select name="type_delivery" class="form-control" id="type_delivery">
                             <option value="">-- Select Type Delivery --</option>
-                            <option value="Delivery Note">Delivery Note</option>
-                            <option value="Transfer">Transfer</option>
-                            <option value="Return">Return</option>
+                            <option value="Delivery Note" {{ $transaction[0]->type == 'Delivery Note' ? 'selected' : '' }}>Delivery Note</option>
+                            <option value="Transfer" {{ $transaction[0]->type == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                            <option value="Return" {{ $transaction[0]->type == 'Return' ? 'selected' : '' }}>Return</option>
                         </select>
                     </div>
 
@@ -38,16 +38,18 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="driver_name">Driver Name</label>
-                            <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name') }}" required>
+                            <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name', $transaction[0]->driver) }}" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="source_project_id">Source Project</label>
                             <select name="source_project_id" id="source_project_id" class="form-control">
-                                <option disabled selected>--Select Source Project--</option>
-                                {{-- @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
-                                @endforeach --}}
+                                <option disabled>--Select Source Project--</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}" {{ $transaction[0]->source_project_id == $project->id ? 'selected' : '' }}>
+                                        {{ $project->name }} - {{ $project->code }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -55,7 +57,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="driver_phone" class="form-label">Driver Phone</label>   
-                            <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone') }}" required>
+                            <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone', $transaction[0]->driver_phone) }}" required>
                         </div>
                         <div class="text-center mt-4">
                             <i class="fas fa-arrow-right fa-4x text-primary"></i>
@@ -64,16 +66,18 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="delivery_date" class="form-label">Delivery Date</label>
-                            <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', date('Y-m-d')) }}" required autocomplete="off">
+                            <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', $transaction[0]->delivery_date) }}" required autocomplete="off">
                         </div>
                         
                         <div class="form-group">
                             <label for="destination_project_id">Destination Project</label>
                             <select name="destination_project_id" id="destination_project_id" class="form-control">
-                                <option disabled selected>--Select Destination Project--</option>
-                                {{-- @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
-                                @endforeach --}}
+                                <option disabled>--Select Destination Project--</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}" {{ $transaction[0]->destination_project_id == $project->id ? 'selected' : '' }}>
+                                        {{ $project->name }} - {{ $project->code }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -98,7 +102,19 @@
                                     <th width="10%" class="text-center">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>        
+                            <tbody>
+                                @foreach($transaction as $item)
+                                <tr>
+                                    <td>{{ $item->tools->code }}</td>
+                                    <td>{{ $item->last_location }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-circle" onclick="removeToolRow(this, '{{ $item->tools->code }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <input type="hidden" name="tools[]" value="{{ json_encode(['code' => $item->tools->code, 'location' => $item->last_location]) }}">
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -110,12 +126,12 @@
                 <!-- Notes -->
                 <div class="form-group">
                     <label for="notes" class="form-label">Notes</label>
-                    <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
+                    <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes', $transaction[0]->notes) }}</textarea>
                 </div>
 
                 <div class="text-right">
-                    <button type="button" class="btn btn-success" onclick="confirmAddTransaction()">
-                        <i class="fas fa-truck-moving"></i> Update Delivery Note
+                    <button type="button" class="btn btn-success" onclick="confirmUpdateTransaction()">
+                        <i class="fas fa-save"></i> Update Delivery Note
                     </button>
                 </div>
             </form>
@@ -129,11 +145,14 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.4/html5-qrcode.min.js"></script>
 <script>
-// DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-
-    // Initialize variables
-    const scannedItems = new Set();
+    // Initialize scannedItems with existing tools
+    const scannedItems = new Set([
+        @foreach($transaction as $item)
+            '{{ $item->tools->code }}',
+        @endforeach
+    ]);
+    
     const reader = document.getElementById('reader');
     const addRowScanBtn = document.getElementById('add-row-scan');
     const toolsTableBody = document.querySelector('#tools-table tbody');
@@ -267,8 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Confirm transaction creation
-function confirmAddTransaction() {
+function confirmUpdateTransaction() {
     const form = document.getElementById('deliveryNoteForm');
     if (!form.checkValidity()) {
         form.reportValidity();
@@ -276,13 +294,13 @@ function confirmAddTransaction() {
     }
 
     Swal.fire({
-        title: 'Confirm Creation',
-        text: "Are you sure you want to create this delivery note?",
+        title: 'Confirm Update',
+        text: "Are you sure you want to update this delivery note?",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, create it!',
+        confirmButtonText: 'Yes, update it!',
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -290,6 +308,5 @@ function confirmAddTransaction() {
         }
     });
 }
-
 </script>
 @endpush

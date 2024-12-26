@@ -36,13 +36,15 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $transaction->document_code }}</td>
-                                    <td>{{ $transaction->delivery_date }}</td>
+                                    <td>{{ date('d M Y', strtotime($transaction->delivery_date)) }}</td>
                                     <td><span class="badge badge-{{ $transaction->badgeClass }}">{{ $transaction->type }}</span></td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
                                             <a href="{{ route('transactions.generateDN', $transaction->id) }}" class="btn btn-success btn-circle mr-2"><i class="fas fa-print"></i></a>
                                             <a href="{{ route('transactions.show', $transaction->id) }}" class="btn btn-info btn-circle mr-2"><i class="fas fa-eye"></i></a>
+                                            @if($transaction->delivery_date > date('Y-m-d'))
                                             <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-warning btn-circle mr-2"><i class="fas fa-pencil"></i></a>
+                                            @endif
                                             <form action="{{ route('transactions.destroy', $transaction->id) }}" method="post" id="deleteDeliveryNoteForm-{{ $transaction->id }}">
                                                 @csrf
                                                 @method('DELETE')

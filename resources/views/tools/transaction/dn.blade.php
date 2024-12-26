@@ -189,19 +189,22 @@
         <table class="doc-info">
             <tr>
                 <td class="label">Document Date</td>
-                <td>: {{ $deliveryNote->first()->document_date }}</td>
-                <td class="label">{{ $deliveryNote->first()->type }}</td>
-                <td>: {{ $deliveryNote->first()->delivery_date }}</td>
+                <td>: {{ date('d-m-Y', strtotime($deliveryNote->first()->document_date)) }}</td>
+                <td class="label">Delivered Date</td>
+                <td>: {{ date('d-m-Y', strtotime($deliveryNote->first()->delivery_date)) }}</td>
             </tr>
             <tr>
                 <td class="label">Driver Name</td>
                 <td>: {{ $deliveryNote->first()->driver }}</td>
                 <td class="label">Driver Phone</td>
                 <td>: {{ $deliveryNote->first()->driver_phone }}</td>
+
             </tr>
             <tr>
                 <td class="label">Transportation</td>
-                <td colspan="3">: -</td>
+                <td>: -</td>
+                <td class="label">Type transaction</td>
+                <td>: <b>{{ $deliveryNote->first()->type }}</b></td>
             </tr>
         </table>
 

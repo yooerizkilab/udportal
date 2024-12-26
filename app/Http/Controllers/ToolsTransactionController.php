@@ -52,56 +52,87 @@ class ToolsTransactionController extends Controller
             'tools.*' => 'required|json',
         ]);
 
-        // Generate transaction code based on type and year
+        // Generate kode transaksi
         $typeMap = [
             'Delivery Note' => 'DN',
             'Transfer' => 'TR',
             'Return' => 'RT'
         ];
 
+        $romanMonth = [
+            'Januari' => 'I',
+            'Februari' => 'II',
+            'Maret' => 'III',
+            'April' => 'IV',
+            'Mei' => 'V',
+            'Juni' => 'VI',
+            'Juli' => 'VII',
+            'Agustus' => 'VIII',
+            'September' => 'IX',
+            'October' => 'X',
+            'November' => 'XI',
+            'December' => 'XII'
+        ];
+
         $transactionCount = ToolsTransaction::where('type', $request->type_delivery)
             ->count() + 1;
-        $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . str_pad($transactionCount, 3, '0', STR_PAD_LEFT);
-
-        // Prepare data
-        foreach ($request->tools as $tool) {
-            // Decode JSON data
-            $toolData = json_decode($tool, true);
-            // Periksa apakah decoding berhasil
-            if (!isset($toolData['code'], $toolData['location'])) {
-                return response()->json(['error' => true, 'message' => 'Data not found']);
-            }
-            // get code from tool
-            $toolCode = Tools::where('code', $toolData['code'])->first();
-
-            $data = [
-                'user_id' => auth()->user()->id,
-                'tool_id' => $toolCode->id,
-                'source_project_id' => $request->source_project_id,
-                'destination_project_id' => $request->destination_project_id,
-                'document_code' => $code,
-                'document_date' => date('Y-m-d'),
-                'delivery_date' => $request->delivery_date,
-                'quantity' => $toolCode->quantity,
-                'driver' => $request->driver_name,
-                'driver_phone' => $request->driver_phone,
-                'type' => $request->type_delivery,
-                'last_location' => $toolData['location'],
-                'notes' => $request->notes,
-            ];
-        }
-
-        return $data;
+        $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . $romanMonth[date('F')] . '/' . date('d') . '/' . str_pad($transactionCount, 3, '0', STR_PAD_LEFT);
 
         // Start database transaction
-        // DB::beginTransaction();
-        // try {
-        //     DB::commit();
-        //     return redirect()->back()->with('success', 'Transaction ' . $code . ' created successfully.');
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return redirect()->back()->with('error', $e->getMessage());
-        // }
+        DB::beginTransaction();
+        try {
+            // Loop dan simpan setiap tools
+            foreach ($request->tools as $tool) {
+                $toolData = json_decode($tool, true);
+
+                if (!isset($toolData['code'], $toolData['location'])) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Invalid tool data.');
+                }
+
+                $toolCode = Tools::where('code', $toolData['code'])->first();
+
+                if (!$toolCode) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Tool code ' . $toolData['code'] . ' not found.');
+                }
+
+                if ($toolCode->status == 'Maintenance') {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Tool code ' . $toolData['code'] . ' is in maintenance.');
+                }
+
+                ToolsTransaction::create([
+                    'user_id' => auth()->user()->id,
+                    'tool_id' => $toolCode->id,
+                    'source_project_id' => $request->source_project_id,
+                    'destination_project_id' => $request->destination_project_id,
+                    'document_code' => $code,
+                    'document_date' => date('Y-m-d'),
+                    'delivery_date' => $request->delivery_date,
+                    'quantity' => $toolCode->quantity,
+                    'driver' => $request->driver_name,
+                    'driver_phone' => $request->driver_phone,
+                    'type' => $request->type_delivery,
+                    'last_location' => $toolData['location'],
+                    'notes' => $request->notes,
+                ]);
+
+                if ($request->type_delivery == 'Return') {
+                    $toolCode->condition = 'New';
+                    $toolCode->save();
+                }
+
+                $toolCode->condition = 'Used';
+                $toolCode->save();
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Transaction ' . $code . ' created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -123,11 +154,12 @@ class ToolsTransactionController extends Controller
     public function edit(string $id)
     {
         $transactions = ToolsTransaction::findOrFail($id)->document_code;
-        $deliveryNote = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
+        $transaction = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
             ->where('document_code', $transactions)
             ->get();
+        $projects = Projects::all();
 
-        return view('tools.transaction.edit', compact('deliveryNote'));
+        return view('tools.transaction.edit', compact('transaction', 'projects'));
     }
 
     /**
