@@ -7,7 +7,7 @@
 
 @section('main-content')
                     
-<!-- Page Heading -->
+    <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Tables</h1>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
@@ -22,22 +22,22 @@
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
                     <!-- Tombol PDF dengan AJAX -->
-                    <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
+                    {{-- <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
                         <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button>
+                    </button> --}}
                     <!-- Tombol Excel dengan AJAX -->
                     <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
                         <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                     </button>
                     
                     <!-- Tombol Import Data -->
-                    <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
+                    {{-- <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Employess
-                    </button>
+                    </button> --}}
                     <!-- Tombol Add Users -->
-                    <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addUsersModal">
+                    <a href="{{ route('users.index') }}" class="btn btn-primary btn-md ml-2 mb-2">
                         <i class="fas fa-user-plus fa-md white-50"></i> Add Employess
-                    </button>
+                    </a>
                 </div>
             </div> 
             <div class="card-body">
@@ -46,6 +46,7 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
+                                <th>Photo</th>
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Position</th>
@@ -53,32 +54,22 @@
                                 <th>Gander</th>
                                 <th>Age</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($employees as $employee)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <img src="{{ asset($employee->photo ?? 'https://randomuser.me/api/portraits/men/35.jpg') }}" alt="Photo" width="100px">
+                                    </td>
                                     <td>{{ $employee->code }}</td>
                                     <td>{{ $employee->full_name }}</td>
                                     <td>{{ $employee->position }}</td>
                                     <td>{{ $employee->phone }}</td>
                                     <td>{{ $employee->gender }}</td>
                                     <td>{{ $employee->age }}</td>
-                                    <td>{{ $employee->status }}</td>
-                                    <td class="text-center">
-                                        {{-- <a href="{{ route('employee.edit', $employee->id) }}" class="btn btn-warning btn-circle btn-sm">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-                                        <form action="{{ route('employee.destroy', $employee->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-circle btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form> --}}
-                                    </td>
+                                    <td>{!! $employee->activeUsers !!}</td>
                                 </tr>
                             @empty
                                 <tr>

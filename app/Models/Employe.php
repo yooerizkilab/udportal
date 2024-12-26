@@ -10,9 +10,9 @@ class Employe extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
-
     protected $table = 'employees';
+
+    protected $appends = ['activeUsers'];
 
     protected $fillable = [
         'user_id',
@@ -31,6 +31,16 @@ class Employe extends Model
         'photo',
     ];
 
+    protected function getActiveUsersAttribute()
+    {
+        $color = [
+            'Active' => 'success',
+            'Inactive' => 'danger',
+        ];
+
+        return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -39,6 +49,11 @@ class Employe extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
     public function branch()
