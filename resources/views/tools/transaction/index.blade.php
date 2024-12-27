@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Delivery Note & Transfer'
+])
 
 @push('css')
 

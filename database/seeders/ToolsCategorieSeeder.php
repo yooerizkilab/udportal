@@ -16,40 +16,26 @@ class ToolsCategorieSeeder extends Seeder
 
         ToolsCategorie::insert([
             [
-                'code' => 'SEAMING',
-                'name' => 'Tools Seaming',
+                'code' => 'TC0001',
+                'name' => 'SEAMING',
                 'description' => 'Tools for use in seamings',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code' => 'SAFETY',
-                'name' => 'Tools Safety',
+                'code' => 'TC0002',
+                'name' => 'SAFETY',
                 'description' => 'Tools for use in safety',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'code' => 'DRILLING',
-                'name' => 'Tools Drilling',
+                'code' => 'TC0003',
+                'name' => 'DRILLING',
                 'description' => 'Tools for use in drilling',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
-            [
-                'code' => 'CONVEYER',
-                'name' => 'Tools Conveyor',
-                'description' => 'Tools for use in conveyors',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
-                'code' => 'CABLE',
-                'name' => 'Tools Cable',
-                'description' => 'Tools for use in cables',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
         ]);
     }
 }

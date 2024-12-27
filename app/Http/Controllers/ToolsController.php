@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tools;
 use App\Models\ToolsCategorie;
-use App\Models\ToolsOwners;
 use App\Models\ToolsTransaction;
 
 class ToolsController extends Controller
@@ -29,7 +29,7 @@ class ToolsController extends Controller
         // generate default code
         $tools = Tools::with('categorie', 'owner')->get();
         $categories = ToolsCategorie::all();
-        $ownerships = ToolsOwners::all();
+        $ownerships = Company::all();
         return view('tools.index', compact('tools', 'categories', 'ownerships'));
     }
 
@@ -48,7 +48,7 @@ class ToolsController extends Controller
     {
         // Validate request data
         $request->validate([
-            'ownership' => 'required|exists:tools_ownership,id',
+            'ownership' => 'required|exists:companies,id',
             'categories' => 'required|exists:tools_categories,id',
             'serial_number' => 'nullable|string|max:255',
             'name' => 'required|string|max:255',
@@ -70,14 +70,14 @@ class ToolsController extends Controller
 
         // Generate default code where category is selected
         $getCategory = ToolsCategorie::where('id', $request->categories)->first();
-        // Ambil 3 huruf pertama nama kategori
-        $prefix = strtoupper(substr($getCategory->code, 0, 4));
+        // Ambil 4 huruf pertama nama kategori
+        $prefix = strtoupper(substr($getCategory->name, 0, 4));
         // Cari item terakhir yang memiliki prefix sama
         $lastItem = Tools::where('code', 'LIKE', $prefix . '%')->latest('id')->first();
         // Ambil angka terakhir dari kode, jika ada
         $lastNumber = $lastItem ? intval(substr($lastItem->code, strlen($prefix))) : 0;
         // Tambahkan 1 ke angka terakhir
-        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
         // Gabungkan prefix dengan angka baru
         $code = $prefix . $newNumber;
 
@@ -85,7 +85,7 @@ class ToolsController extends Controller
         $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
-            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
+            $photoFile = $request->name . '.' . $photo->getClientOriginalExtension();
             $photo->move(public_path('img/tools'), $photoFile);
         }
 
@@ -215,63 +215,6 @@ class ToolsController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
-
-    public function transfer(Request $request)
-    {
-        $request->validate([
-            'tools_id' => 'required|exists:tools,id',
-            'from' => 'required|string|max:255',
-            'to' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:1',
-            'notes' => 'nullable|string',
-        ]);
-
-        // generate default code transaction combination. Ex : UD/TF/2024/XII/SEM001/TF001
-        $codeTools = Tools::where('id', $request->tools_id)->first();
-        $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-        $defaultCode = 'UD/TF/' . now()->format('Y') . '/' . $roman[now()->month - 1] . '/' . $codeTools->code . '/TF' . str_pad($codeTools->id, 4, '0', STR_PAD_LEFT);
-
-        $dataTools = [
-            'tools_id' => $request->tools_id,
-            'user_id' => $request->user()->id,
-            'code' => $defaultCode,
-            'type' => 'Transfer',
-            'from' => $request->from,
-            'to' => $request->to,
-            'quantity' => $request->quantity,
-
-            'location' => 'Transfer',
-            'activity' => 'Transfer',
-
-            'notes' => $request->notes,
-        ];
-
-        $tool = Tools::findOrFail($request->tools_id);
-
-        if ($tool->quantity < $request->quantity) {
-            return redirect()->back()->with('error', 'Quantity exceeds the available quantity.');
-        }
-
-        if ($tool->condition == 'Broken' || $tool->status == 'Maintenance' || $tool->status == 'Inactive') {
-            return redirect()->back()->with('error', 'Tools is broken or under maintenance or inactive, cannot be transfer.');
-        }
-
-        $toolsUpdate = [
-            'condition' => 'Used',
-            'quantity' => $tool->quantity - $request->quantity
-        ];
-
-        DB::beginTransaction();
-        try {
-            $transaction = ToolsTransaction::create($dataTools);
-            $tool->update($toolsUpdate);
-            DB::commit();
-            return redirect()->back()->with('success', 'Tools ' . $transaction->name . ' Transfer successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'An error' . $e->getMessage() . ' occurred while transfering the tools.');
         }
     }
 }

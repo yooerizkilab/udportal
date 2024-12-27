@@ -59,6 +59,26 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        // Tabel Warehouses
+        Schema::create('warehouses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('company_id')
+                ->constrained('companies')
+                ->onDelete('restrict') // Tidak menggunakan cascade
+                ->onUpdate('cascade');
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->onDelete('restrict') // Tidak menggunakan cascade
+                ->onUpdate('cascade');
+            $table->string('code', 50)->unique();
+            $table->string('name', 50);
+            $table->string('phone', 20)->nullable();
+            $table->string('address')->nullable();
+            $table->string('description')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         // Tabel users
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id')->index();
@@ -119,6 +139,7 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('branches');
         Schema::dropIfExists('departments');
+        Schema::dropIfExists('warehouses');
         Schema::dropIfExists('companies');
 
         Schema::enableForeignKeyConstraints();

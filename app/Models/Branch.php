@@ -12,6 +12,8 @@ class Branch extends Model
 
     protected $table = 'branches';
 
+    protected $appends = ['activeBranch'];
+
     protected $fillable = [
         'company_id',
         'code',
@@ -23,6 +25,16 @@ class Branch extends Model
         'description',
         'photo'
     ];
+
+    public function getActiveBranchAttribute()
+    {
+        $color = [
+            'Active' => 'success',
+            'Inactive' => 'danger',
+        ];
+
+        return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
+    }
 
     public function company()
     {

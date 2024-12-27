@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Ticketing Management'
+])
 
 @push('css')
 <!-- Custom styles for this page -->

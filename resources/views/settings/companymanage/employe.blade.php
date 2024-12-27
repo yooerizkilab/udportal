@@ -36,7 +36,7 @@
                     </button> --}}
                     <!-- Tombol Add Users -->
                     <a href="{{ route('users.index') }}" class="btn btn-primary btn-md ml-2 mb-2">
-                        <i class="fas fa-user-plus fa-md white-50"></i> Add Employess
+                        <i class="fas fa-address-card fa-md white-50"></i> Add Employess
                     </a>
                 </div>
             </div> 
@@ -54,6 +54,7 @@
                                 <th>Gander</th>
                                 <th>Age</th>
                                 <th>Status</th>
+                                <th width="10%" class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,6 +71,9 @@
                                     <td>{{ $employee->gender }}</td>
                                     <td>{{ $employee->age }}</td>
                                     <td>{!! $employee->activeUsers !!}</td>
+                                    <td class="text-center">
+                                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

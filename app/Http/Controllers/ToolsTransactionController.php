@@ -118,15 +118,16 @@ class ToolsTransactionController extends Controller
                     'notes' => $request->notes,
                 ]);
 
-                if ($request->type_delivery == 'Return') {
-                    $toolCode->condition = 'New';
-                    $toolCode->save();
+                if ($request->type_delivery === 'Return') {
+                    $toolCode->update([
+                        'condition' => 'New'
+                    ]);
                 }
 
-                $toolCode->condition = 'Used';
-                $toolCode->save();
+                $toolCode->update([
+                    'condition' => 'Used'
+                ]);
             }
-
             DB::commit();
             return redirect()->back()->with('success', 'Transaction ' . $code . ' created successfully.');
         } catch (\Exception $e) {
@@ -167,7 +168,7 @@ class ToolsTransactionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validate the form data
+        // Validasi data input
         $request->validate([
             'type_delivery' => 'required|string|in:Delivery Note,Transfer,Return',
             'driver_name' => 'required|string|max:255',
@@ -180,22 +181,70 @@ class ToolsTransactionController extends Controller
             'tools.*' => 'required|json',
         ]);
 
-        // update transaction
-        $transaction = ToolsTransaction::findOrFail($id);
-        $transaction->type = $request->type_delivery;
-        $transaction->driver = $request->driver_name;
-        $transaction->driver_phone = $request->driver_phone;
-        $transaction->delivery_date = $request->delivery_date;
-        $transaction->source_project_id = $request->source_project_id;
-        $transaction->destination_project_id = $request->destination_project_id;
-        $transaction->notes = $request->notes;
-        $transaction->save();
+        DB::beginTransaction();
+        try {
+            // Ambil transaksi utama untuk mendapatkan document_code
+            $mainTransaction = ToolsTransaction::findOrFail($id);
+            $documentCode = $mainTransaction->document_code;
 
-        // update tools
-        foreach ($request->tools as $index => $toolId) {
-            $tool = Tools::findOrFail($toolId);
-            $tool->condition = 'Used';
-            $tool->save();
+            // Hapus semua transaksi dengan document_code yang sama
+            ToolsTransaction::where('document_code', $documentCode)->delete();
+
+            // Buat array untuk menyimpan data transaksi baru
+            $transactionsData = [];
+
+            // Loop setiap tool dan siapkan data transaksi
+            foreach ($request->tools as $tool) {
+                $toolData = json_decode($tool, true);
+
+                if (!isset($toolData['code'], $toolData['location'])) {
+                    throw new \Exception('Invalid tool data.');
+                }
+
+                $toolCode = Tools::where('code', $toolData['code'])->first();
+                if (!$toolCode) {
+                    throw new \Exception('Tool code ' . $toolData['code'] . ' not found.');
+                }
+
+                if ($toolCode->status == 'Maintenance') {
+                    throw new \Exception('Tool code ' . $toolData['code'] . ' is in maintenance.');
+                }
+
+                // Tambahkan data transaksi baru ke array
+                $transactionsData[] = [
+                    'user_id' => auth()->user()->id,
+                    'tool_id' => $toolCode->id,
+                    'source_project_id' => $request->source_project_id,
+                    'destination_project_id' => $request->destination_project_id,
+                    'document_code' => $documentCode,
+                    'document_date' => $mainTransaction->document_date,
+                    'delivery_date' => $request->delivery_date,
+                    'quantity' => $toolCode->quantity,
+                    'driver' => $request->driver_name,
+                    'driver_phone' => $request->driver_phone,
+                    'type' => $request->type_delivery,
+                    'last_location' => $toolData['location'],
+                    'notes' => $request->notes,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+
+                // Update kondisi tool
+                if ($request->type_delivery === 'Return') {
+                    $toolCode->update(['condition' => 'New']);
+                } else {
+                    $toolCode->update(['condition' => 'Used']);
+                }
+            }
+
+            // Insert semua data transaksi sekaligus
+            ToolsTransaction::insert($transactionsData);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Transaction ' . $documentCode . ' updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -204,9 +253,9 @@ class ToolsTransactionController extends Controller
      */
     public function destroy(string $id)
     {
-        $documentCode = ToolsTransaction::findOrFail($id)->document_code;
         DB::beginTransaction();
         try {
+            $documentCode = ToolsTransaction::findOrFail($id)->document_code;
             ToolsTransaction::where('document_code', $documentCode)->delete();
             DB::commit();
             return redirect()->back()->with('success', 'Transaction ' . $documentCode . ' deleted successfully.');
@@ -228,12 +277,14 @@ class ToolsTransactionController extends Controller
             ->where('document_code', $documentCode)
             ->get();
 
-        // return $deliveryNote;
-
         // Pass data to the PDF view
         $pdf = Pdf::loadView('tools.transaction.dn', compact('deliveryNote'));
 
         // Return the PDF stream
-        return $pdf->stream('surat-jalan' . '.pdf');
+        if ($deliveryNote->first()->type === 'Delivery Note') {
+            return $pdf->stream('Delivery-Note-' . date('d-m-Y') . '.pdf');
+        }
+
+        return $pdf->download('Return-Note-' . date('d-m-Y') . '.pdf');
     }
 }

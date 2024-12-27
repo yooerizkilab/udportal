@@ -39,14 +39,13 @@ class ToolsCategoriesController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         // Create a new tool category
         $data = [
-            'code' => $request->code,
+            'code' => 'TC' . str_pad(ToolsCategorie::count() + 1, 4, '0', STR_PAD_LEFT),
             'name' => $request->name,
             'description' => $request->description,
         ];
@@ -56,7 +55,7 @@ class ToolsCategoriesController extends Controller
         try {
             $toolCategory = ToolsCategorie::create($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' created successfully');
+            return redirect()->back()->with('success', 'Tool category ' . $toolCategory->name . ' created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -86,14 +85,12 @@ class ToolsCategoriesController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         // Update the tool category
         $data = [
-            'code' => $request->code,
             'name' => $request->name,
             'description' => $request->description,
         ];
@@ -103,7 +100,7 @@ class ToolsCategoriesController extends Controller
             $toolCategory = ToolsCategorie::findOrFail($id);
             $toolCategory->update($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' updated successfully');
+            return redirect()->back()->with('success', 'Tool category ' . $toolCategory->name . ' updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -121,7 +118,7 @@ class ToolsCategoriesController extends Controller
             $toolCategory = ToolsCategorie::findOrFail($id);
             $toolCategory->delete();
             DB::commit();
-            return redirect()->back()->with('success', 'Tool category' . $toolCategory->name_categorie . ' deleted successfully');
+            return redirect()->back()->with('success', 'Tool category ' . $toolCategory->name_categorie . ' deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());

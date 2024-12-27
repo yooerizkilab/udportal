@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin',[
+    'title' => 'Create Ticket'
+])
 
 @push('css')
    <!-- Custom styles for this page -->
@@ -14,20 +16,20 @@
         This page is used to create tickets. Tickets are used to track issues and problems with the system.
     </p>
 
-    <div class="row">
-        <div class="col-md-5">
-            <div class="card shadow mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-header py-3">
-                        <h6 class="font-weight-bold text-primary">Create Tickets</h6>
-                    </div>
-                    <div class="card-body">
+    <div class="card shadow mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-header py-3">
+                <h6 class="font-weight-bold text-primary">Create Tickets</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
                         <form action="{{ route('ticketing.store') }}" method="POST" id="addTicketForm" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label for="category_id">Categories Tickets</label>
                                 <select name="category_id" id="category_id" class="form-control">
-                                    <option value="" disabled selected>Select Categories</option>
+                                    <option value="" disabled selected>--Select Categories--</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -36,7 +38,7 @@
                             <div class="form-group">
                                 <label for="assignee_to">Associated To Departments</label>
                                 <select name="assignee_to" id="assignee_to" class="form-control">
-                                    <option value="" disabled selected>Select Department</option>
+                                    <option value="" disabled selected>--Select Department--</option>
                                     @foreach ($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
                                     @endforeach
@@ -45,10 +47,12 @@
                             <div class="form-group">
                                 <label for="priority">Priority</label>
                                 <select class="form-control" id="priority" name="priority">
-                                    <option value="" disabled selected>Select Priority</option>
+                                    <option value="" disabled selected>--Select Priority--</option>
                                     <option value="Low">Low</option>
                                     <option value="Medium">Medium</option>
                                     <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -66,16 +70,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <div class="card shadow mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">My Tickets</h6>
-                    </div>
-                    <div class="card-body">
+                    <div class="col-md-8">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>

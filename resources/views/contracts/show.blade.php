@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin',[
+    'title' => 'Details Contracts'
+])
 
 @push('css')
 

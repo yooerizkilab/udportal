@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Employe;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
-use App\Models\VehicleOwnership;
 use App\Models\VehicleAssignment;
 
 class VehiclesController extends Controller
@@ -30,7 +30,7 @@ class VehiclesController extends Controller
         $defaultCode = 'VEH' . str_pad(1, 3, '0', STR_PAD_LEFT);
         $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
         $vehicleTypes = VehicleType::all();
-        $vehicleOwnerships = VehicleOwnership::all();
+        $vehicleOwnerships = Company::all();
         $users = User::all();
         return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'defaultCode', 'users'));
     }

@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin',[
+    'title' => 'Ticket Category'
+])
 
 @push('css')
     <!-- Custom styles for this page -->

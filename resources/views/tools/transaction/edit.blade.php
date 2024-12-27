@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Edit Delivery Note'
+])
 
 @push('css')
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">

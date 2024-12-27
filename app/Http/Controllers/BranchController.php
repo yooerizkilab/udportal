@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Branch;
+use App\Models\Company;
 
 class BranchController extends Controller
 {
@@ -13,7 +15,8 @@ class BranchController extends Controller
     public function index()
     {
         $branches = Branch::all();
-        return view('settings.companymanage.branch', compact('branches'));
+        $companies = Company::all();
+        return view('settings.companymanage.branch', compact('branches', 'companies'));
     }
 
     /**
@@ -29,7 +32,45 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the request
+        $request->validate([
+            'company_id' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|in:Head Office,Branch Office',
+            'phone' => 'required|numeric',
+            'address' => 'required|string',
+            'description' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // store the photo
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('img/branch'), $photoFile);
+        }
+
+        // create a new branch
+        $data = [
+            'company_id' => $request->company_id,
+            'code' => 'B' . str_pad(Branch::count() + 1, 3, '0', STR_PAD_LEFT),
+            'type' => $request->type,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'description' => $request->description,
+            'photo' => isset($photoFile) ? $photoFile : null
+        ];
+
+        DB::beginTransaction();
+        try {
+            Branch::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Branch ' . $request->name . ' created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -37,7 +78,8 @@ class BranchController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $branches = Branch::with('company')->findOrFail($id);
+        return view('settings.companymanage.branchshow', compact('branches'));
     }
 
     /**
@@ -53,7 +95,47 @@ class BranchController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // validate the request
+        $request->validate([
+            'company_id' => 'required|string|exists:companies,id',
+            'type' => 'required|string|in:Head Office,Branch Office',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric',
+            'address' => 'required|string',
+            'status' => 'required|string|in:Active,Inactive',
+            'description' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // store the photo
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path('img/branch'), $photoFile);
+        }
+
+        // update the branch
+        $data = [
+            'company_id' => $request->company_id,
+            'type' => $request->type,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'status' => $request->status,
+            'description' => $request->description,
+            'photo' => isset($photoFile) ? $photoFile : null
+        ];
+
+        DB::beginTransaction();
+        try {
+            $branch = Branch::find($id);
+            $branch->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Branch ' . $branch->name . ' updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -61,6 +143,15 @@ class BranchController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $branch = Branch::find($id);
+            $branch->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Branch ' . $branch->name . ' deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

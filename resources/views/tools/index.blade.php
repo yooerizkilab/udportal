@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Tools Management'
+])
 
 @push('css')
    <!-- Custom styles for this page -->
@@ -83,12 +85,6 @@
                                             <a href="{{ route('tools.show', $tool->id) }}" class="btn btn-info mr-1 btn-circle">
                                                 <i class="fas fa-eye fa-md white-50"></i>
                                             </a>
-                                            {{-- <button type="button" class="btn btn-secondary mr-1 btn-circle"
-                                                data-toggle="modal"
-                                                data-id="{{ $tool->id }}"
-                                                data-target="#transferToolsModal">
-                                                <i class="fas fa-exchange fa-md white-50"></i>
-                                            </button> --}}
                                             <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $tool->id }}"
@@ -135,151 +131,58 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Tools Categories</h6>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
-                            <i class="fas fa-list fa-md white-50"></i>
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th class="text-center" width="20%">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($categories as $category)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $category->code }}</td>
-                                            <td>{{ $category->name }}</td>
-                                            <td class="text-center">
-                                                <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
-                                                        data-toggle="modal"
-                                                        data-id="{{ $category->id }}"
-                                                        data-code="{{ $category->code }}"
-                                                        data-name="{{ $category->name }}"
-                                                        data-description="{{ $category->description }}"
-                                                        data-target="#editCategoryModal">
-                                                        <i class="fas fa-pencil fa-md white-50"></i>
-                                                    </button>
-                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="post" id="deleteCategoryForm-{{ $category->id }}" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" onclick="confirmDeleteCategory({{ $category->id }})" class="btn btn-danger btn-circle">
-                                                            <i class="fas fa-trash fa-md white-50"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center">No data available</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+    <div class="card shadow mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Tools Categories</h6>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
+                    <i class="fas fa-list fa-md white-50"></i>
+                </button>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Tools Ownership</h6>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addOwnershipModal">
-                            <i class="fas fa-user-plus fa-md white-50"></i>
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th>Owners</th>
-                                        <th class="text-center" width="20%">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($ownerships as $ownership)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $ownership->name }}</td>
-                                            <td>
-                                                <div class="d-inline-flex">
-                                                    <button type="button" class="btn btn-info mr-1 btn-circle"
-                                                        data-toggle="modal"
-                                                        data-id="{{ $ownership->id }}" 
-                                                        data-name="{{ $ownership->name }}"
-                                                        data-address="{{ $ownership->address }}"
-                                                        data-phone="{{ $ownership->phone }}"
-                                                        data-target="#viewOwnerModal">
-                                                        <i class="fas fa-eye fa-md white-50"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-warning mr-1 btn-circle"
-                                                        data-toggle="modal"
-                                                        data-id="{{ $ownership->id }}" 
-                                                        data-name="{{ $ownership->name }}"
-                                                        data-address="{{ $ownership->address }}"
-                                                        data-phone="{{ $ownership->phone }}"
-                                                        data-target="#editOwnershipModal">
-                                                        <i class="fas fa-pencil fa-md white-50"></i>
-                                                    </button>
-                                                    <form action="{{ route('owners.destroy', $ownership->id) }}" method="post" id="deleteOwnershipForm-{{ $ownership->id }}" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" onclick="confirmOwnershipDelete({{ $ownership->id }})" class="btn btn-danger btn-circle">
-                                                            <i class="fas fa-trash fa-md white-50"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center">No data available</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal View Owners Tools -->
-    <div class="modal fade" id="viewOwnerModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewModalLabel">Modal View Owner</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" class="form-control" id="ownerName" readonly>
-                    <input type="text" class="form-control" id="ownerAddress" readonly>
-                    <input type="text" class="form-control" id="ownerPhone" readonly>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th class="text-center" width="20%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($categories as $category)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $category->code }}</td>
+                                    <td>{{ $category->name }}</td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex">
+                                            <button type="button" class="btn btn-warning mr-1 btn-circle"
+                                                data-toggle="modal"
+                                                data-id="{{ $category->id }}"
+                                                data-name="{{ $category->name }}"
+                                                data-description="{{ $category->description }}"
+                                                data-target="#editCategoryModal">
+                                                <i class="fas fa-pencil fa-md white-50"></i>
+                                            </button>
+                                            <form action="{{ route('categories.destroy', $category->id) }}" method="post" id="deleteCategoryForm-{{ $category->id }}" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" onclick="confirmDeleteCategory({{ $category->id }})" class="btn btn-danger btn-circle">
+                                                    <i class="fas fa-trash fa-md white-50"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No data available</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -299,10 +202,6 @@
                     <form action="{{ route('categories.store') }}" method="post" id="addCategoryForm">
                         @csrf
                         <div class="form-group">
-                            <label for="code">Code</label>
-                            <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" required>
-                        </div>
-                        <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
                         </div>
@@ -315,41 +214,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
                     <button type="button" class="btn btn-primary" onclick="confirmAddCategory()"><i class="fas fa-check"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Add Owner Tools -->
-    <div class="modal fade" id="addOwnershipModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Owner</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('owners.store') }}" method="post" id="addOwnerForm">
-                        @csrf
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <textarea name="address" id="address" class="form-control @error('address') is-invalid @enderror"" cols="30" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="number" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddOwner()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -420,7 +284,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="quantity">Quantity</label>
-                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" name="quantity">
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" min="1" value="1" name="quantity">
                                 </div>
                                 <div class="form-group">
                                     <label for="warranty_start">Warranty Start</label>
@@ -493,58 +357,18 @@
                         @csrf
                         @method('PUT')
                         <div class="form-group">
-                            <label for="code">Code</label>
-                            <input type="text" class="form-control @error('code') is-invalid @enderror" id="codeEdit" name="code" required>
-                        </div>
-                        <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEdit" name="name" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" id="descriptionEdit" class="form-control" cols="30" rows="4"></textarea>
+                            <textarea name="description" id="description" class="form-control" cols="30" rows="4"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
                     <button type="button" class="btn btn-primary" onclick="confirmUpdateCategory()"><i class="fas fa-check"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Owner Tools -->
-    <div class="modal fade" id="editOwnershipModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLable">Modal Edit Owner</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('owners.update', ':id') }}" method="post" id="updateOwnerForm">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEditOwner" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <textarea name="address" id="addressEditOwner" class="form-control" cols="30" rows="4"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="number" class="form-control @error('phone') is-invalid @enderror" id="phoneEditOwner" name="phone" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateOwner()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -663,49 +487,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Modal Transfer Tools -->
-    <div class="modal fade" id="transferToolsModal" tabindex="-1" aria-labelledby="transferModalLable" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="transferModalLable">Modal Transfer Tools</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('tools.transfer') }}" method="post" id="transferToolsForm">
-                        @csrf
-                        <input type="hidden" name="tools_id" id="toolsId">
-                        <div class="form-group">
-                            <label for="from">From</label>
-                            <input type="text" name="from" id="from" class="form-control @error('from') is-invalid @enderror">
-                        </div>
-                        <div class="text-center">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-                        <div class="form-group">
-                            <label for="to">To</label>
-                            <input type="text" name="to" id="to" class="form-control @error('to') is-invalid @enderror">
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror">
-                        </div>
-                        <div class="form-group">
-                            <label for="notes">Note</label>
-                            <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" cols="30" rows="4"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmTransferTools()"><i class="fas fa-check"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Import Tools -->
     <div class="modal fade" id="importToolsModal" tabindex="-1" aria-labelledby="importModalLable" aria-hidden="true">
@@ -743,41 +524,13 @@
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable({
-            pageLength: 5,
-            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-        });
-    });
-    $(document).ready(function() {
-        $('#dataTable1').DataTable({
-            pageLength: 5,
-            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-        });
+        $('#dataTable').DataTable();
     })
     $(document).ready(function() {
         $('#dataTable2').DataTable();
     })
 </script>
 <script>
-
-    $('#viewOwnerModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var ownerName = button.data('name');
-        var ownerAddress = button.data('address');
-        var ownerPhone = button.data('phone');
-
-        var modal = $(this);
-        document.getElementById('ownerName').value = ownerName;
-        document.getElementById('ownerAddress').value = ownerAddress;
-        document.getElementById('ownerPhone').value = ownerPhone;
-    });
-
-    $('#viewToolsModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var toolsId = button.data('id');
-
-        var modal = $(this);
-    });
 
     function confirmAddCategory() {
         Swal.fire({
@@ -791,22 +544,6 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addCategoryForm').submit();
-            }
-        });
-    }
-
-    function confirmAddOwner() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, add it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#addOwnerForm').submit();
             }
         });
     }
@@ -829,15 +566,13 @@
 
     $('#editCategoryModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var categoryId = button.data('id')
-        var categoryCode = button.data('code')
+        var categoryId = button.data('id');
         var categoryName = button.data('name');
         var categoryDescription = button.data('description');
 
         var modal = $(this);
-        document.getElementById('codeEdit').value = categoryCode;
-        document.getElementById('nameEdit').value = categoryName;
-        document.getElementById('descriptionEdit').value = categoryDescription;
+        modal.find('#name').val(categoryName);
+        modal.find('#description').val(categoryDescription);
 
         var FormAction = '{{ route("categories.update", ":id") }}';
         FormAction = FormAction.replace(':id', categoryId);
@@ -856,39 +591,6 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#updateCategoryForm').submit();
-            }
-        });
-    }
-
-    $('#editOwnershipModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var ownerId = button.data('id')
-        var ownerName = button.data('name');
-        var ownerAddress = button.data('address');
-        var ownerPhone = button.data('phone');
-
-        var modal = $(this);
-        document.getElementById('nameEditOwner').value = ownerName;
-        document.getElementById('addressEditOwner').value = ownerAddress;
-        document.getElementById('phoneEditOwner').value = ownerPhone;
-
-        var FormAction = '{{ route("owners.update", ":id") }}';
-        FormAction = FormAction.replace(':id', ownerId);
-        $('#updateOwnerForm').attr('action', FormAction);
-    })
-
-    function confirmUpdateOwner() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#updateOwnerForm').submit();
             }
         });
     }
@@ -974,22 +676,6 @@
         });
     }
 
-    function confirmOwnershipDelete(id) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#deleteOwnershipForm-' + id).submit();
-            }
-        });
-    }
-
     function confirmToolsDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
@@ -1006,28 +692,5 @@
         });
     }
 
-    $('#transferToolsModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var toolsId = button.data('id')
-        var modal = $(this);
-        document.getElementById('toolsId').value = toolsId;
-    });
-
-    function confirmTransferTools() {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#transferToolsForm').submit();
-            }
-        });
-
-    }
 </script>
 @endpush

@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Contracts Management'
+])
 
 @push('css')
 
@@ -693,23 +695,6 @@
                 return false;
             }
         })
-    }
-
-    function exportPDF() {
-        var startDate = document.getElementById('startDate').value;
-        var endDate = document.getElementById('endDate').value;
-
-        if (!startDate || !endDate) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Start date and end date are required.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-    
-        window.location.href = `/contracts/export-pdf?start_date=${startDate}&end_date=${endDate}`;
     }
 
     function exportExcel() {

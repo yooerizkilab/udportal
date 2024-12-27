@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Test Trecking
+// Test Trecking vie front
 Route::get('track/tools', 'ToolsTrackingController@track')->name('track.tools');
 Route::post('tracking/tools', 'ToolsTrackingController@tracking')->name('tracking.tools');
 
@@ -45,21 +45,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'ticketings'], function () {
         Route::resource('ticketing', 'TicketingController');
         Route::resource('ticketing-categories', 'TicketingCategoriesController');
-        Route::patch('ticketing/handle/{id}', 'TicketingController@handle')->name('ticketing.handle');
-        Route::post('ticketing/comment/{id}', 'TicketingController@comment')->name('ticketing.comment');
-        Route::patch('ticketing/solved/{id}', 'TicketingController@solved')->name('ticketing.solved');
-        Route::patch('ticketing/cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
+        Route::patch('handle/{id}', 'TicketingController@handle')->name('ticketing.handle');
+        Route::post('comment/{id}', 'TicketingController@comment')->name('ticketing.comment');
+        Route::patch('solved/{id}', 'TicketingController@solved')->name('ticketing.solved');
+        Route::patch('cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
     });
 
     // Tools Management
     Route::group(['prefix' => 'tools'], function () {
-        Route::resource('owners', 'ToolsOwnershipController');
         Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('tools', 'ToolsController');
         Route::resource('projects', 'ProjectsController');
-        Route::post('transfer', 'ToolsController@transfer')->name('tools.transfer'); // development
         Route::resource('transactions', 'ToolsTransactionController'); // development
-        Route::get('transactions-dn/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
+        Route::get('transactions-pdf/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
 
         Route::resource('tracking', 'ToolsTrackingController'); // development
         Route::resource('dn-transport', 'ToolsDnTransportController'); // development
@@ -67,7 +65,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('tools-maintenances', 'ToolsMaintenanceController');
         Route::post('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
         Route::post('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
-        // Route::post('tools-maintenances/pending/{id}', 'ToolsMaintenanceController@pendingMaintenance')->name('tools-maintenances.pendingMaintenance');
     });
 
     // Vehicles Management
@@ -76,7 +73,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('assign', 'VehiclesController@assign')->name('vehicles.assign');
         Route::resource('vehicles-assign', 'VehicleAssignmentController');
         Route::resource('types', 'VehicleTypeController');
-        Route::resource('ownerships', 'VehicleOwnershipController');
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::post('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         // Route::post('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');

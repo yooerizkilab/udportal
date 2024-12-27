@@ -72,8 +72,20 @@ class User extends Authenticatable
             'User' => 'primary',
         ];
 
+        // Ambil nama peran pertama
+        $role = $this->getRoleNames()[0];
+
+        // Jika peran mengandung kata 'Admin', ubah menjadi 'Admin'
+        if (str_contains($role, 'Admin')) {
+            $role = 'Admin';
+        }
+
+        if (str_contains($role, 'Staff')) {
+            $role = 'Staff';
+        }
+
         // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->getRoleNames()[0]] ?? 'secondary';
+        return $statusColor[$role] ?? 'secondary';
     }
 
     public function employe()

@@ -17,7 +17,6 @@ class ToolsTrackingController extends Controller
     public function index()
     {
         $trackings = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')->get();
-        // return $trackings;
         return view('tools.tracking', compact('trackings'));
     }
 

@@ -143,7 +143,6 @@ class TicketingController extends Controller
     public function show(string $id)
     {
         $tickets = Tickets::with('category', 'assignee', 'user', 'fixed', 'comments')->findOrFail($id);
-        // return $tickets;
         return view('ticketing.show', compact('tickets'));
     }
 

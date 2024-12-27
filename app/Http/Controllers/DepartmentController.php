@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Models\Department;
+use App\Models\Company;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
@@ -13,7 +15,8 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::all();
-        return view('settings.companymanage.department', compact('departments'));
+        $companies = Company::all();
+        return view('settings.companymanage.department', compact('departments', 'companies'));
     }
 
     /**
@@ -29,7 +32,31 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validate the form data
+        $request->validate([
+            'company_id' => 'required|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+
+        // create a new department
+        $data = [
+            'company_id' => $request->company_id,
+            'code' => 'D' . str_pad(Department::count() + 1, 3, '0', STR_PAD_LEFT),
+            'name' => $request->name,
+            'description' => $request->description,
+        ];
+
+        DB::beginTransaction();
+        try {
+            $department = Department::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Department ' . $department->name . ' created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -37,7 +64,8 @@ class DepartmentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $departments = Department::with('company')->findOrFail($id);
+        return view('settings.companymanage.departmentshow', compact('departments'));
     }
 
     /**
@@ -53,7 +81,30 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // validate the form data
+        $request->validate([
+            'company_id' => 'required|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        // update the department
+        $data = [
+            'company_id' => $request->company_id,
+            'name' => $request->name,
+            'description' => $request->description,
+        ];
+
+        DB::beginTransaction();
+        try {
+            $department = Department::findOrFail($id);
+            $department->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Department ' . $department->name . ' updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -61,6 +112,15 @@ class DepartmentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $department = Department::find($id);
+            $department->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Department ' . $department->name . ' deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

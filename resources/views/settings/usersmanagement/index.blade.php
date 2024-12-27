@@ -36,7 +36,7 @@
                     </button>
                     <!-- Tombol Add Users -->
                     <button type="button" class="btn btn-primary btn-md ml-2" data-toggle="modal" data-target="#addUsersModal">
-                        <i class="fas fa-user-plus fa-md white-50"></i> Add Users
+                        <i class="fas fa-user-tie fa-md white-50"></i> Add Users
                     </button>
                 </div>
             </div>    

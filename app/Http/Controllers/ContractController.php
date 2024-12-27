@@ -22,6 +22,10 @@ class ContractController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view contracts', ['only' => ['index', 'show']]);
+        $this->middleware('permission:create contracts', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit contracts', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete contracts', ['only' => ['destroy']]);
     }
 
     /**
@@ -87,7 +91,7 @@ class ContractController extends Controller
             return redirect()->back()->with('success', 'Data ' . $contracts->name . ' berhasil disimpan.');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal disimpan.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -118,7 +122,6 @@ class ContractController extends Controller
 
         // Validasi input
         $request->validate([
-            // 'code' => 'required|string|unique:contract,code',
             'name' => 'required|string',
         ]);
 
@@ -157,7 +160,7 @@ class ContractController extends Controller
             return redirect()->back()->with('success', 'Data ' . $contract->name . ' berhasil diperbarui.');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal diperbarui.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -174,15 +177,15 @@ class ContractController extends Controller
             return redirect()->back()->with('success', 'Data ' . $contract->name . ' berhasil dihapus.');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Data ' . $e->getMessage() . ' gagal dihapus.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
     public function export($id)
     {
         $contract = Contract::findOrFail($id);
-        $pdf = PDF::loadView('contracts.detailpdf', compact('contract'));
-        return $pdf->stream('contracts.pdf');
+        $pdf = PDF::loadView('contracts.pdf', compact('contract'));
+        return $pdf->stream('contracts-' . $contract->name . '.pdf');
     }
 
     public function exportExcel(Request $request)
@@ -195,7 +198,7 @@ class ContractController extends Controller
             return redirect()->back()->withErrors(['error' => 'Start date and end date are required.']);
         }
 
-        return Excel::download(new ContractExport($startDate, $endDate), 'contracts.xlsx');
+        return Excel::download(new ContractExport($startDate, $endDate), 'all-contracts-' . date('d-m-Y') . '.xlsx');
     }
 
     public function importContract(Request $request)

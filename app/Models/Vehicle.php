@@ -56,7 +56,7 @@ class Vehicle extends Model
 
     public function ownership()
     {
-        return $this->belongsTo(VehicleOwnership::class, 'owner_id', 'id');
+        return $this->belongsTo(Company::class, 'owner_id', 'id');
     }
 
     public function assigned()

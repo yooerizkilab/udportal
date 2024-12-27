@@ -37,7 +37,8 @@ class EmployeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $employees = Employe::find($id);
+        return view('settings.companymanage.employeshow', compact('employees'));
     }
 
     /**

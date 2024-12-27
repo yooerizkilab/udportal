@@ -27,14 +27,14 @@ return new class extends Migration
         });
 
         // Table: tools_ownership
-        Schema::create('tools_ownership', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
-            $table->string('address', 100)->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('tools_ownership', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name', 50);
+        //     $table->string('address', 100)->nullable();
+        //     $table->string('phone', 20)->nullable();
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
 
         // Table: tools_categories
         Schema::create('tools_categories', function (Blueprint $table) {
@@ -49,8 +49,8 @@ return new class extends Migration
         // Table: tools
         Schema::create('tools', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('owner_id')->constrained('tools_ownership')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('tools_categories')->onDelete('cascade');
+            $table->foreignId('owner_id')->constrained('companies')->onDelete('restrict');
+            $table->foreignId('category_id')->constrained('tools_categories')->onDelete('restrict');
             $table->string('code', 50)->unique();
             $table->string('serial_number', 50)->nullable();
             $table->string('name', 50);
@@ -77,7 +77,7 @@ return new class extends Migration
         // Table: tools_maintenance
         Schema::create('tools_maintenance', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tool_id')->constrained('tools')->onDelete('cascade');
+            $table->foreignId('tool_id')->constrained('tools')->onDelete('restrict');
             $table->string('code', 50)->unique();
             $table->date('maintenance_date');
             $table->decimal('cost', 15, 2)->nullable();
@@ -122,6 +122,6 @@ return new class extends Migration
         Schema::dropIfExists('tools');
         Schema::dropIfExists('projects');
         Schema::dropIfExists('tools_categories');
-        Schema::dropIfExists('tools_ownership');
+        // Schema::dropIfExists('tools_ownership');
     }
 };

@@ -25,7 +25,7 @@ class ToolsMaintenanceController extends Controller
     public function index()
     {
         $maintenances = ToolsMaintenance::with('tools')->get();
-        return view('tools.maintenances.maintenance', compact('maintenances'));
+        return view('tools.maintenances.index', compact('maintenances'));
     }
 
     /**
@@ -164,7 +164,7 @@ class ToolsMaintenanceController extends Controller
         $maintenance = ToolsMaintenance::findOrFail($id);
 
         if ($maintenance->tools->status == 'Inactive') {
-            return redirect()->back()->with('error', 'Failed to complete maintenance record: Tool is inactive.');
+            return redirect()->back()->with('error', 'Failed to complete maintenance record: Tool ' . $maintenance->tools->name . ' is inactive.');
         }
 
         DB::beginTransaction();
@@ -172,10 +172,10 @@ class ToolsMaintenanceController extends Controller
             $maintenance->update(['status' => 'Completed', 'completion_date' => now()]);
             $maintenance->tools()->update(['status' => 'Active', 'condition' => 'New']);
             DB::commit();
-            return redirect()->back()->with('success', 'Maintenance record completed successfully.');
+            return redirect()->back()->with('success', 'Maintenance  Tools ' . $maintenance->tools->name . ' record completed successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to complete maintenance record: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 

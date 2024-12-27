@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
+use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
@@ -33,7 +34,39 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the form data
+        $request->validate([
+            'company' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:8',
+            'email' => 'required|string|email|max:255',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        // Create a new company
+        $data = [
+            'code' => 'C' . str_pad(Company::count() + 1, 3, '0', STR_PAD_LEFT),
+            'company' => $request->company,
+            'name' => $request->name,
+            'password' => $request->password,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'description' => $request->description
+        ];
+
+        // Save the company
+        DB::beginTransaction();
+        try {
+            Company::create($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Company ' . $request->company . ' created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -41,7 +74,8 @@ class CompanyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $companies = Company::find($id);
+        return view('settings.companymanage.companyshow', compact('companies'));
     }
 
     /**
@@ -57,7 +91,39 @@ class CompanyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validate the form data
+        $request->validate([
+            'company' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:8',
+            'email' => 'required|string|email|max:255',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        // Update the company
+        $data = [
+            'company' => $request->company,
+            'name' => $request->name,
+            'password' => $request->password,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'description' => $request->description
+        ];
+
+        // Save the company
+        DB::beginTransaction();
+        try {
+            $companies = Company::find($id);
+            $companies->update($data);
+            DB::commit();
+            return redirect()->back()->with('success', 'Company ' . $request->company . ' updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -65,6 +131,15 @@ class CompanyController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $companies = Company::find($id);
+            $companies->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Company ' . $companies->company . ' deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

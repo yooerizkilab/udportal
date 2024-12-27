@@ -40,13 +40,9 @@ class ProjectsController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        // Genereta Default Code
-        $number = Projects::count() + 1;
-        $code = 'PRJ' . str_pad($number, 3, '0', STR_PAD_LEFT);
-
         // Create Project
         $data = [
-            'code' => $code,
+            'code' => 'PRJ' . str_pad(Projects::count() + 1, 4, '0', STR_PAD_LEFT),
             'name' => $request->name,
             'address' => $request->address,
             'phone' => $request->phone,
