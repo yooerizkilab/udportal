@@ -74,6 +74,7 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('phone', 20)->nullable();
             $table->string('address')->nullable();
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->string('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

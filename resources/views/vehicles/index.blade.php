@@ -214,67 +214,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="card shadow mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Owners List Vehicles</h6>
-                        @can('create vehicle ownerships')
-                        <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#addOwnerVehiclesModal">
-                            <i class="fas fa-user-plus fa-md white-50"></i>
-                        </button>
-                        @endcan
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <td width="5%">No</td>
-                                        <td>Name Owner</td>
-                                        <td class="text-center" width="20%">Action</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($vehicleOwnerships as $vehicleOwner)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $vehicleOwner->name }}</td>
-                                            <td class="text-center">
-                                                <div class="d-inline-flex">
-                                                    @can('update vehicle ownerships')
-                                                    <button type="button" class="btn btn-warning mr-2 btn-circle"
-                                                        data-toggle="modal"
-                                                        data-id="{{ $vehicleOwner->id }}"
-                                                        data-name="{{ $vehicleOwner->name }}"
-                                                        data-target="#editVehiclesOwnerModal">
-                                                        <i class="fas fa-pencil"></i>
-                                                    </button>
-                                                    @endcan
-                                                    @can('delete vehicle ownerships')
-                                                    <form action="{{ route('ownerships.destroy', $vehicleOwner->id) }}" method="post" id="deleteVehiclesOwnerForm" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" class="btn btn-danger btn-circle" onclick="confirmVehiclesOwnerDelete()">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                    @endcan
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center">No Data</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>                    
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Modal Add Vehicles -->
@@ -432,33 +371,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
                     <button type="button" class="btn btn-primary" onclick="confirmAddTypeVehicles()"><i class="fas fa-check"></i> Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Add Owner Vehicles -->
-    <div class="modal fade" id="addOwnerVehiclesModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Owner Vehicles</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('ownerships.store') }}" method="post" id="addVehicleOwnerForm">
-                        @csrf
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddVehicleOwner()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -704,34 +616,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
                     <button type="button" class="btn btn-primary" onclick="confirmUpdateType()"><i class="fas fa-check"></i> Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Owner Vehicles -->
-    <div class="modal fade" id="editVehiclesOwnerModal" tabindex="-1" aria-labelledby="editOwnerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editOwnerModalLabel">Modal Edit Owner Vehicles</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('ownerships.update', ':id') }}" id="editOwnerVehiclesForm" method="post">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="name">Owner Name</label>
-                            <input type="text" name="name" id="vehiclesOwnerName" class="form-control @error('name') is-invalid @enderror" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateOwner()"><i class="fas fa-check"></i> Save changes</button>
                 </div>
             </div>
         </div>

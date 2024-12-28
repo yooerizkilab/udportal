@@ -56,18 +56,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('transactions', 'ToolsTransactionController');
         Route::get('transactions-pdf/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
         Route::resource('tracking', 'ToolsTrackingController');
-        Route::resource('tools-maintenances', 'ToolsMaintenanceController');
+        Route::resource('tools-maintenances', 'ToolsMaintenanceController'); // show maintenance detail development
         Route::patch('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
         Route::patch('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
-        Route::get('tools-maintenances-export-detail/{id}', 'ToolsMaintenanceController@printMaintenance')->name('tools-maintenances.exportPdf');
+        Route::get('tools-maintenances-export-detail/{id}', 'ToolsMaintenanceController@printMaintenance')->name('tools-maintenances.exportPdf'); // development print maintenance
     });
 
-    // Vehicles Management
+    // Vehicles Management development
     Route::group(['prefix' => 'vehicles'], function () {
+        Route::resource('types', 'VehicleTypeController');
         Route::resource('vehicles', 'VehiclesController');
+
         Route::post('assign', 'VehiclesController@assign')->name('vehicles.assign');
         Route::resource('vehicles-assign', 'VehicleAssignmentController');
-        Route::resource('types', 'VehicleTypeController');
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::post('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         // Route::post('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
@@ -86,25 +87,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('equipments', 'EquipmentsController');
     });
 
-    // Settings Management
+    // Settings Management development
     Route::group(['prefix' => 'settings'], function () {
-        // Companies Management
         Route::resource('companies', 'CompanyController');
-        // Branches Management 
         Route::resource('branches', 'BranchController');
-        // Departments Management
         Route::resource('departments', 'DepartmentController');
-        // Employees Management
+        Route::resource('warehouses', 'WarehouseController');
         Route::resource('employees', 'EmployeController');
-        // Users Management
         Route::resource('users', 'UsersController');
         Route::post('users/exportPdf', 'UsersController@exportPDF')->name('users.exportPdf');
         Route::post('users/exportExcel', 'UsersController@exportExcel')->name('users.exportExcel');
         Route::post('users/importUsers', 'UsersController@importUsers')->name('users.importUsers');
-        // Roles Management
         Route::resource('roles', 'RolesController');
-        Route::post('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
-        // Permissions Management
+        Route::patch('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
         Route::resource('permissions', 'PermissionsController');
     });
 

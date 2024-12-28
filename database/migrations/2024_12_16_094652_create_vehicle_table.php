@@ -13,21 +13,12 @@ return new class extends Migration
     {
         Schema::create('vehicle_type', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 50)->unique();
             $table->string('name', 50);
             $table->longText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
-
-        // Schema::create('vehicle_owner', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name', 50);
-        //     $table->string('address', 100)->nullable();
-        //     $table->string('phone', 50)->nullable();
-        //     $table->string('email', 50)->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
 
         Schema::create('vehicle', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -131,7 +122,6 @@ return new class extends Migration
         Schema::dropIfExists('vehicle_insurance_policy');
         Schema::dropIfExists('vehicle_maintenance_record');
         Schema::dropIfExists('vehicle');
-        // Schema::dropIfExists('vehicle_owner');
         Schema::dropIfExists('vehicle_type');
     }
 };

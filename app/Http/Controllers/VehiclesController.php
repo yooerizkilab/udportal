@@ -27,12 +27,11 @@ class VehiclesController extends Controller
      */
     public function index()
     {
-        $defaultCode = 'VEH' . str_pad(1, 3, '0', STR_PAD_LEFT);
-        $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = Company::all();
+        $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
         $users = User::all();
-        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'defaultCode', 'users'));
+        return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'users'));
     }
 
     /**
@@ -67,6 +66,19 @@ class VehiclesController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Get default code where vehicle type is selected
+        $getVehicleType = VehicleType::where('id', $request->vehicle_type)->first();
+        // Ambil 4 huruf pertama nama kategori
+        $prefix = strtoupper(substr($getVehicleType->name, 0, 4));
+        // Cari item terakhir yang memiliki prefix sama
+        $lastItem = Vehicle::where('code', 'LIKE', $prefix . '%')->latest('id')->first();
+        // Ambil angka terakhir dari kode, jika ada
+        $lastNumber = $lastItem ? intval(substr($lastItem->code, strlen($prefix))) : 0;
+        // Tambahkan 1 ke angka terakhir
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        // Gabungkan prefix dengan angka baru
+        $code = $prefix . $newNumber;
+
         // Proses upload gambar
         $photoFile = null;
         if ($request->hasFile('photo')) {
@@ -75,10 +87,8 @@ class VehiclesController extends Controller
             $photo->move(public_path('img/vehicles'), $photoFile);
         }
 
-        $defaultCode = 'VEH' . str_pad(Vehicle::count() + 1, 3, '0', STR_PAD_LEFT);
-
         $data = [
-            'code' => $defaultCode,
+            'code' => $code,
             'type_id' => $request->vehicle_type,
             'brand' => $request->brand,
             'model' => $request->model,

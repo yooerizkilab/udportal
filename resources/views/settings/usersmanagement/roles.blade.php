@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Name</th>
@@ -90,7 +90,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Name</th>
@@ -134,39 +134,37 @@
 
         <div class="col-lg-6">
             <div class="card shadow mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Assign Role to Permission</h6>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('roles.assignPermissions') }}" method="post" id="assignRoleToPermissionForm">
-                            @csrf
-                            <div class="form-group">
-                                <label for="role">Role</label>
-                                <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
-                                    <option value="" disabled selected>Select Role</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}" data-permissions="{{ $role->permissions->pluck('id')->join(',') }}">
-                                            {{ $role->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <label for="permissions">Permissions</label>
-                            <div class="row" id="permissionCheckboxes">
-                                @foreach ($permissions as $permission)
-                                    <div class="col-md-6">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="permissions[]" id="permission{{ $permission->id }}" value="{{ $permission->id }}">
-                                            <label class="form-check-label" for="permission{{ $permission->id }}">{{ $permission->name }}</label>
-                                        </div>
-                                    </div>
+                <div class="card-header py-3 bg-gradient-warning text-white">
+                    <h6 class="m-0 font-weight-bold">Assign Role to Permission</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('roles.assignPermissions') }}" method="post" id="assignRoleToPermissionForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
+                                <option value="" disabled selected>Select Role</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" data-permissions="{{ $role->permissions->pluck('id')->join(',') }}">
+                                        {{ $role->name }}
+                                    </option>
                                 @endforeach
-                            </div>
-                        </form>
-                        <div class="float-right mt-3">
-                            <button type="button" class="btn btn-primary" onclick="confirmAssignRoleToPermission()"><i class="fas fa-lock"></i> Assign Permissions</button>
+                            </select>
                         </div>
+                        <label for="permissions">Permissions</label>
+                        <div class="row" id="permissionCheckboxes">
+                            @foreach ($permissions as $permission)
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]" id="permission{{ $permission->id }}" value="{{ $permission->id }}">
+                                        <label class="form-check-label" for="permission{{ $permission->id }}">{{ $permission->name }}</label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </form>
+                    <div class="float-right mt-3">
+                        <button type="button" class="btn btn-primary" onclick="confirmAssignRoleToPermission()"><i class="fas fa-lock"></i> Assign Permissions</button>
                     </div>
                 </div>
             </div>
