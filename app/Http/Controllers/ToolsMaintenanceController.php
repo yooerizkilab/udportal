@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ToolsMaintenance;
 use App\Models\Tools;
-use Illuminate\Support\Facades\DB;
 
 class ToolsMaintenanceController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -19,6 +23,7 @@ class ToolsMaintenanceController extends Controller
         // $this->middleware('permission:cancel tools maintenance', ['only' => ['cancelMaintenance']]);
         $this->middleware('permission:delete tools maintenance', ['only' => ['destroy']]);
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -111,7 +116,8 @@ class ToolsMaintenanceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $maintenance = ToolsMaintenance::with('tools')->findOrFail($id);
+        return view('tools.maintenances.show', compact('maintenance'));
     }
 
     /**
@@ -156,7 +162,13 @@ class ToolsMaintenanceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $maintenance = ToolsMaintenance::findOrFail($id);
+            $maintenance->delete();
+            return redirect()->back()->with('success', 'Maintenance record ' . $maintenance->tools->name . ' deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function completeMaintenance($id)
@@ -185,27 +197,19 @@ class ToolsMaintenanceController extends Controller
 
         DB::beginTransaction();
         try {
-            $maintenance->update(['status' => 'Canceled']);
+            $maintenance->update(['status' => 'Cancelled']);
             DB::commit();
-            return redirect()->back()->with('success', 'Maintenance record canceled successfully.');
+            return redirect()->back()->with('success', 'Maintenance record ' . $maintenance->tools->name . ' canceled successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to cancel maintenance record: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
-    // public function pendingMaintenance($id)
-    // {
-    //     $maintenance = ToolsMaintenance::findOrFail($id);
-
-    //     DB::beginTransaction();
-    //     try {
-    //         $maintenance->update(['status' => 'Pending']);
-    //         DB::commit();
-    //         return redirect()->back()->with('success', 'Maintenance record pending successfully.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return redirect()->back()->with('error', 'Failed to pending maintenance record: ' . $e->getMessage());
-    //     }
-    // }
+    public function printMaintenance($id)
+    {
+        $maintenance = ToolsMaintenance::with('tools')->findOrFail($id);
+        $pdf = PDF::loadView('tools.maintenances.pdf', compact('maintenance'));
+        return $pdf->stream('maintenance-' . $maintenance->tools->name . '.pdf');
+    }
 }

@@ -56,7 +56,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Code</th>
@@ -142,12 +142,13 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th class="text-center" width="20%">Action</th>
+                                <th width="15%">Code</th>
+                                <th width="15%">Name</th>
+                                <th>Description</th>
+                                <th class="text-center" width="15%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,6 +157,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->code }}</td>
                                     <td>{{ $category->name }}</td>
+                                    <td>{{ $category->description }}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
                                             <button type="button" class="btn btn-warning mr-1 btn-circle"

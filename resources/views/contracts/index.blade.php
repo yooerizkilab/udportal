@@ -55,10 +55,10 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%" class="text-center">No</th>
-                                {{-- <th>Code</th> --}}
+                                <th>Code</th>
                                 <th>Name</th>
                                 <th>Name Perusahaan</th>
                                 <th>Status Kontrak</th>
@@ -72,7 +72,7 @@
                             @forelse ($contracts as $contract)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    {{-- <td>{{ $contract->code }}</td> --}}
+                                    <td>{{ $contract->code }}</td>
                                     <td>{{ $contract->name }}</td>
                                     <td>{{ $contract->nama_perusahaan }}</td>
                                     <td>{{ $contract->status_kontrak }}</td>

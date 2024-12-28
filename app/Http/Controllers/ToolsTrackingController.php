@@ -9,15 +9,23 @@ class ToolsTrackingController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->middleware('auth');
     }
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource from backend.
      */
     public function index()
     {
         $trackings = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')->get();
-        return view('tools.tracking', compact('trackings'));
+        return view('tools.trackings.index', compact('trackings'));
+    }
+
+    /**
+     * Display a listing of the resource from frontend.
+     */
+    public function indexFrontend()
+    {
+        return view('tools.trackings.trackfront');
     }
 
     /**
@@ -41,7 +49,18 @@ class ToolsTrackingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $code = $id;
+        $toolsTracking = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')
+            ->whereHas('tools', function ($query) use ($code) {
+                $query->where('code', $code);
+            })
+            ->get();
+
+        if ($toolsTracking->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Data not found']);
+        }
+
+        return response()->json(['success' => true, 'data' => $toolsTracking]);
     }
 
     /**
@@ -66,26 +85,5 @@ class ToolsTrackingController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function track(Request $request)
-    {
-        return view('tools.track');
-    }
-
-    public function tracking(Request $request)
-    {
-        $code = $request->qrCodeData;
-        $toolsTracking = ToolsTransaction::with('tools', 'sourceTransactions', 'destinationTransactions')
-            ->whereHas('tools', function ($query) use ($code) {
-                $query->where('code', $code);
-            })
-            ->get();
-
-        if ($toolsTracking->isEmpty()) {
-            return response()->json(['error' => true, 'message' => 'Data not found']);
-        }
-
-        return response()->json(['success' => true, 'data' => $toolsTracking]);
     }
 }

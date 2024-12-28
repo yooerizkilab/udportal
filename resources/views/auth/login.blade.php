@@ -1,4 +1,6 @@
-@extends('layouts.auth')
+@extends('layouts.auth', [
+    'title' => 'Login'
+])
 
 @section('main-content')
 <div class="container">

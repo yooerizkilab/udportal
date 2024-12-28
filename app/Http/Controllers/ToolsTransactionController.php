@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\User;
 use App\Models\ToolsTransaction;
 use App\Models\Tools;
 use App\Models\Projects;
 
-
 class ToolsTransactionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -26,12 +32,21 @@ class ToolsTransactionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource from backend.
      */
     public function create()
     {
         $projects = Projects::all();
         return view('tools.transaction.create', compact('projects'));
+    }
+
+    /**
+     * Show the form for creating a new resource from backend.
+     */
+    public function createFrontend()
+    {
+        $projects = Projects::all();
+        return view('tools.transaction.createfront', compact('projects'));
     }
 
     /**
@@ -74,9 +89,16 @@ class ToolsTransactionController extends Controller
             'December' => 'XII'
         ];
 
+        // Generate code based on type and month
         $transactionCount = ToolsTransaction::where('type', $request->type_delivery)
             ->count() + 1;
         $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . $romanMonth[date('F')] . '/' . date('d') . '/' . str_pad($transactionCount, 3, '0', STR_PAD_LEFT);
+
+        // get user id from frontend or backend
+        $user = User::whereHas('employe', function ($query) use ($request) {
+            $query->where('code', $request->codeEmploye);
+        })->with('employe')->firstOrFail();
+        $userId = auth()->user()->id ??  $user->id;
 
         // Start database transaction
         DB::beginTransaction();
@@ -97,13 +119,13 @@ class ToolsTransactionController extends Controller
                     return redirect()->back()->with('error', 'Tool code ' . $toolData['code'] . ' not found.');
                 }
 
-                if ($toolCode->status == 'Maintenance') {
+                if ($toolCode->status == 'Maintenance' || $toolCode->status == 'Inactive' || $toolCode->condition == 'Broken') {
                     DB::rollBack();
                     return redirect()->back()->with('error', 'Tool code ' . $toolData['code'] . ' is in maintenance.');
                 }
 
                 ToolsTransaction::create([
-                    'user_id' => auth()->user()->id,
+                    'user_id' => $userId,
                     'tool_id' => $toolCode->id,
                     'source_project_id' => $request->source_project_id,
                     'destination_project_id' => $request->destination_project_id,
@@ -118,15 +140,12 @@ class ToolsTransactionController extends Controller
                     'notes' => $request->notes,
                 ]);
 
+                // Update kondisi tool
                 if ($request->type_delivery === 'Return') {
-                    $toolCode->update([
-                        'condition' => 'New'
-                    ]);
+                    $toolCode->update(['condition' => 'New']);
+                } else {
+                    $toolCode->update(['condition' => 'Used']);
                 }
-
-                $toolCode->update([
-                    'condition' => 'Used'
-                ]);
             }
             DB::commit();
             return redirect()->back()->with('success', 'Transaction ' . $code . ' created successfully.');
@@ -285,6 +304,6 @@ class ToolsTransactionController extends Controller
             return $pdf->stream('Delivery-Note-' . date('d-m-Y') . '.pdf');
         }
 
-        return $pdf->download('Return-Note-' . date('d-m-Y') . '.pdf');
+        return $pdf->stream('Return-Note-' . date('d-m-Y') . '.pdf');
     }
 }

@@ -65,7 +65,7 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+                    <thead class="thead-light">
                         <tr>
                             <th width="5%">No</th>
                             <th>Name</th>
@@ -73,8 +73,7 @@
                             <th>Email</th>
                             <th>PPIC</th>
                             <th>Address</th>
-                            {{-- <th>Description</th> --}}
-                            <th>Action</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,8 +85,6 @@
                                 <td>{{ $project->email }}</td>
                                 <td>{{ $project->ppic }}</td>
                                 <td>{{ $project->address }}</td>
-                                {{-- <td>{{ $project->description }}</td> --}}
-                                {{-- <td>{{ strlen($project->description, 20) ? substr($project->description, 0, 20) . '...' : $project->description }}</td> --}}
                                 <td class="text-center d-flex justify-content-center">
                                     <button type="button" class="btn btn-warning btn-circle mr-2" data-toggle="modal"
                                     data-id="{{ $project->id }}"

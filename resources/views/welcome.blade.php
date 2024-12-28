@@ -86,8 +86,8 @@
 
                 <div class="links">
                     <a href="">Vocher Request</a>
-                    <a href="{{ route('dn-transport.tools') }}">Delivery Note Tracking</a>
-                    <a href="{{ route('track.tools') }}">Tools Tracking</a>
+                    <a href="{{ route('transactions.tools') }}">Delivery Note Tracking</a>
+                    <a href="{{ route('trackings.tools') }}">Tools Tracking</a>
                     {{-- <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>

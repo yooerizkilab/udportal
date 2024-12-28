@@ -50,30 +50,28 @@
                 <div class="col-8">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
-                                    <th width="5%">No</th>
-                                    <th>Vehicle Code</th>
-                                    <th>Maintenances Date</th>
+                                    <th>Tools Code</th>
                                     <th>Description</th>
-                                    <th>Status</th>
+                                    <th class="text-center">Date</th>
+                                    <th class="text-center">Status</th>
                                     <th width="10%" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($maintenances as $maintenance)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $maintenance->tools->code }}</td>
-                                        <td>{{ $maintenance->maintenance_date }}</td>
-                                        <td>{{ $maintenance->description }}</td>
-                                        <td><span class="badge badge-{{ $maintenance->badgeClass }}">{{ $maintenance->status }}</span></td>
+                                        <td>{{ strlen($maintenance->description) > 50 ? substr($maintenance->description, 0, 50) . '...' : $maintenance->description }}</td>
+                                        <td class="text-center">{{ date('d-m-Y', strtotime($maintenance->maintenance_date)) }}</td>
+                                        <td class="text-center"><span class="badge badge-{{ $maintenance->badgeClass }}">{{ $maintenance->status }}</span></td>
                                         <td class="text-center">
                                             <div class="d-inline-flex">
-                                                <a href="" class="btn btn-sm btn-info mr-1 btn-circle">
+                                                <a href="{{ route('tools-maintenances.exportPdf', $maintenance->id) }}" class="btn btn-sm btn-info mr-1 btn-circle">
                                                     <i class="fas fa-download"></i>
                                                 </a>
-                                                @if ($maintenance->status != 'Completed')
+                                                @if ($maintenance->status != 'Completed' && $maintenance->status != 'Cancelled')
                                                 <form action="{{ route('tools-maintenances.completeMaintenance', $maintenance->id) }}" method="POST" id="completeMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
                                                     @method('PATCH')
@@ -241,7 +239,7 @@
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Cancel it!'
+            confirmButtonText: 'Yes, Cancel it!',
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('cencelMaintenancesForm-' + id).submit();

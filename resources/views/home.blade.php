@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Dashboard'
+])
 
 @section('main-content')
 
@@ -86,12 +88,11 @@
     </div>
     @endif
 
-
     <!-- Content may profile photo end decription for Users -->
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
+            <div class="card shadow">
+                <div class="card-header bg-gradient-primary text-white">
                     <h5 class="card-title">{{ __('Profile Photo & Description') }}</h5>
                 </div>
                 <div class="card-body">

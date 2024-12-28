@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,17 +17,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Authentication
 Auth::routes();
 
-// Test Trecking vie front
-Route::get('track/tools', 'ToolsTrackingController@track')->name('track.tools');
-Route::post('tracking/tools', 'ToolsTrackingController@tracking')->name('tracking.tools');
+// Trecking vie frontend
+Route::get('tracking/tools', 'ToolsTrackingController@indexFrontend')->name('trackings.tools');
+Route::get('tracking/tools/{id}', 'ToolsTrackingController@show')->name('tracking.tools');
 
-// Test DN Transport
-Route::get('dn-transport/tools', 'ToolsDnTransportController@dnTransport')->name('dn-transport.tools');
-Route::post('dn-trans/tools', 'ToolsDnTransportController@dnTransporting')->name('dntrans.store');
-// Print PDF DN Transport
-Route::get('dn-transport/pdf', 'ToolsDnTransportController@pdf')->name('dn-transport.pdf');
+// Delivery Note view frontend
+Route::get('transactions/tools', 'ToolsTransactionController@createFrontend')->name('transactions.tools');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -56,15 +53,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('tools', 'ToolsController');
         Route::resource('projects', 'ProjectsController');
-        Route::resource('transactions', 'ToolsTransactionController'); // development
+        Route::resource('transactions', 'ToolsTransactionController');
         Route::get('transactions-pdf/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
-
-        Route::resource('tracking', 'ToolsTrackingController'); // development
-        Route::resource('dn-transport', 'ToolsDnTransportController'); // development
-
+        Route::resource('tracking', 'ToolsTrackingController');
         Route::resource('tools-maintenances', 'ToolsMaintenanceController');
-        Route::post('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
-        Route::post('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
+        Route::patch('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
+        Route::patch('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
+        Route::get('tools-maintenances-export-detail/{id}', 'ToolsMaintenanceController@printMaintenance')->name('tools-maintenances.exportPdf');
     });
 
     // Vehicles Management

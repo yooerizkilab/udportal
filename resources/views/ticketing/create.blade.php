@@ -73,7 +73,7 @@
                     <div class="col-md-8">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Title</th>

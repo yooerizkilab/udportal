@@ -46,12 +46,10 @@
                     </div>
                     
                     <!-- Table -->
-                    {{-- <div class="card-header py-3"> --}}
-                        <h6 class="m-0 font-weight-bold text-primary my-3">List Ticket Category</h6>
-                    {{-- </div> --}}
+                    <h6 class="m-0 font-weight-bold text-primary my-3">List Ticket Category</h6>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
                                     <th width="5%">No</th>
                                     <th>Category Name</th>
@@ -126,8 +124,6 @@
         </div>
     </div>
      
-    
-
 @endsection
 
 @push('scripts')
