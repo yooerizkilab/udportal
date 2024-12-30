@@ -3,7 +3,6 @@
 ])
 
 @push('css')
-
 <!-- Custom styles for this page -->
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
@@ -18,7 +17,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Delivery Note & Transfer</h6>
+                <h4 class="m-0 font-weight-bold text-primary">Delivery Note & Transfer</h4>
                 <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-md"><i class="fas fa-truck-moving"></i> Add Delivery Note</a>
             </div>
             <div class="card-body">
@@ -69,7 +68,6 @@
         </div>
     </div>
 
-
 @endsection
 
 @push('scripts')
@@ -80,15 +78,16 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
+
     function confirmDeleteDeliveryNote(deliveryNoteId) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this delivery note!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('deleteDeliveryNoteForm-' + deliveryNoteId).submit();

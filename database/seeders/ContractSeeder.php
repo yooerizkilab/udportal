@@ -25,7 +25,7 @@ class ContractSeeder extends Seeder
                 'tanggal_kontrak' => '2022-01-01',
                 'masa_berlaku' => '2022-01-01',
                 'status_proyek' => 'OPEN',
-                'retensi' => '5',
+                'retensi' => '5%',
                 'masa_retensi' => '2022-01-01',
                 'status_retensi' => 'CLOSED',
                 'pic_sales' => 'A',

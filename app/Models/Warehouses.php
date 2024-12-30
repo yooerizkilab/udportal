@@ -18,8 +18,9 @@ class Warehouses extends Model
         'name',
         'phone',
         'address',
-        // 'status',
         'description',
+        'status',
+        'type',
     ];
 
     public function company()

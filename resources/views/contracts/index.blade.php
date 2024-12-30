@@ -3,10 +3,8 @@
 ])
 
 @push('css')
-
 <!-- Custom styles for this page -->
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-  
 @endpush
 
 @section('main-content')
@@ -20,7 +18,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">List Contracts</h6>
+                <h4 class="m-0 font-weight-bold text-primary">List Contracts</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -129,7 +127,7 @@
                                 </tr>   
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No data available</td>
+                                    <td colspan="9" class="text-center">No data available</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -143,12 +141,12 @@
     <div class="modal fade" id="addContractsModal" tabindex="-1" role="dialog" aria-labelledby="addContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title font-weight-bold text-primary" id="addContractsModalLabel">Add Contracts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center">
+                    <h5 class="modal-title font-weight-bold text-white" id="addContractsModalLabel">Add Contracts</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 10px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
+                </div>                
                 <div class="modal-body">
                     <form action="{{ route('contract.store') }}" method="post" id="addContractsForm">
                         @csrf
@@ -156,21 +154,21 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="code">Code</label>
-                                    <input type="text" class="form-control" id="code" name="code" value="{{ old('code') }}">
+                                    <input type="text" class="form-control" id="code" name="code" value="{{ old('code') }}" required placeholder="Enter Code">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_perusahaan">Nama Perusahaan</label>
-                                    <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}">
+                                    <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}" required placeholder="Enter Nama Perusahaan">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required placeholder="Enter Name">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_pekerjaan">Nama Pekerjaan / Proyek</label>
-                                    <input type="text" class="form-control" id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}">
+                                    <input type="text" class="form-control" id="nama_pekerjaan" name="nama_pekerjaan" value="{{ old('nama_pekerjaan') }}" required placeholder="Enter Nama Pekerjaan / Proyek">
                                 </div>
                             </div>
                         </div>
@@ -178,7 +176,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="status_kontrak">Status Kontrak</label>
-                                    <input type="text" class="form-control" id="status_kontrak" name="status_kontrak" value="{{ old('status_kontrak') }}">
+                                    <input type="text" class="form-control" id="status_kontrak" name="status_kontrak" value="{{ old('status_kontrak') }}" required placeholder="Enter Status Kontrak">
                                 </div>
                                 <div class="form-group">
                                     <label for="tanggal_kontrak">Tanngal Kontrak</label>
@@ -186,11 +184,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="nominal_kontrak">Nominal Kontrak</label>
-                                    <input type="number" class="form-control" id="nominal_kontrak" name="nominal_kontrak" value="{{ old('nominal_kontrak') }}">
+                                    <input type="number" class="form-control" id="nominal_kontrak" name="nominal_kontrak" value="{{ old('nominal_kontrak') }}" placeholder="Enter Nominal Kontrak">
                                 </div>
                                 <div class="form-group">
                                     <label for="pic_sales">PIC Sales</label>
-                                    <input type="text" class="form-control" id="pic_sales" name="pic_sales" value="{{ old('pic_sales') }}">
+                                    <input type="text" class="form-control" id="pic_sales" name="pic_sales" value="{{ old('pic_sales') }}" placeholder="Enter PIC Sales">
                                 </div>
                                 <div class="form-group">
                                     <label for="bast_1">BAST-1 Tgl</label>
@@ -198,18 +196,18 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="bast_1_nomor">BAST-1 Nomor</label>
-                                    <input type="text" class="form-control" id="bast_1_nomor" name="bast_1_nomor" value="{{ old('bast_1_nomor') }}">
+                                    <input type="text" class="form-control" id="bast_1_nomor" name="bast_1_nomor" value="{{ old('bast_1_nomor') }}" placeholder="Enter BAST-1 Nomor">
                                 </div>
                                 <div class="form-group">
                                     <label for="keterangan">Keterangan</label>
-                                    <textarea class="form-control" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
+                                    <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter Keterangan">{{ old('keterangan') }}</textarea>
                                 </div>             
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="jenis_pekerjaan">Jenis Pekerjaan</label>
                                     <select name="jenis_pekerjaan" id="jenis_pekerjaan" class="form-control">
-                                        <option value="" disabled selected>Select Jenis Pekerjaan</option>
+                                        <option value="" disabled selected>--Select Jenis Pekerjaan---</option>
                                         <option value="-">-</option>
                                         <option value="CO LICENSING">CO LICENSING</option>
                                         <option value="DISTRIBUTOR">DISTRIBUTOR</option>
@@ -236,8 +234,7 @@
                                 <div class="form-group">
                                     <label for="mata_uang">Mata Uang</label>
                                     <select name="mata_uang" id="mata_uang" class="form-control">
-                                        <option value="" disabled selected>Select Mata Uang</option>
-                                        <option value="-">-</option>
+                                        <option value="" disabled selected>--Select Mata Uang--</option>
                                         <option value="IDR">IDR</option>
                                         <option value="USD">USD</option>
                                         <option value="EUR">EUR</option>
@@ -245,7 +242,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="pic_pc">PIC PC</label>
-                                    <input type="text" class="form-control" id="pic_pc" name="pic_pc" value="{{ old('pic_pc') }}">
+                                    <input type="text" class="form-control" id="pic_pc" name="pic_pc" value="{{ old('pic_pc') }}" placeholder="Enter PIC PC">
                                 </div>
                                 <div class="form-group">
                                     <label for="bast_2">BAST-2 Tgl</label>
@@ -253,22 +250,22 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="bast_2_nomor">B AST-2 Nomor</label>
-                                    <input type="text" class="form-control" id="bast_2_nomor" name="bast_2_nomor" value="{{ old('bast_2_nomor') }}">
+                                    <input type="text" class="form-control" id="bast_2_nomor" name="bast_2_nomor" value="{{ old('bast_2_nomor') }}" placeholder="Enter BAST-2 Nomor">
                                 </div>
                                 <div class="form-group">
                                     <label for="overall_status">Overall Status</label>
-                                    <input type="text" class="form-control" id="overall_status" name="overall_status" value="{{ old('overall_status') }}">
+                                    <input type="text" class="form-control" id="overall_status" name="overall_status" value="{{ old('overall_status') }}" placeholder="Enter Overall Status">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="kontrak_milik">Kontrak Milik</label>
-                                    <input type="text" class="form-control" id="kontrak_milik" name="kontrak_milik" value="{{ old('kontrak_milik') }}">
+                                    <input type="text" class="form-control" id="kontrak_milik" name="kontrak_milik" value="{{ old('kontrak_milik') }}" placeholder="Enter Kontrak Milik">
                                 </div>
                                 <div class="form-group">
                                     <label for="status_proyek">Status Proyek</label>
                                     <select name="status_proyek" id="status_proyek" class="form-control">
-                                        <option value="" disabled selected>Select Status Proyek</option>
+                                        <option value="" disabled selected>--Select Status Proyek--</option>
                                         <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
                                         <option value="CLOSED">CLOSSED</option>
@@ -278,11 +275,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="pic_customer">PIC Customer</label>
-                                    <input type="text" class="form-control" id="pic_customer" name="pic_customer" value="{{ old('pic_customer') }}">
+                                    <input type="text" class="form-control" id="pic_customer" name="pic_customer" value="{{ old('pic_customer') }}" placeholder="Enter PIC Customer">
                                 </div>
                                 <div class="form-group">
                                     <label for="retensi">Retensi</label>
-                                    <input type="text" class="form-control" id="retensi" name="retensi" value="{{ old('retensi') }}">
+                                    <input type="text" class="form-control" id="retensi" name="retensi" value="{{ old('retensi') }}" placeholder="Enter Retensi">
                                 </div>
                                 <div class="form-group">
                                     <label for="masa_retensi">Masa Retensi</label>
@@ -291,7 +288,7 @@
                                 <div class="form-group">
                                     <label for="status_retensi">Status Retensi</label>
                                     <select name="status_retensi" id="status_retensi" class="form-control">
-                                        <option value="" disabled selected>Select Status Retensi</option>
+                                        <option value="" disabled selected>--Select Status Retensi--</option>
                                         <option value="-">-</option>
                                         <option value="OPEN">OPEN</option>
                                         <option value="CLOSED">CLOSSED</option>
@@ -301,7 +298,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="memo">Memo</label>
-                                    <textarea class="form-control" id="memo" name="memo">{{ old('memo') }}</textarea>
+                                    <textarea class="form-control" id="memo" name="memo" placeholder="Enter Memo">{{ old('memo') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -319,12 +316,12 @@
     <div class="modal fade" id="editContractsModal" tabindex="-1" role="dialog" aria-labelledby="editContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title font-weight-bold text-primary" id="editContractsModalLabel">Update Contracts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h5 class="modal-title font-weight-bold text-white" id="editContractsModalLabel">Update Contracts</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 10px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
+                </div>                
                 <div class="modal-body">
                     <form action="{{ route('contract.update', ':id') }}" method="post" id="updateContractsForm">
                         @csrf
@@ -496,12 +493,12 @@
     <div class="modal fade" id="importContractsModal" tabindex="-1" role="dialog" aria-labelledby="importContractsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="importContractsModalLabel">Import Contracts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex align-items-center position-relative">
+                    <h5 class="modal-title font-weight-bold text-white mx-auto" id="importContractsModalLabel">Import Contracts</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
+                </div>                
                 <div class="modal-body">
                     <form action="{{ route('contract.importContract') }}" method="post" enctype="multipart/form-data" id="importContractsForm">
                         @csrf
@@ -514,7 +511,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmImportContracts()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmImportContracts()"><i class="fas fa-upload"></i> Upload</button>
                 </div>
             </div>
         </div>
@@ -522,30 +519,24 @@
 @endsection
 
 @push('scripts')
-
 <!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#dataTable').DataTable(
-            {
-                "order": [[ 0, "asc" ]]
-            }
-        );
+        $('#dataTable').DataTable();
     });
-</script>
-<script>
+
+    // Konfirmasi pengguna sebelum menyimpan data
     function confirmAddContracts() {
-        // Konfirmasi pengguna sebelum menyimpan data
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to save this contract data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Save it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('addContractsForm').submit();
@@ -645,16 +636,16 @@
         $('#updateContractsForm').attr('action', formAction);
     })
 
+    // Konfirmasi pengguna sebelum menyimpan data
     function confirmUpdateContracts() {
-        // Konfirmasi pengguna sebelum menyimpan data
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this contract data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('updateContractsForm').submit();
@@ -666,12 +657,12 @@
     function confirmDeleteContract(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this contract data!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`deleteContractsForm-${id}`).submit(); // Perbaikan tanda backtick
@@ -679,15 +670,16 @@
         });
     }
 
+    // Konfirmasi pengguna sebelum mengimport data
     function confirmImportContracts() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
+            text: "You want to import this contract data!",
+            icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Import it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('importContractsForm').submit();
@@ -697,6 +689,7 @@
         })
     }
 
+    // Export Excel
     function exportExcel() {
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
@@ -713,6 +706,5 @@
     
         window.location.href = `/contracts/export-excel?start_date=${startDate}&end_date=${endDate}`;
     }
-
 </script>
 @endpush

@@ -12,10 +12,9 @@ use App\Models\Projects;
 
 class ToolsTransactionController extends Controller
 {
-
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -92,7 +91,7 @@ class ToolsTransactionController extends Controller
         // Generate code based on type and month
         $transactionCount = ToolsTransaction::where('type', $request->type_delivery)
             ->count() + 1;
-        $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . $romanMonth[date('F')] . '/' . date('d') . '/' . str_pad($transactionCount, 3, '0', STR_PAD_LEFT);
+        $code = $typeMap[$request->type_delivery] . '/' . date('Y') . '/' . $romanMonth[date('F')] . '/' . date('d') . '/' . str_pad($transactionCount, 4, '0', STR_PAD_LEFT);
 
         // get user id from frontend or backend
         $user = User::whereHas('employe', function ($query) use ($request) {

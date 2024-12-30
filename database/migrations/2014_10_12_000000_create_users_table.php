@@ -73,9 +73,11 @@ return new class extends Migration
             $table->string('code', 50)->unique();
             $table->string('name', 50);
             $table->string('phone', 20)->nullable();
+            $table->string('email', 50)->nullable();
             $table->string('address')->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->string('description')->nullable();
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->enum('type', ['Raw Material', 'Finished Goods', 'Warehouse'])->default('Warehouse');
             $table->timestamps();
             $table->softDeletes();
         });

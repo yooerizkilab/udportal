@@ -11,15 +11,15 @@
                     
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Tools Management</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+    <p class="mb-4">
+        This page is used to manage tools.
+    </p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                <h4 class="m-0 font-weight-bold text-primary">List Tools</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -134,7 +134,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Tools Categories</h6>
+                <h4 class="m-0 font-weight-bold text-primary">Tools Categories</h4>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
                     <i class="fas fa-list fa-md white-50"></i>
                 </button>
@@ -194,9 +194,9 @@
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative ">
+                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Add Category</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -205,11 +205,11 @@
                         @csrf
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter Name" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" cols="30" rows="4"></textarea>
+                            <textarea name="description" id="description" class="form-control" cols="30" rows="4" placeholder="Enter Description (optional)"></textarea>
                         </div>
                     </form>
                 </div>
@@ -225,9 +225,9 @@
     <div class="modal fade" id="addToolsModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Tools</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Add Tools</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -239,7 +239,7 @@
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
                                     <select name="ownership" id="ownership" class="form-control">
-                                        <option value="" disabled selected>Select Ownership</option>
+                                        <option value="" disabled selected>--Select Ownership-- </option>
                                         @foreach ($ownerships as $owner)
                                             <option value="{{ $owner->id }}">{{ $owner->name }}</option>
                                         @endforeach
@@ -247,30 +247,30 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="serial_number">Serial Number</label>
-                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_number" name="serial_number">
+                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_number" name="serial_number" placeholder="Enter Serial Number">
                                 </div>
                                 <div class="form-group">
                                     <label for="model">Model</label>
-                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="model" name="model">
+                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="model" name="model" placeholder="Enter Model">
                                 </div>
                                 <div class="form-group">
                                     <label for="origin">Origin</label>
-                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="origin" name="origin">
+                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="origin" name="origin" placeholder="Enter Origin">
                                 </div>
                                 <div class="form-group">
                                     <label for="warranty">Warranty</label>
-                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warranty" name="warranty">
+                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warranty" name="warranty" placeholder="Enter Warranty">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control" cols="30" rows="1"></textarea>
+                                    <textarea name="description" id="description" class="form-control" cols="30" rows="1" placeholder="Enter Description (optional)"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="categories">Categories</label>
                                     <select name="categories" id="categories" class="form-control">
-                                        <option value="" disabled selected>Select Categories</option>
+                                        <option value="" disabled selected>--Select Categories--</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
@@ -278,15 +278,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter Name" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="type">Type</label>
-                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="type" name="type" required>
+                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="type" name="type" placeholder="Enter Type" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="quantity">Quantity</label>
-                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" min="1" value="1" name="quantity">
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantity" min="1" value="1" placeholder="Enter Quantity" name="quantity">
                                 </div>
                                 <div class="form-group">
                                     <label for="warranty_start">Warranty Start</label>
@@ -301,7 +301,7 @@
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
                                     <select name="unit" id="unit" class="form-control">
-                                        <option value="" disabled selected>Select Unit</option>
+                                        <option value="" disabled selected>--Select Unit--</option>
                                         <option value="ROL">ROL</option>
                                         <option value="PCS">PCS</option>
                                         <option value="SET">SET</option>
@@ -313,15 +313,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="brand">Brand</label>
-                                    <input type="text" class="form-control @error('brand') is-invalid @enderror" id="brand" name="brand">
+                                    <input type="text" class="form-control @error('brand') is-invalid @enderror" id="brand" name="brand" placeholder="Enter Brand">
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Year</label>
-                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="year" name="year">
+                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="year" name="year" placeholder="Enter Year">
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_price">Purchase Price</label>
-                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price">
+                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price" name="purchase_price" placeholder="Enter Purchase Price">
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_date">Purchase Date</label>
@@ -348,9 +348,9 @@
     <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLable">Modal Edit Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center">
+                    <h4 class="modal-title text-white font-weight-bold" id="editModalLable">Update Category</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -360,17 +360,17 @@
                         @method('PUT')
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Enter Name" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" cols="30" rows="4"></textarea>
+                            <textarea name="description" id="description" class="form-control" cols="30" rows="4" placeholder="Enter Description (optional)"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateCategory()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmUpdateCategory()"><i class="fas fa-check"></i> Save changes</button>
                 </div>
             </div>
         </div>
@@ -380,9 +380,9 @@
     <div class="modal fade" id="editToolsModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLable">Modal Edit Tools</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h5 class="modal-title text-white font-weight-bold" id="editModalLable">Update Tools</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -394,45 +394,45 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ownership">Ownership</label>
-                                    <input type="text" class="form-control @error('ownership') is-invalid @enderror" id="ownershipEdit" name="ownership" readonly>
+                                    <input type="text" class="form-control @error('ownership') is-invalid @enderror" id="ownershipEdit" name="ownership"  placeholder="Enter Ownership" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="serial_number">Serial Number</label>
-                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_numberEdit" name="serial_number" readonly>
+                                    <input type="text" class="form-control @error('serial_number') is-invalid @enderror" id="serial_numberEdit" name="serial_number" placeholder="Enter Serial Number" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="model">Model</label>
-                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="modelEdit" name="model">
+                                    <input type="text" class="form-control @error('model') is-invalid @enderror" id="modelEdit" placeholder="Enter Model" name="model">
                                 </div>
                                 <div class="form-group">
                                     <label for="origin">Origin</label>
-                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="originEdit" name="origin">
+                                    <input type="text" class="form-control @error('origin') is-invalid @enderror" id="originEdit" placeholder="Enter Origin" name="origin">
                                 </div>
                                 <div class="form-group">
                                     <label for="warranty">Warranty</label>
-                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warrantyEdit" name="warranty">
+                                    <input type="text" class="form-control @error('warranty') is-invalid @enderror" id="warrantyEdit" placeholder="Enter Warranty" name="warranty">
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
-                                    <textarea name="description" id="descriptionEdit" class="form-control" cols="30" rows="1"></textarea>
+                                    <textarea name="description" id="descriptionEdit" class="form-control" cols="30" rows="1" placeholder="Enter Description (optional)"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="categories">Categories</label>
-                                    <input type="text" class="form-control @error('categories') is-invalid @enderror" id="categoriesEdit" name="categories" readonly>
+                                    <input type="text" class="form-control @error('categories') is-invalid @enderror" id="categoriesEdit" name="categories" placeholder="Enter Categories" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="name">Name</label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEdit" name="name" required>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="nameEdit" name="name" placeholder="Enter Name" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="type">Type</label>
-                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="typeEdit" name="type" required>
+                                    <input type="text" class="form-control @error('type') is-invalid @enderror" id="typeEdit" name="type" placeholder="Enter Type" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="quantity">Quantity</label>
-                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantityEdit" name="quantity">
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror" id="quantityEdit" min="1" value="1" name="quantity">
                                 </div>
                                 <div class="form-group">
                                     <label for="warranty_start">Warranty Start</label>
@@ -463,11 +463,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="year">Year</label>
-                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="yearEdit" name="year">
+                                    <input type="number" class="form-control @error('year') is-invalid @enderror" id="yearEdit" name="year" placeholder="Enter Year">
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_price">Purchase Price</label>
-                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_priceEdit" name="purchase_price">
+                                    <input type="number" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_priceEdit" name="purchase_price" placeholder="Enter Purchase Price">
                                 </div>
                                 <div class="form-group">
                                     <label for="purchase_date">Purchase Date</label>
@@ -484,7 +484,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmUpdateTools()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmUpdateTools()"><i class="fas fa-check"></i> Save changes</button>
                 </div>
             </div>
         </div>
@@ -494,9 +494,9 @@
     <div class="modal fade" id="importToolsModal" tabindex="-1" aria-labelledby="importModalLable" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="importModalLable">Modal Import Tools</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold" id="importModalLable">Import Tools</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -512,37 +512,32 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmImportTools()"><i class="fas fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmImportTools()"><i class="fas fa-upload"></i> Upload</button>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')
-    <!-- Page level plugins -->
+<!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('#dataTable').DataTable();
-    })
-    $(document).ready(function() {
         $('#dataTable2').DataTable();
     })
-</script>
-<script>
 
     function confirmAddCategory() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to save this category data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, add it!'
+            confirmButtonText: 'Yes, Save it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addCategoryForm').submit();
@@ -553,12 +548,12 @@
     function confirmAddTools() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to save this tools data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, add it!'
+            confirmButtonText: 'Yes, Save it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addToolsForm').submit();
@@ -584,12 +579,12 @@
     function confirmUpdateCategory() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this category data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#updateCategoryForm').submit();
@@ -649,12 +644,12 @@
     function confirmUpdateTools() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this tools data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#updateToolsForm').submit();
@@ -665,12 +660,12 @@
     function confirmDeleteCategory(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this category data!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#deleteCategoryForm-' + id).submit();
@@ -681,12 +676,12 @@
     function confirmToolsDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this tools data!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#formDeleteTools-' + id).submit();

@@ -16,7 +16,7 @@
 <div class="card shadow mb-4">
     <div class="card border-left-primary shadow h-100 py-2">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Delivery Note Details</h6>
+            <h4 class="m-0 font-weight-bold text-primary">Delivery Note Details</h4>
             <a href="{{ route('transactions.index') }}" class="btn btn-primary btn-md">
                 <i class="fas fa-reply"></i> Back
             </a>
@@ -121,7 +121,7 @@
                     <h5 class="font-weight-bold">Tools List</h5>
                     <div class="table-responsive">
                         <table class="table table-bordered">
-                            <thead>
+                            <thead class="bg-primary text-white">
                                 <tr>
                                     <th>No</th>
                                     <th>Tool Code</th>

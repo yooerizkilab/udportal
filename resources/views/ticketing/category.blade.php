@@ -15,79 +15,75 @@
         This page is used to manage ticket category.
     </p>
     
-    <div class="col-lg-12">
-        <div class="card shadow mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Add Ticket Category') }}</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('ticketing-categories.store') }}" method="POST" id="addTicketCategoryForm">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="category_name">Category Name</label>
-                                    <input type="text" class="form-control" name="category_name" id="category_name" placeholder="Category Name">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <input type="text" class="form-control" name="description" id="description" placeholder="Description">
-                                </div>
-                            </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-gradient-primary d-flex justify-content-center">
+            <h4 class="m-0 font-weight-bold text-white">{{ __('Add Ticket Category') }}</h4>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('ticketing-categories.store') }}" method="POST" id="addTicketCategoryForm">
+                @csrf
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="category_name">Category Name</label>
+                            <input type="text" class="form-control" name="category_name" id="category_name" placeholder="Category Name">
                         </div>
-                    </form>
-                    <div class="float-right">
-                        <button type="button" class="btn btn-primary" onclick="confirmAddTicketCategory()">
-                            <i class="fas fa-receipt"></i> Save
-                        </button>
                     </div>
-                    
-                    <!-- Table -->
-                    <h6 class="m-0 font-weight-bold text-primary my-3">List Ticket Category</h6>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>Category Name</th>
-                                    <th>Description</th>
-                                    <th class="text-center" width="20%">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($categories as $category)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $category->name }}</td>
-                                        <td>{{ $category->description }}</td>
-                                        <td class="text-center">
-                                            <div class="d-inline-flex">
-                                                <button type="button" class="btn btn-warning btn-circle mr-2" 
-                                                    data-toggle="modal"
-                                                    data-target="#updateModal"
-                                                    data-id="{{ $category->id }}"
-                                                    data-name="{{ $category->name }}"
-                                                    data-description="{{ $category->description }}">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </button>
-                                                <form action="{{ route('ticketing-categories.destroy', $category->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-circle" onclick="return confirm('Are you sure?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" name="description" id="description" placeholder="Description (optional)">
+                        </div>
                     </div>
                 </div>
+            </form>
+            <div class="float-right">
+                <button type="button" class="btn btn-primary" onclick="confirmAddTicketCategory()">
+                    <i class="fas fa-receipt"></i> Save
+                </button>
+            </div>
+            
+            <!-- Table -->
+            <h4 class="m-0 font-weight-bold text-primary my-3">List Ticket Category</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th width="5%">No</th>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th class="text-center" width="15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($categories as $category)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $category->name }}</td>
+                                <td>{{ $category->description }}</td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex">
+                                        <button type="button" class="btn btn-warning btn-circle mr-2" 
+                                            data-toggle="modal"
+                                            data-target="#updateModal"
+                                            data-id="{{ $category->id }}"
+                                            data-name="{{ $category->name }}"
+                                            data-description="{{ $category->description }}">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <form action="{{ route('ticketing-categories.destroy', $category->id) }}" method="POST" class="d-inline" id="deleteTicketCategoryForm-{{ $category->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteTicketCategory({{ $category->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -96,9 +92,9 @@
     <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Update Ticket Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h5 class="modal-title text-white font-weight-bold" id="exampleModalLabel">Update Ticket Category</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -123,7 +119,7 @@
             </div>
         </div>
     </div>
-     
+
 @endsection
 
 @push('scripts')
@@ -138,12 +134,12 @@
         function confirmAddTicketCategory() {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                text: "You want to save this category data!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
+                confirmButtonText: 'Yes, Save it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('addTicketCategoryForm').submit();
@@ -171,15 +167,31 @@
         function confirmUpdateTicketCategory() {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                text: "You want to update this category data!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!'
+                confirmButtonText: 'Yes, Update it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('updateTicketCategoryForm').submit();
+                }
+            });
+        }
+
+        function confirmDeleteTicketCategory(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this category data!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, Delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteTicketCategoryForm-' + id).submit();
                 }
             });
         }

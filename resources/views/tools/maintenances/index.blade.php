@@ -39,7 +39,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Maintenances Description</label>
-                            <textarea name="description" id="description" class="form-control" id="" cols="30" rows="4"></textarea>
+                            <textarea name="description" id="description" class="form-control" id="description" cols="30" rows="4" placeholder="Enter Maintenances Description (optional)"></textarea>
                         </div>
                     </form>
                     <div class="float-right my-3">

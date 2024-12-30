@@ -10,6 +10,7 @@ use App\Models\TicketsCategories;
 use App\Models\Tools;
 use App\Models\ToolsMaintenance;
 use App\Models\VehicleTransaction;
+use App\Models\Warehouses;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -30,9 +31,11 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             DepartmentSeeder::class,
             BranchSeeder::class,
+            WarehouseSeeder::class,
             UserSeeder::class,
             EmployeSeeder::class,
-            // ContractSeeder::class,
+            ContractSeeder::class,
+            ProjectSeeder::class,
             // VehicleTypesSeeder::class,
             // VehicleSeeder::class,
             // MaintenanceRecordsSeeder::class,
@@ -41,8 +44,8 @@ class DatabaseSeeder extends Seeder
             // VehicleTransactionSeeder::class,
             ToolsCategorieSeeder::class,
             ToolsSeeder::class,
-            // ToolsMaintenanceSeeder::class,
-            // ToolsTransactionSeeder::class,
+            ToolsMaintenanceSeeder::class,
+            ToolsTransactionSeeder::class,
             TicketsCategoriesSeeder::class,
             TicketsSeeder::class,
             TicketsCommentsSeeder::class,

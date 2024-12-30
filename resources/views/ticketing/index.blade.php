@@ -87,11 +87,8 @@
 
     <div class="card shadow mb-4 mt-4">
         <div class="card-header py-3 d-flex bg-gradient-primary align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-white">Tickets</h6>
-            {{-- <button type="button" class="btn btn-success " data-toggle="modal" data-target="#exampleModal">
-                Create Ticket
-            </button> --}}
-            <a href="{{ route('ticketing.create') }}" class="btn btn-success">
+            <h4 class="m-0 font-weight-bold text-white">All Tickets</h4>
+            <a href="{{ route('ticketing.create') }}" class="btn btn-success"> <i class="fas fa-plus-circle"></i>
                 Create Ticket
             </a>
         </div>

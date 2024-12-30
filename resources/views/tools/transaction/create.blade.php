@@ -14,112 +14,114 @@
     </p>
 
     <div class="card shadow">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Delivery Note Details</h6>
-            <a href="{{ route('transactions.index') }}" class="btn btn-primary">
-                <i class="fas fa-reply fa-sm"></i> Back
-            </a>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('transactions.store') }}" method="POST" id="deliveryNoteForm">
-                @csrf
-                <div class="row mb-4">
-                    <!-- Delivery Type -->
-                    <div class="col-12 mb-3">
-                        <label for="type_delivery">Type of Delivery</label>
-                        <select name="type_delivery" class="form-control" id="type_delivery">
-                            <option value="">-- Select Type Delivery --</option>
-                            <option value="Delivery Note">Delivery Note</option>
-                            <option value="Transfer">Transfer</option>
-                            <option value="Return">Return</option>
-                        </select>
-                    </div>
-
-                    <!-- Driver Info -->
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="driver_name">Driver Name</label>
-                            <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name') }}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="source_project_id">Source Project</label>
-                            <select name="source_project_id" id="source_project_id" class="form-control">
-                                <option disabled selected>--Select Source Project--</option>
-                                @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
-                                @endforeach
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h4 class="m-0 font-weight-bold text-primary">Delivery Note Details</h4>
+                {{-- <a href="{{ route('transactions.index') }}" class="btn btn-primary">
+                    <i class="fas fa-reply fa-sm"></i> Back
+                </a> --}}
+            </div>
+            <div class="card-body">
+                <form action="{{ route('transactions.store') }}" method="POST" id="deliveryNoteForm">
+                    @csrf
+                    <div class="row mb-4">
+                        <!-- Delivery Type -->
+                        <div class="col-12 mb-3">
+                            <label for="type_delivery">Type of Delivery</label>
+                            <select name="type_delivery" class="form-control" id="type_delivery">
+                                <option value="">-- Select Type Delivery --</option>
+                                <option value="Delivery Note">Delivery Note</option>
+                                <option value="Transfer">Transfer</option>
+                                <option value="Return">Return</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="driver_phone" class="form-label">Driver Phone</label>   
-                            <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone') }}" required>
+    
+                        <!-- Driver Info -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="driver_name">Driver Name</label>
+                                <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name') }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="source_project_id">Source Project</label>
+                                <select name="source_project_id" id="source_project_id" class="form-control">
+                                    <option disabled selected>--Select Source Project--</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                        <div class="text-center mt-4">
-                            <i class="fas fa-arrow-right fa-4x text-primary"></i>
+    
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="driver_phone" class="form-label">Driver Phone</label>   
+                                <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone') }}" required>
+                            </div>
+                            <div class="text-center mt-4">
+                                <i class="fas fa-arrow-right fa-4x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="delivery_date" class="form-label">Delivery Date</label>
+                                <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', date('Y-m-d')) }}" required autocomplete="off">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="destination_project_id">Destination Project</label>
+                                <select name="destination_project_id" id="destination_project_id" class="form-control">
+                                    <option disabled selected>--Select Destination Project--</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="delivery_date" class="form-label">Delivery Date</label>
-                            <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', date('Y-m-d')) }}" required autocomplete="off">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="destination_project_id">Destination Project</label>
-                            <select name="destination_project_id" id="destination_project_id" class="form-control">
-                                <option disabled selected>--Select Destination Project--</option>
-                                @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->name }} - {{ $project->code }}</option>
-                                @endforeach
-                            </select>
+    
+                    <!-- QR Scanner -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mx-auto">
+                            <div id="reader" class="d-none border rounded p-3"></div>
                         </div>
                     </div>
-                </div>
-
-                <!-- QR Scanner -->
-                <div class="row mb-4">
-                    <div class="col-md-6 mx-auto">
-                        <div id="reader" class="d-none border rounded p-3"></div>
+    
+                    <!-- Tools Table -->
+                    <div class="form-group">
+                        <label class="form-label">Selected Tools</label>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="tools-table">
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th width="20%">Tool Code</th>
+                                        <th>Last Location</th>
+                                        <th width="10%" class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>        
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-info mt-2" id="add-row-scan">
+                            <i class="fas fa-camera"></i> Scan Tool
+                        </button>
                     </div>
-                </div>
-
-                <!-- Tools Table -->
-                <div class="form-group">
-                    <label class="form-label">Selected Tools</label>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="tools-table">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th width="20%">Tool Code</th>
-                                    <th>Last Location</th>
-                                    <th width="10%" class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>        
-                            </tbody>
-                        </table>
+    
+                    <!-- Notes -->
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
                     </div>
-                    <button type="button" class="btn btn-info mt-2" id="add-row-scan">
-                        <i class="fas fa-camera"></i> Scan Tool
-                    </button>
-                </div>
-
-                <!-- Notes -->
-                <div class="form-group">
-                    <label for="notes" class="form-label">Notes</label>
-                    <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
-                </div>
-
-                <div class="text-right">
-                    <button type="button" class="btn btn-success" onclick="confirmAddTransaction()">
-                        <i class="fas fa-truck-moving"></i> Create Delivery Note
-                    </button>
-                </div>
-            </form>
+    
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success" onclick="confirmAddTransaction()">
+                            <i class="fas fa-truck-moving"></i> Create Delivery Note
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
@@ -283,7 +285,7 @@ function confirmAddTransaction() {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, create it!',
+        confirmButtonText: 'Yes, Create it!',
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {

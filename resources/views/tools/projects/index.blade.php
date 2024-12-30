@@ -3,10 +3,8 @@
 ])
 
 @push('css')
-
 <!-- Custom styles for this page -->
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-
 @endpush
 
 @section('main-content')
@@ -17,8 +15,8 @@
     </p>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-gradient-primary">
-            <h6 class="m-0 font-weight-bold text-white">Create Project</h6>
+        <div class="card-header py-3 bg-gradient-primary d-flex justify-content-center">
+            <h4 class="m-0 font-weight-bold text-white">Create Project</h4>
         </div>
         <div class="card-body">
             <form action="{{ route('projects.store') }}" method="post" id="addProjectForm">
@@ -121,9 +119,9 @@
     <div class="modal fade" id="updateProjectModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel">Update Project</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h5 class="modal-title text-white font-weight-bold" id="updateModalLabel">Update Project</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -187,16 +185,15 @@
         $('#dataTable').DataTable();
     });
     
-
     function confirmDeleteProject(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this project data!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#deleteProjectForm' + id).submit();
@@ -227,12 +224,12 @@
     function confirmUpdateProject() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this project data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#updateProjectForm').submit();
@@ -243,12 +240,12 @@
     function confirmAddProject() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to save this project data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Save it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addProjectForm').submit();

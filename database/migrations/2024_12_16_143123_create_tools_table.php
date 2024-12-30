@@ -22,19 +22,10 @@ return new class extends Migration
             $table->string('email', 50)->nullable();
             $table->string('ppic', 50)->nullable();
             $table->longText('description')->nullable();
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
         });
-
-        // Table: tools_ownership
-        // Schema::create('tools_ownership', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name', 50);
-        //     $table->string('address', 100)->nullable();
-        //     $table->string('phone', 20)->nullable();
-        //     $table->timestamps();
-        //     $table->softDeletes();
-        // });
 
         // Table: tools_categories
         Schema::create('tools_categories', function (Blueprint $table) {
@@ -98,11 +89,12 @@ return new class extends Migration
             $table->string('document_code', 50);
             $table->date('document_date')->DBDefault(DB::raw('CURRENT_DATE'));
             $table->date('delivery_date');
-            $table->string('picc', 50)->nullable();
+            $table->string('ppic', 50)->nullable();
             $table->integer('quantity')->default(1);
             $table->string('unit', 50)->nullable();
             $table->string('driver', 50)->nullable();
             $table->string('driver_phone', 20)->nullable();
+            $table->string('transportation', 50)->nullable();
             $table->string('plate_number', 50)->nullable();
             $table->string('last_location', 255)->nullable();
             $table->enum('type', ['Delivery Note', 'Transfer', 'Return'])->default('Delivery Note');
@@ -122,6 +114,5 @@ return new class extends Migration
         Schema::dropIfExists('tools');
         Schema::dropIfExists('projects');
         Schema::dropIfExists('tools_categories');
-        // Schema::dropIfExists('tools_ownership');
     }
 };

@@ -18,20 +18,22 @@
         <div class="col-lg-12">
             <div class="card shadow-sm mb-4">
                 <div class="card-header py-3 bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold">
+                    <h4 class="m-0 font-weight-bold">
                         <i class="fas fa-ticket-alt mr-2"></i>Ticket Information
-                    </h6>
+                    </h4>
                     <div class="d-flex align-items-center">
                         {{-- @if($tickets->user_id != auth()->user()->id) --}}
                         @can('cancle ticket')
                         @if($tickets->status == 'Open')
-                        <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal"><i class="fas fa-trash"></i>
+                        <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal">
+                            <i class="fas fa-window-close"></i>
                             Cancelled
                         </button>
                         @endif
                         @endcan
                         @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled')
-                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#solvedModal"><i class="fas fa-check-circle"></i>
+                        <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#solvedModal">
+                            <i class="fas fa-check-circle"></i>
                             Solved Ticket
                         </button>
                         @endif
@@ -109,9 +111,9 @@
         <div class="col-lg-5">
             <div class="card shadow-sm mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center bg-gradient-secondary text-white">
-                    <h6 class="m-0 font-weight-bold">
+                    <h4 class="m-0 font-weight-bold">
                         <i class="fas fa-comments mr-2"></i>Comments
-                    </h6>
+                    </h4>
                     <span class="badge badge-light text-dark">
                         {{ $tickets->comments->count() }} Comments
                     </span>
@@ -167,9 +169,9 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header py-3 bg-gradient-info text-white">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold">
+                        <h4 class="m-0 font-weight-bold">
                             <i class="fas fa-ticket-alt mr-2"></i>Solved Ticket by {{ $tickets->user->name }}
-                        </h6>
+                        </h4>
                         <span class="badge badge-light text-dark">
                             {{ Carbon\Carbon::parse($tickets->closed_at)->diffForHumans() }}
                         </span>

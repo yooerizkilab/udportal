@@ -15,11 +15,11 @@ class ToolsMaintenanceSeeder extends Seeder
     {
         ToolsMaintenance::insert([
             [
-                'tools_id' => 4,
-                'code' => 'TLSM/XII/2021/AMT001',
+                'tool_id' => 5,
+                'code' => 'UD/2024/XII/SEM00001/MTC00001',
                 'maintenance_date' => now(),
                 'cost' => 30000,
-                'completion_date' => now(),
+                'completion_date' => null,
                 'status' => 'In Progress',
                 'description' => 'Process repair',
                 'created_at' => now(),

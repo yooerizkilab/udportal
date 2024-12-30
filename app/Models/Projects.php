@@ -20,5 +20,6 @@ class Projects extends Model
         'email',
         'ppic',
         'description',
+        'status',
     ];
 }

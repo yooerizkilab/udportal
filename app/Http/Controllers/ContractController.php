@@ -11,6 +11,7 @@ use App\Exports\ContractExport;
 use App\Imports\ContractImport;
 use App\Models\Contract;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
 class ContractController extends Controller
 {
@@ -185,7 +186,8 @@ class ContractController extends Controller
     {
         $contract = Contract::findOrFail($id);
         $pdf = PDF::loadView('contracts.pdf', compact('contract'));
-        return $pdf->stream('contracts-' . $contract->name . '.pdf');
+        $newFilename = 'contracts-' . str_replace('/', '-', $contract->name) . '.pdf';
+        return $pdf->stream($newFilename);
     }
 
     public function exportExcel(Request $request)

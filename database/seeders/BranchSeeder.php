@@ -30,7 +30,7 @@ class BranchSeeder extends Seeder
             [
                 'company_id' => 1,
                 'code' => 'B002',
-                'name' => 'Branch Distribution',
+                'name' => 'Branch Retail A',
                 'type' => 'Branch Office',
                 'address' => 'Jl Jemur Andayani 50 Ruko Permata E/18-19, Jawa Timur',
                 'phone' => '6211234567890',
@@ -43,7 +43,7 @@ class BranchSeeder extends Seeder
             [
                 'company_id' => 1,
                 'code' => 'B003',
-                'name' => 'Branch Production',
+                'name' => 'Branch Retail B',
                 'type' => 'Branch Office',
                 'address' => 'Kompl Tata Plaza Bl B/24, Sumatera Utara',
                 'phone' => '6211234567890',

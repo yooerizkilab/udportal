@@ -26,6 +26,7 @@ class ToolsTransaction extends Model
         'unit',
         'driver',
         'driver_phone',
+        'transportation',
         'plate_number',
         'last_location',
         'type',

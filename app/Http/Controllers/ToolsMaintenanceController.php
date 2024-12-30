@@ -70,9 +70,9 @@ class ToolsMaintenanceController extends Controller
             return redirect()->back()->with('error', 'Failed to create maintenance record: Tool is already in maintenance.');
         }
 
-        // Generate code maintenance Ex : UD/MTC/2024/XII/SEM001/MTC001
+        // Generate code maintenance Ex : UD/2024/XII/SEM00001/MTC00001
         $roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-        $defaultCode = 'UD/MTC/' . now()->format('Y') . '/' . $roman[now()->month - 1] . '/' . $tools->code . '/MTC' . str_pad($tools->id, 4, '0', STR_PAD_LEFT);
+        $defaultCode = 'UD/' . now()->format('Y') . '/' . $roman[now()->month - 1] . '/' . $tools->code . '/MTC' . str_pad($tools->id, 4, '0', STR_PAD_LEFT);
 
         // Cek apakah maintenance dengan code sudah ada
         $existingMaintenance = ToolsMaintenance::where('code', $defaultCode)->first();
