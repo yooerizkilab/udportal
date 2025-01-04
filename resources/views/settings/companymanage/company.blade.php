@@ -17,7 +17,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">List Companies</h6>
+                <h4 class="m-0 font-weight-bold text-primary">List Companies</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Code</th>
@@ -60,30 +60,28 @@
                                     <td>{{ $company->code }}</td>
                                     <td>{{ $company->company }}</td>
                                     <td>{{ $company->name }}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-center">
-                                            <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info mr-1 btn-circle">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <button class="btn btn-warning mr-1 btn-circle"
-                                                data-toggle="modal"
-                                                data-id="{{ $company->id }}"
-                                                data-name="{{ $company->name }}"
-                                                data-company="{{ $company->company }}"
-                                                data-password="{{ $company->password }}"
-                                                data-email="{{ $company->email }}"
-                                                data-phone="{{ $company->phone }}"
-                                                data-address="{{ $company->address }}"
-                                                data-description="{{ $company->description }}"
-                                                data-target="#editCompaniesModal">
-                                                <i class="fas fa-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('companies.destroy', $company->id) }}" method="POST" id="deleteCompaniesForm-{{ $company->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-circle" onclick="deleteCompanies({{ $company->id }})" ><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
+                                    <td class="text-center d-flex">
+                                        <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info mr-1 btn-circle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button class="btn btn-warning mr-1 btn-circle"
+                                            data-toggle="modal"
+                                            data-id="{{ $company->id }}"
+                                            data-name="{{ $company->name }}"
+                                            data-company="{{ $company->company }}"
+                                            data-password="{{ $company->password }}"
+                                            data-email="{{ $company->email }}"
+                                            data-phone="{{ $company->phone }}"
+                                            data-address="{{ $company->address }}"
+                                            data-description="{{ $company->description }}"
+                                            data-target="#editCompaniesModal">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('companies.destroy', $company->id) }}" method="POST" id="deleteCompaniesForm-{{ $company->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="deleteCompanies({{ $company->id }})" ><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
@@ -102,9 +100,9 @@
     <div class="modal fade" id="addCompaniesModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="addModalLabel">Add Companies</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex align-items-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Create Companies</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -159,9 +157,9 @@
     <div class="modal fade" id="editCompaniesModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="editModalLabel">Edit Companies</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex align-items-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editModalLabel">Update Companies</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

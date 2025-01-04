@@ -62,31 +62,29 @@
                                     <td>{{ $branch->name }}</td>
                                     <td>{{ $branch->type }}</td>
                                     <td>{!! $branch->activeBranch !!}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-center">
-                                            <a href="{{ route('branches.show', $branch->id) }}" class="btn btn-info mr-1 btn-circle">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <button class="btn btn-warning mr-1 btn-circle"
-                                                data-toggle="modal"
-                                                data-id="{{ $branch->id }}"
-                                                data-company_id="{{ $branch->company_id }}"
-                                                data-type="{{ $branch->type }}"
-                                                data-name="{{ $branch->name }}"
-                                                data-phone="{{ $branch->phone }}"
-                                                data-address="{{ $branch->address }}"
-                                                data-status="{{ $branch->status }}"
-                                                data-description="{{ $branch->description }}"
-                                                data-photo="{{ $branch->photo }}"
-                                                data-target="#editBranchesModal">
-                                                <i class="fas fa-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" id="deleteBranchesForm-{{ $branch->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteBranches({{ $branch->id }})"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
+                                    <td class="text-center d-flex">
+                                        <a href="{{ route('branches.show', $branch->id) }}" class="btn btn-info mr-1 btn-circle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button class="btn btn-warning mr-1 btn-circle"
+                                            data-toggle="modal"
+                                            data-id="{{ $branch->id }}"
+                                            data-company_id="{{ $branch->company_id }}"
+                                            data-type="{{ $branch->type }}"
+                                            data-name="{{ $branch->name }}"
+                                            data-phone="{{ $branch->phone }}"
+                                            data-address="{{ $branch->address }}"
+                                            data-status="{{ $branch->status }}"
+                                            data-description="{{ $branch->description }}"
+                                            data-photo="{{ $branch->photo }}"
+                                            data-target="#editBranchesModal">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" id="deleteBranchesForm-{{ $branch->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteBranches({{ $branch->id }})"><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
@@ -105,9 +103,9 @@
     <div class="modal fade" id="addBranchesModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Branches</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Create Branches</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -171,9 +169,9 @@
     <div class="modal fade" id="editBranchesModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="editModalLabel">Modal Edit Branches</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editModalLabel">Update Branches</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -296,7 +294,6 @@
         formAction = formAction.replace(':id', branchesId);
         $('#editBranchesForm').attr('action', formAction);
     });
-    
 
     function confirmUpdateBranches() {
         Swal.fire({

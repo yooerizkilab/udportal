@@ -18,8 +18,8 @@
     </p>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-gradient-primary">
-            <h6 class="m-0 font-weight-bold text-white">Tracking</h6>
+        <div class="card-header py-3 bg-gradient-primary d-flex justify-content-center">
+            <h4 class="m-0 font-weight-bold text-white">List Tracking Tools</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">

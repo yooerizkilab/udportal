@@ -17,13 +17,14 @@
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h4 class="m-0 font-weight-bold text-primary">Delivery Note Details</h4>
-                {{-- <a href="{{ route('transactions.index') }}" class="btn btn-primary">
+                <a href="{{ route('transactions.index') }}" class="btn btn-primary">
                     <i class="fas fa-reply fa-sm"></i> Back
-                </a> --}}
+                </a>
             </div>
             <div class="card-body">
                 <form action="{{ route('transactions.store') }}" method="POST" id="deliveryNoteForm">
                     @csrf
+                    @method('POST')
                     <div class="row mb-4">
                         <!-- Delivery Type -->
                         <div class="col-12 mb-3">
@@ -114,13 +115,12 @@
                         <label for="notes" class="form-label">Notes</label>
                         <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
                     </div>
-    
-                    <div class="text-right">
-                        <button type="button" class="btn btn-success" onclick="confirmAddTransaction()">
-                            <i class="fas fa-truck-moving"></i> Create Delivery Note
-                        </button>
-                    </div>
                 </form>
+                <div class="text-right">
+                    <button type="button" class="btn btn-success" onclick="confirmAddTransaction()">
+                        <i class="fas fa-truck-moving"></i> Create Delivery Note
+                    </button>
+                </div>
             </div>
         </div>
     </div>

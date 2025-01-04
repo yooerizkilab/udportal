@@ -142,7 +142,7 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center">
-                    <h5 class="modal-title font-weight-bold text-white" id="addContractsModalLabel">Add Contracts</h5>
+                    <h4 class="modal-title font-weight-bold text-white" id="addContractsModalLabel">Create Contracts</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 10px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -317,7 +317,7 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative">
-                    <h5 class="modal-title font-weight-bold text-white" id="editContractsModalLabel">Update Contracts</h5>
+                    <h4 class="modal-title font-weight-bold text-white" id="editContractsModalLabel">Update Contracts</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 10px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -494,7 +494,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex align-items-center position-relative">
-                    <h5 class="modal-title font-weight-bold text-white mx-auto" id="importContractsModalLabel">Import Contracts</h5>
+                    <h4 class="modal-title font-weight-bold text-white mx-auto" id="importContractsModalLabel">Import Contracts</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>

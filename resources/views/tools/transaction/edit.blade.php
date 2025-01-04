@@ -1,5 +1,5 @@
 @extends('layouts.admin', [
-    'title' => 'Edit Delivery Note'
+    'title' => 'Update Delivery Note'
 ])
 
 @push('css')
@@ -8,14 +8,14 @@
 @endpush
 
 @section('main-content')
-    <h1 class="h3 mb-0 text-gray-800">{{ __('Edit Delivery Note') }}</h1>
+    <h1 class="h3 mb-0 text-gray-800">{{ __('Update Delivery Note') }}</h1>
     <p class="mb-4">
-        This page is used to edit delivery note.
+        This page is used to update delivery note.
     </p>
 
     <div class="card shadow">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Delivery Note Details</h6>
+            <h4 class="m-0 font-weight-bold text-primary">Delivery Note Details</h4>
             <a href="{{ route('transactions.index') }}" class="btn btn-primary">
                 <i class="fas fa-reply fa-sm"></i> Back
             </a>

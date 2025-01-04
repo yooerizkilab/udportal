@@ -43,6 +43,7 @@ class VehicleTypeController extends Controller
         ]);
 
         $data = [
+            'code' => 'T' . str_pad(VehicleType::count() + 1, 3, '0', STR_PAD_LEFT),
             'name' => $request->name,
             'description' => $request->description,
         ];
@@ -54,7 +55,7 @@ class VehicleTypeController extends Controller
             return redirect()->back()->with('success', 'Type ' . $type->name . ' Succes fully created');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Create');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -79,9 +80,6 @@ class VehicleTypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
-        $types = VehicleType::findOrFail($id);
-
         $request->validate([
             'name' => 'required|string',
             'description' => 'required|string'
@@ -94,12 +92,13 @@ class VehicleTypeController extends Controller
 
         DB::beginTransaction();
         try {
+            $types = VehicleType::findOrFail($id);
             $types->update($data);
             DB::commit();
             return redirect()->back()->with('success', 'Type ' . $types->name . ' Successfully Updated');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Update');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -116,7 +115,7 @@ class VehicleTypeController extends Controller
             return redirect()->back()->with('success', 'Type ' . $type->name . ' Successfully Deleted');
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Type ' . $e->getMessage() . ' Failed to Delete');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

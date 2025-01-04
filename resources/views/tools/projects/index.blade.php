@@ -58,7 +58,7 @@
             </form>
             <div class="float-right mb-4">
                 <button type="button" class="btn btn-primary" onclick="confirmAddProject()">
-                    <i class="fas fa-check"></i> Save
+                    <i class="fas fa-check"></i> Save Project
                 </button>
             </div>
             <div class="table-responsive">
@@ -120,7 +120,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative">
-                    <h5 class="modal-title text-white font-weight-bold" id="updateModalLabel">Update Project</h5>
+                    <h4 class="modal-title text-white font-weight-bold" id="updateModalLabel">Update Project</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -176,7 +176,6 @@
 
 
 @push('scripts')
-
 <!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>

@@ -93,7 +93,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative">
-                    <h5 class="modal-title text-white font-weight-bold" id="exampleModalLabel">Update Ticket Category</h5>
+                    <h4 class="modal-title text-white font-weight-bold" id="exampleModalLabel">Update Ticket Category</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>

@@ -59,41 +59,39 @@
                                     <td>{{ $user->fullName }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td><span class="badge badge-{{ $user->badgeClass }}">{{ $user->getRoleNames()[0] }}</span></td>
-                                    <td class="text-center">
-                                        <div class="d-inline-flex">
-                                            <a href="{{ route('users.show', $user->id) }}" class="btn btn-info mr-2 btn-circle">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            @if ($user->id !== auth()->user()->id)
-                                            <button type="button" class="btn btn-warning mr-2 btn-circle"
-                                                data-id="{{ $user->id }}"
-                                                data-name="{{ $user->name }}"
-                                                data-username="{{ $user->username }}"
-                                                data-last_name="{{ $user->last_name }}"
-                                                data-email="{{ $user->email }}"
-                                                data-role="{{ $user->getRoleNames()[0] }}"
-                                                data-company_id="{{ $user->employe->company_id }}"
-                                                data-department_id="{{ $user->employe->department_id }}"
-                                                data-branch_id="{{ $user->employe->branch_id }}"
-                                                data-nik="{{ $user->employe->nik }}"
-                                                data-full_name="{{ $user->fullName }}"
-                                                data-phone="{{ $user->employe->phone }}"
-                                                data-gender="{{ $user->employe->gender }}"
-                                                data-age="{{ $user->employe->age }}"
-                                                data-address="{{ $user->employe->address }}"
-                                                data-position="{{ $user->employe->position }}"
-                                                data-toggle="modal" data-target="#editUsersModal">
-                                                <i class="fas fa-pencil"></i>
+                                    <td class="text-center d-flex justify-content-center">
+                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-info mr-2 btn-circle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if ($user->id !== auth()->user()->id)
+                                        <button type="button" class="btn btn-warning mr-2 btn-circle"
+                                            data-id="{{ $user->id }}"
+                                            data-name="{{ $user->name }}"
+                                            data-username="{{ $user->username }}"
+                                            data-last_name="{{ $user->last_name }}"
+                                            data-email="{{ $user->email }}"
+                                            data-role="{{ $user->getRoleNames()[0] }}"
+                                            data-company_id="{{ $user->employe->company_id }}"
+                                            data-department_id="{{ $user->employe->department_id }}"
+                                            data-branch_id="{{ $user->employe->branch_id }}"
+                                            data-nik="{{ $user->employe->nik }}"
+                                            data-full_name="{{ $user->fullName }}"
+                                            data-phone="{{ $user->employe->phone }}"
+                                            data-gender="{{ $user->employe->gender }}"
+                                            data-age="{{ $user->employe->age }}"
+                                            data-address="{{ $user->employe->address }}"
+                                            data-position="{{ $user->employe->position }}"
+                                            data-toggle="modal" data-target="#editUsersModal">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="post" id="deleteUsersForm" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-circle">
+                                                <i class="fas fa-trash"></i>
                                             </button>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="post" id="deleteUsersForm" class="d-inline">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-circle">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                            @endif
-                                        </div>
+                                        </form>
+                                        @endif
                                     </td>
                                 </tr>                        
                             @empty

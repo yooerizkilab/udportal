@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Warehouses;
 
 class WarehouseController extends Controller
 {
@@ -11,7 +12,8 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        //
+        $warehouses = Warehouses::all();
+        return view('settings.companymanage.warehouse', compact('warehouses'));
     }
 
     /**

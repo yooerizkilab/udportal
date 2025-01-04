@@ -79,17 +79,16 @@
     @endcan
 
     <!-- Nav Item - Vehicles Management Collapse Menu -->
-    <li class="nav-item {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index', 'vehicles-assign.index', 'vehicles.*']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index', 'vehicles.*']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVehicles"
             aria-expanded="true" aria-controls="collapseVehicles">
             <i class="fas fa-fw fa-truck-fast"></i>
             <span>Vehicles Management</span>
         </a>
-        <div id="collapseVehicles" class="collapse {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index','vehicles-assign.index' ,'vehicles.*']) ? 'show' : '' }}" aria-labelledby="headingVehicles"
+        <div id="collapseVehicles" class="collapse {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index','vehicles.*']) ? 'show' : '' }}" aria-labelledby="headingVehicles"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('vehicles.index') ? 'active' : '' }}" href="{{ route('vehicles.index') }}">{{ __('Vehicles') }}</a>
-                <a class="collapse-item {{ request()->routeIs('vehicles-assign.index') ? 'active' : '' }}" href="{{ route('vehicles-assign.index') }}">Assignment</a>
                 <a class="collapse-item {{ request()->routeIs('vehicles-maintenances.index') ? 'active' : '' }}" href="{{ route('vehicles-maintenances.index') }}">{{ __('Maintenances') }}</a>
                 <a class="collapse-item {{ request()->routeIs('insurances.index') ? 'active' : '' }}" href="{{ route('insurances.index') }}">{{ __('Insurances') }}</a>
             </div>
@@ -140,18 +139,18 @@
 
     <!-- Nav Item - Companies Management Collapse Menu -->
     @can('view company')
-    <li class="nav-item {{ request()->routeIs(['companies.index', 'branches.index', 'departments.index', 'employees.index']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['companies.index', 'branches.index', 'warehouses.index','departments.index', 'employees.index']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCompenies"
             aria-expanded="true" aria-controls="collapseCompenies">
             <i class="fas fa-fw fa-building"></i>
             <span>Company Management</span>
         </a>
-        <div id="collapseCompenies" class="collapse {{ request()->routeIs(['companies.index', 'branches.index', 'departments.index', 'employees.index']) ? 'show' : '' }}" aria-labelledby="headingCompenies"
+        <div id="collapseCompenies" class="collapse {{ request()->routeIs(['companies.index', 'branches.index','warehouses.index', 'departments.index', 'employees.index']) ? 'show' : '' }}" aria-labelledby="headingCompenies"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('companies.index') ? 'active' : '' }}" href="{{ route('companies.index') }}">Companies</a>
                 <a class="collapse-item {{ request()->routeIs('branches.index') ? 'active' : '' }}" href="{{ route('branches.index') }}">Branches</a>
-                <a class="collapse-item" href="{{ route('warehouses.index') }}">Warehouses</a>
+                <a class="collapse-item {{ request()->routeIs('warehouses.index') ? 'active' : '' }}" href="{{ route('warehouses.index') }}">Warehouses</a>
                 <a class="collapse-item {{ request()->routeIs('departments.index') ? 'active' : '' }}" href="{{ route('departments.index') }}">Departments</a>
                 <a class="collapse-item {{ request()->routeIs('employees.index') ? 'active' : '' }}" href="{{ route('employees.index') }}">Employees</a>
             </div>

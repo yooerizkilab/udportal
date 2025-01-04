@@ -24,8 +24,8 @@ Auth::routes();
 Route::get('tracking/tools', 'ToolsTrackingController@indexFrontend')->name('trackings.tools');
 Route::get('tracking/tools/{id}', 'ToolsTrackingController@show')->name('tracking.tools');
 
-// Delivery Note view frontend
-Route::get('transactions/tools', 'ToolsTransactionController@createFrontend')->name('transactions.tools');
+// Delivery Note view frontend (Development)
+// Route::get('transactions/tools', 'ToolsTransactionController@createFrontend')->name('transactions.tools');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
     });
 
-    // Tools Management
+    // Tools Management Fix
     Route::group(['prefix' => 'tools'], function () {
         Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('tools', 'ToolsController');
@@ -66,9 +66,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'vehicles'], function () {
         Route::resource('types', 'VehicleTypeController');
         Route::resource('vehicles', 'VehiclesController');
+        Route::post('assign/{id}', 'VehiclesController@assign')->name('vehicles.assign');
 
-        Route::post('assign', 'VehiclesController@assign')->name('vehicles.assign');
-        Route::resource('vehicles-assign', 'VehicleAssignmentController');
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::post('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         // Route::post('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
@@ -78,14 +77,14 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Vouchers Management
-    Route::group(['prefix' => 'vouchers'], function () {
-        Route::resource('vouchers', 'VouchersController');
-    });
+    // Route::group(['prefix' => 'vouchers'], function () {
+    //     Route::resource('vouchers', 'VouchersController');
+    // });
 
     // Equipment Management
-    Route::group(['prefix' => 'equipments'], function () {
-        Route::resource('equipments', 'EquipmentsController');
-    });
+    // Route::group(['prefix' => 'equipments'], function () {
+    //     Route::resource('equipments', 'EquipmentsController');
+    // });
 
     // Settings Management development
     Route::group(['prefix' => 'settings'], function () {

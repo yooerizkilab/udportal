@@ -60,23 +60,21 @@
                                     <td>{{ $department->code }}</td>
                                     <td>{{ $department->name }}</td>
                                     <td>{{ $department->description }}</td>
-                                    <td>
-                                        <div class="d-inline-flex">
-                                            <button type="button" class="btn btn-warning mr-2 btn-circle"
-                                                data-toggle="modal"
-                                                data-id="{{ $department->id }}"
-                                                data-company_id="{{ $department->company_id }}"
-                                                data-name="{{ $department->name }}"
-                                                data-description="{{ $department->description }}"
-                                                data-target="#editDepartmentsModal">
-                                                <i class="fas fa-pencil"></i>
-                                            </button>
-                                            <form action="{{ route('departments.destroy', $department->id) }}" method="POST" id="deleteDepartmentsForm-{{ $department->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteDepartment({{ $department->id }})"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
+                                    <td class="text-center d-flex">
+                                        <button type="button" class="btn btn-warning btn-circle mr-1"
+                                            data-toggle="modal"
+                                            data-id="{{ $department->id }}"
+                                            data-company_id="{{ $department->company_id }}"
+                                            data-name="{{ $department->name }}"
+                                            data-description="{{ $department->description }}"
+                                            data-target="#editDepartmentsModal">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('departments.destroy', $department->id) }}" method="POST" id="deleteDepartmentsForm-{{ $department->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteDepartment({{ $department->id }})"><i class="fas fa-trash"></i></button>
+                                        </form>
                                     </td> 
                                 </tr>                               
                             @empty
@@ -95,9 +93,9 @@
     <div class="modal fade" id="addDepartmentsModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="addModalLabel">Modal Add Departments</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Create Departments</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -135,9 +133,9 @@
     <div class="modal fade" id="editDepartmentsModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="editModalLabel">Modal Edit Departments</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editModalLabel">Update Departments</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

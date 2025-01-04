@@ -11,6 +11,8 @@ class Warehouses extends Model
 
     protected $table = 'warehouses';
 
+    protected $appends = ['statusName', 'typeName'];
+
     protected $fillable = [
         'company_id',
         'branch_id',
@@ -22,6 +24,27 @@ class Warehouses extends Model
         'status',
         'type',
     ];
+
+    public function getStatusNameAttribute()
+    {
+        $color = [
+            'Active' => 'success',
+            'Inactive' => 'danger',
+        ];
+
+        return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
+    }
+
+    public function getTypeNameAttribute()
+    {
+        $color = [
+            'Warehouse' => 'secondary',
+            'Raw Material' => 'primary',
+            'Finished Goods' => 'info'
+        ];
+
+        return '<span class="badge badge-' . $color[$this->type] . '">' . $this->type . '</span>';
+    }
 
     public function company()
     {

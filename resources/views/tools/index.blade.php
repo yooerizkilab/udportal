@@ -195,7 +195,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative ">
-                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Add Category</h4>
+                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Create Category</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -226,7 +226,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative">
-                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Add Tools</h4>
+                    <h4 class="modal-title text-white font-weight-bold" id="addModalLabel">Create Tools</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -381,7 +381,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center position-relative">
-                    <h5 class="modal-title text-white font-weight-bold" id="editModalLable">Update Tools</h5>
+                    <h4 class="modal-title text-white font-weight-bold" id="editModalLable">Update Tools</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>

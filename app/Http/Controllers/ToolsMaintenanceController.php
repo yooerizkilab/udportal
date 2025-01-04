@@ -139,8 +139,6 @@ class ToolsMaintenanceController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $maintenance = ToolsMaintenance::findOrFail($id);
-
         $data = [
             'maintenance_date' => date('Y-m-d', strtotime($request->maintenance_date)),
             'cost' => $request->cost,
@@ -148,6 +146,7 @@ class ToolsMaintenanceController extends Controller
         ];
         DB::beginTransaction();
         try {
+            $maintenance = ToolsMaintenance::findOrFail($id);
             $maintenance->update($data);
             DB::commit();
             return redirect()->back()->with('success', 'Maintenance record updated successfully.');

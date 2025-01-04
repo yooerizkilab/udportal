@@ -1,5 +1,5 @@
 @extends('layouts.admin', [
-    'title' => 'Tools Maintenances'
+    'title' => 'Maintenances Tools Management'
 ])
 
 @push('css')
@@ -9,15 +9,14 @@
 
 @section('main-content')
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tools Maintenances</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.
+    <h1 class="h3 mb-2 text-gray-800">Tools Maintenances Management</h1>
+    <p class="mb-4">
+        This page is used to manage tools maintenances.
     </p>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Tools Maintenances</h6>
+        <div class="card-header py-3 d-flex justify-content-center bg-gradient-primary">
+            <h4 class="m-0 font-weight-bold text-white">Tools Maintenances</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -126,10 +125,10 @@
     <div class="modal fade" id="updateMaintenancesModal" tabindex="-1" role="dialog" aria-labelledby="updateMaintenancesModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateMaintenancesModalLabel">Update Maintenance</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <div class="modal-header bg-primary d-flex justify-content-center position-relative">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="updateMaintenancesModalLabel">Update Maintenance</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -167,8 +166,7 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
-</script>
-<script>
+
     function confirmAddMaintenances() {
         Swal.fire({
             title: 'Are you sure?',
@@ -237,8 +235,8 @@
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, Cancel it!',
         }).then((result) => {
             if (result.isConfirmed) {

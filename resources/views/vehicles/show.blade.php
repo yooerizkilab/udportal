@@ -62,7 +62,6 @@
                                     <span class="font-weight-bold text-muted">Inspected</span>
                                     <span>{{ $vehicle->inspected }}</span>
                                 </div>
-
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
@@ -114,19 +113,15 @@
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
+                                        <thead class="thead-light">
                                             <tr>
-                                                <th>Ownership</th>
-                                                <th>Purchase Price</th>
-                                                <th>Purchase Date</th>
-                                                <th>Selling Price</th>
-                                                <th>Selling Date</th>
+                                                <th>#</th>
+                                                <th>Activity</th>
+                                                <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

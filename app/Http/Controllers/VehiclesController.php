@@ -30,6 +30,7 @@ class VehiclesController extends Controller
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = Company::all();
         $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
+        // return $vehicles;
         $users = User::all();
         return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'users'));
     }
@@ -51,8 +52,8 @@ class VehiclesController extends Controller
         $request->validate([
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'ownership' => 'required|exists:vehicle_ownership,id',
-            'license_plate' => 'required|string|max:20',
+            'ownership' => 'required|exists:companies,id',
+            'license_plate' => 'required|string|max:10',
             'year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'color' => 'required|string|max:50',
             'vehicle_type' => 'required|exists:vehicle_type,id',
@@ -66,19 +67,6 @@ class VehiclesController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Get default code where vehicle type is selected
-        $getVehicleType = VehicleType::where('id', $request->vehicle_type)->first();
-        // Ambil 4 huruf pertama nama kategori
-        $prefix = strtoupper(substr($getVehicleType->name, 0, 4));
-        // Cari item terakhir yang memiliki prefix sama
-        $lastItem = Vehicle::where('code', 'LIKE', $prefix . '%')->latest('id')->first();
-        // Ambil angka terakhir dari kode, jika ada
-        $lastNumber = $lastItem ? intval(substr($lastItem->code, strlen($prefix))) : 0;
-        // Tambahkan 1 ke angka terakhir
-        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-        // Gabungkan prefix dengan angka baru
-        $code = $prefix . $newNumber;
-
         // Proses upload gambar
         $photoFile = null;
         if ($request->hasFile('photo')) {
@@ -88,7 +76,7 @@ class VehiclesController extends Controller
         }
 
         $data = [
-            'code' => $code,
+            'code' => 'KO-' . str_pad(Vehicle::count() + 1, 4, '0', STR_PAD_LEFT),
             'type_id' => $request->vehicle_type,
             'brand' => $request->brand,
             'model' => $request->model,
@@ -115,7 +103,7 @@ class VehiclesController extends Controller
             return redirect()->back()->with('success', 'Vehicle ' . $vehicle->model . ' created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error creating vehicle ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -125,7 +113,6 @@ class VehiclesController extends Controller
     public function show(string $id)
     {
         $vehicle = Vehicle::with('type', 'ownership', 'assigned', 'maintenanceRecords')->findOrFail($id);
-        // return $vehicle;
         return view('vehicles.show', compact('vehicle'));
     }
 
@@ -197,7 +184,7 @@ class VehiclesController extends Controller
             return redirect()->back()->with('success', 'Vehicle ' . $vehicle->model . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error updating vehicle ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -206,46 +193,72 @@ class VehiclesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $vehicle = Vehicle::find($id);
+            $vehicle->delete();
+            DB::commit();
+            return redirect()->back()->with('success', 'Vehicle ' . $vehicle->model . ' deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
-    public function assign(Request $request)
+    public function assign(Request $request, string $id)
     {
+        // Validasi input
         $request->validate([
-            'employee' => 'required|exists:employe,id',
+            'employee' => 'required|exists:employees,id',
             'assignment_date' => 'required|date',
-            'return_date' => 'nullable|date',
+            'notes' => 'nullable|string',
         ]);
 
-        // Generate default code Assignment Ex : UD/SIGN/2024/VHE0001/ASGN0001++
-        $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-        $getAssign = VehicleAssignment::count();
-        $number = $getAssign + 1;
-        $defaultCode = 'UD/SIGN' . '/' . 'VHE' . str_pad($getVehicle->code, 4, '0', STR_PAD_LEFT) . '/ASGN' . str_pad($number, 4, '0', STR_PAD_LEFT);
-        $user = Employe::where('id', $request->employee)->first();
+        // Ambil data kendaraan dan karyawan
+        $vehicle = Vehicle::findOrFail($id);
+        $employee = Employe::findOrFail($request->employee);
 
-        // Check if vehicle is inactive
-        if ($getVehicle->status == 'Inactive') {
-            return redirect()->back()->with('error', 'Failed to assign vehicle: Vehicle is inactive.');
+        // Periksa status kendaraan
+        if ($vehicle->status === 'Inactive') {
+            return redirect()->back()->with('error', "Failed to assign $employee->full_name. Vehicle $vehicle->model is inactive.");
         }
-
-        $data = [
-            'user_id' => $request->employee,
-            'vehicle_id' => $request->vehicle_id,
-            'code' => $defaultCode,
-            'assignment_date' => $request->assignment_date,
-            'notes' => $request->notes
-        ];
 
         DB::beginTransaction();
         try {
+            // Cek apakah karyawan sudah memiliki kendaraan yang assigned
+            $existingAssignment = VehicleAssignment::where('user_id', $employee->id)
+                ->whereNull('return_date')  // Pastikan hanya yang belum dikembalikan
+                ->first();
 
+            if ($existingAssignment) {
+                return redirect()->back()->with('error', "Failed to assign $employee->full_name. They already have a vehicle assigned.");
+            }
+
+            // Cek apakah kendaraan sudah diassign ke karyawan lain
+            $anotherAssignment = VehicleAssignment::where('vehicle_id', $vehicle->id)
+                ->whereNull('return_date')
+                ->first();
+
+            if ($anotherAssignment) {
+                // Update return_date pada assignment sebelumnya
+                $anotherAssignment->update(['return_date' => now()]);
+            }
+
+            // Buat data assignment baru
+            VehicleAssignment::create([
+                'user_id' => $request->employee,
+                'vehicle_id' => $vehicle->id,
+                'code' => 'UD/ASSIGN/' . str_pad(VehicleAssignment::count() + 1, 4, '0', STR_PAD_LEFT),
+                'assignment_date' => $request->assignment_date,
+                'return_date' => null,
+                'notes' => $request->notes,
+            ]);
 
             DB::commit();
-            return redirect()->back()->with('success', 'Vehicle assigned to ' . $user->name . ' successfully.');
+            return redirect()->back()->with('success', "Vehicle $vehicle->model assigned to $employee->full_name successfully.");
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error assigning vehicle ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }
