@@ -12,17 +12,17 @@ class VehicleMaintenance extends Model
 
     protected $table = 'vehicle_maintenance_record';
 
-    protected $appends = ['status'];
-
+    protected $appends = ['statusName'];
 
     protected $fillable = [
         'vehicle_id',
         'code',
-        'kilometer',
+        'mileage',
         'maintenance_date',
         'description',
         'cost',
         'next_maintenance',
+        'status',
         'notes',
         'photo'
     ];
@@ -32,8 +32,14 @@ class VehicleMaintenance extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function getStatusAttribute()
+    public function getStatusNameAttribute()
     {
-        return $this->status = $this->vehicle->status == 'Maintenance' ? 'Maintenance' : 'Completed';
+        $color = [
+            'In Progress' => 'secondary',
+            'Completed' => 'success',
+            'Cancelled' => 'danger'
+        ];
+
+        return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
     }
 }

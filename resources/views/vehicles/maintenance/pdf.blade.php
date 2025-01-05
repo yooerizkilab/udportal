@@ -1,187 +1,148 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Maintenance Kendaraan</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        @page {
-            size: A4;
-            margin: 10mm;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            color: #333;
-            font-size: 9pt;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
         }
-
-        .maintenance-document {
-            max-width: 210mm;
-            margin: 0 auto;
-            padding: 15mm;
-            background-color: white;
-        }
-
-        .document-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .company-logo {
-            width: 80px;
-            height: auto;
-        }
-
-        .document-title {
-            font-size: 14pt;
-            font-weight: 700;
-            color: #3498db;
-        }
-
-        .vehicle-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 5px 0;
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .detail-item-label {
-            font-weight: 600;
-            color: #555;
-        }
-
-        .detail-item-value {
-            text-align: right;
-            color: #333;
-        }
-
-        .maintenance-section {
-            margin-bottom: 15px;
-        }
-
-        .section-title {
-            font-size: 11pt;
-            font-weight: 700;
-            color: #3498db;
-            border-bottom: 1px solid #3498db;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
-
-        .maintenance-record {
-            background-color: #f9f9f9;
-            border-left: 3px solid #2ecc71;
-            padding: 8px;
-            margin-bottom: 8px;
-        }
-
-        .record-label {
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-
-        .record-details {
-            color: #666;
-        }
-
-        .document-footer {
-            margin-top: 15px;
+        .header {
             text-align: center;
-            font-size: 8pt;
-            color: #888;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 10px;
+            margin-bottom: 30px;
         }
-
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-            .maintenance-document {
-                padding: 0;
-            }
+        .company-info {
+            margin-bottom: 20px;
+        }
+        .report-info {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            margin-top: 50px;
+        }
+        .signature {
+            float: right;
+            width: 200px;
+            text-align: center;
+        }
+        .vehicle-info {
+            margin-bottom: 20px;
+        }
+        .maintenance-info {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="maintenance-document">
-        <header class="document-header">
-            <img src="/api/placeholder/100/50" alt="Logo Perusahaan" class="company-logo">
-            <div class="document-title">Laporan Maintenance Kendaraan</div>
-        </header>
+    <div class="header">
+        <h2>LAPORAN MAINTENANCE KENDARAAN</h2>
+    </div>
 
-        <section class="vehicle-details">
-            <div class="detail-item">
-                <span class="detail-item-label">Nomor Polisi :</span>
-                <span class="detail-item-value">{{ $vehicles->vehicle->license_plate }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-item-label">Merk Kendaraan :</span>
-                <span class="detail-item-value">{{ $vehicles->vehicle->model }}</span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-item-label">Tahun</span>
-                <span class="detail-item-value">{{ $vehicles->vehicle->year }}</span>
-            </div>
-        </section>
+    <div class="company-info">
+        <h4>{{ $company_name ?? 'Nama Perusahaan' }}</h4>
+        <p>{{ $company_address ?? 'Alamat Perusahaan' }}</p>
+        <p>Telp: {{ $company_phone ?? 'Nomor Telepon' }}</p>
+    </div>
 
-        <section class="maintenance-section">
-            <h2 class="section-title">Riwayat Service Terakhir</h2>
-            <div class="maintenance-record">
-                <div class="record-label">Tanggal Service</div>
-                <div class="record-details">{{ $vehicles->maintenance_date }}</div>
-            </div>
-            <div class="maintenance-record">
-                <div class="record-label">Kilometer</div>
-                <div class="record-details">{{ $vehicles->kilometer }} km</div>
-            </div>
-        </section>
+    <div class="report-info">
+        <table>
+            <tr>
+                <td width="200">Nomor Maintenance</td>
+                <td>: {{ $maintenance->code }}</td>
+            </tr>
+            <tr>
+                <td>Tanggal</td>
+                <td>: {{ date('d/m/Y', strtotime($maintenance->maintenance_date)) }}</td>
+            </tr>
+        </table>
+    </div>
 
-        <section class="maintenance-section">
-            <h2 class="section-title">Riwayat Penggantian Komponen</h2>
-            <div class="maintenance-record">
-                {{ $vehicles->description }}
-            </div>
-        </section>
+    <div class="vehicle-info">
+        <h4>Informasi Kendaraan</h4>
+        <table>
+            <tr>
+                <td width="200">Kode Kendaraan</td>
+                <td>: {{ $maintenance->vehicle->code }}</td>
+            </tr>
+            <tr>
+                <td>Merk/Model</td>
+                <td>: {{ $maintenance->vehicle->brand }} {{ $maintenance->vehicle->model }}</td>
+            </tr>
+            <tr>
+                <td>No. Polisi</td>
+                <td>: {{ $maintenance->vehicle->license_plate }}</td>
+            </tr>
+            <tr>
+                <td>Tahun</td>
+                <td>: {{ $maintenance->vehicle->year }}</td>
+            </tr>
+            <tr>
+                <td>Transmisi</td>
+                <td>: {{ $maintenance->vehicle->transmission }}</td>
+            </tr>
+            <tr>
+                <td>Bahan Bakar</td>
+                <td>: {{ $maintenance->vehicle->fuel }}</td>
+            </tr>
+        </table>
+    </div>
 
-        <section class="maintenance-section">
-            <h2 class="section-title">Catatan Maintenance</h2>
-            <div class="maintenance-record">
-                {{ $vehicles->notes }}
-            </div>
-        </section>
+    <div class="maintenance-info">
+        <h4>Detail Maintenance</h4>
+        <table>
+            <tr>
+                <td width="200">Kilometer</td>
+                <td>: {{ number_format($maintenance->mileage, 0, ',', '.') }} KM</td>
+            </tr>
+            <tr>
+                <td>Jenis Maintenance</td>
+                <td>: {{ $maintenance->description }}</td>
+            </tr>
+            <tr>
+                <td>Biaya</td>
+                <td>: Rp {{ number_format($maintenance->cost, 0, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>: {{ $maintenance->status }}</td>
+            </tr>
+            <tr>
+                <td>Jadwal Maintenance Berikutnya</td>
+                <td>: {{ date('d/m/Y', strtotime($maintenance->next_maintenance)) }}</td>
+            </tr>
+            @if($maintenance->notes)
+            <tr>
+                <td>Catatan</td>
+                <td>: {{ $maintenance->notes }}</td>
+            </tr>
+            @endif
+        </table>
+    </div>
 
-        <footer class="document-footer">
-            <p>Dicetak: {{ date('Y-m-d') }} | Nomor Dokumen: {{ $vehicles->code }}</p>
-        </footer>
+    <div class="footer">
+        <div class="signature">
+            <p>{{ $city ?? 'Kota' }}, {{ date('d/m/Y') }}</p>
+            <br><br><br>
+            <p>({{ $signature_name ?? 'Nama Penanda Tangan' }})</p>
+            <p>{{ $position ?? 'Jabatan' }}</p>
+        </div>
     </div>
 </body>
 </html>

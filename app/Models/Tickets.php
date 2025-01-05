@@ -33,14 +33,12 @@ class Tickets extends Model
 
     public function getBadgeClassAttribute()
     {
-        // Status Open : primary Status Closed : success Status In Progress : secondary Status Cancelled : danger
         return $this->status == 'Open' ? 'info' : ($this->status == 'Closed' ? 'success' : ($this->status == 'In Progress' ? 'secondary' : 'danger'));
     }
 
     public function getPriorityClassAttribute()
     {
-        // Priority High : danger Priority Medium : warning Priority Low : primary
-        return $this->priority == 'High' ? 'danger' : ($this->priority == 'Medium' ? 'warning' : 'primary');
+        return $this->priority == 'High' ? 'danger' : ($this->priority == 'Medium' ? 'warning' : ($this->priority == 'Low' ? 'primary' : ($this->priority == 'Urgent' ? 'dark' : 'secondary')));
     }
 
     public function user()

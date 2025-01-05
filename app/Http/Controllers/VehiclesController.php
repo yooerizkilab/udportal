@@ -18,7 +18,6 @@ class VehiclesController extends Controller
         $this->middleware('auth');
         $this->middleware('permission:view vehicle', ['only' => ['index']]);
         $this->middleware('permission:create vehicle', ['only' => ['create', 'store']]);
-        $this->middleware('permission:create vehicle transaction', ['only' => ['assign']]);
         $this->middleware('permission:update vehicle', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete vehicle', ['only' => ['destroy']]);
     }
@@ -30,7 +29,6 @@ class VehiclesController extends Controller
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = Company::all();
         $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
-        // return $vehicles;
         $users = User::all();
         return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'users'));
     }
@@ -63,7 +61,7 @@ class VehiclesController extends Controller
             'transmission' => 'required|in:Automatic,Manual',
             'tax_year' => 'required|date',
             'tax_five_year' => 'required|date',
-            'inspected' => 'required|date',
+            'inspected' => 'nullable|date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -112,7 +110,8 @@ class VehiclesController extends Controller
      */
     public function show(string $id)
     {
-        $vehicle = Vehicle::with('type', 'ownership', 'assigned', 'maintenanceRecords')->findOrFail($id);
+        $vehicle = Vehicle::with('type', 'ownership')->findOrFail($id);
+        // $vehicleHistory = 
         return view('vehicles.show', compact('vehicle'));
     }
 
@@ -133,7 +132,7 @@ class VehiclesController extends Controller
         $request->validate([
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'ownership' => 'required|exists:vehicle_ownership,id',
+            'ownership' => 'required|exists:companies,id',
             'license_plate' => 'required|string|max:20',
             'year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'color' => 'required|string|max:50',
@@ -144,7 +143,7 @@ class VehiclesController extends Controller
             'transmission' => 'required|in:Automatic,Manual',
             'tax_year' => 'required|date',
             'tax_five_year' => 'required|date',
-            'inspected' => 'required|date',
+            'inspected' => 'nullable|date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -173,6 +172,7 @@ class VehiclesController extends Controller
             'purchase_price' => $request->purchase_price,
             'description' => $request->description,
             'origin' => $request->origin,
+            'status' => $request->status,
             'photo' => $photoFile,
         ];
 
@@ -205,6 +205,9 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * Assign a vehicle to an employee. 
+     */
     public function assign(Request $request, string $id)
     {
         // Validasi input
@@ -219,8 +222,8 @@ class VehiclesController extends Controller
         $employee = Employe::findOrFail($request->employee);
 
         // Periksa status kendaraan
-        if ($vehicle->status === 'Inactive') {
-            return redirect()->back()->with('error', "Failed to assign $employee->full_name. Vehicle $vehicle->model is inactive.");
+        if ($vehicle->status === 'Inactive' || $vehicle->status === 'Maintenance') {
+            return redirect()->back()->with('error', "Failed to assign $employee->full_name. Vehicle $vehicle->model is inactive or under maintenance.");
         }
 
         DB::beginTransaction();

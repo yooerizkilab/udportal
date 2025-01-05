@@ -24,9 +24,6 @@ Auth::routes();
 Route::get('tracking/tools', 'ToolsTrackingController@indexFrontend')->name('trackings.tools');
 Route::get('tracking/tools/{id}', 'ToolsTrackingController@show')->name('tracking.tools');
 
-// Delivery Note view frontend (Development)
-// Route::get('transactions/tools', 'ToolsTransactionController@createFrontend')->name('transactions.tools');
-
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
@@ -69,9 +66,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('assign/{id}', 'VehiclesController@assign')->name('vehicles.assign');
 
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
-        Route::post('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
-        // Route::post('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
-        Route::get('vehicles-export-detail/{id}', 'VehicleMaintenanceController@exportPdf')->name('vehicles-maintenances.exportPdf');
+        Route::patch('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
+        Route::patch('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
+        Route::get('vehicles-maintenances-export-detail/{id}', 'VehicleMaintenanceController@printMaintenance')->name('vehicles-maintenances.exportPdf');
+
         Route::resource('insurances', 'VehicleInsuranceController');
         Route::get('insurances-export-detail/{id}', 'VehicleInsuranceController@exportPdf')->name('insurances.exportPdf');
     });

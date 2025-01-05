@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Vehicles Details'
+])
 
 @push('css')
 <!-- Custom styles for this page -->
@@ -8,16 +10,15 @@
 @section('main-content')
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Vehicles Details</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-        href="https://datatables.net">official DataTables documentation</a>.
+    <p class="mb-4">
+        This page is used to show vehicles.
     </p>
 
     <!-- Card Example -->
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Vehicles Details</h6>
+                <h4 class="m-0 font-weight-bold text-primary">Vehicles Details</h4>
                 <a href="{{ route('vehicles.index') }}" class="btn btn-primary btn-md"><i class="fas fa-reply"></i> Back</a>
             </div>
             <div class="card-body">
@@ -113,11 +114,11 @@
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead class="thead-light">
+                                        <thead class="bg-primary text-white">
                                             <tr>
-                                                <th>#</th>
-                                                <th>Activity</th>
-                                                <th>Date</th>
+                                                <th width="5%">#</th>
+                                                <th class="text-center">Activity</th>
+                                                <th class="text-center" width="15%">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>

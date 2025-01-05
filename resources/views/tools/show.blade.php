@@ -116,9 +116,9 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead class="bg-primary text-white">
                                             <tr>
-                                                <th>type</th>
+                                                <th width="5%">#</th>
                                                 <th class="text-center">Activity</th>
-                                                <th class="text-center" width="20%">Date</th>
+                                                <th class="text-center" width="15%">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>

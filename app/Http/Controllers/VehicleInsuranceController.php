@@ -28,7 +28,6 @@ class VehicleInsuranceController extends Controller
     public function index()
     {
         $insurances = VehicleInsurance::with('vehicle')->get();
-        // return $insurances;
         return view('vehicles.insurence.insurances', compact('insurances'));
     }
 
@@ -53,27 +52,30 @@ class VehicleInsuranceController extends Controller
             'coverage_start' => 'required|date',
             'coverage_end' => 'required|date',
             'premium' => 'required|numeric',
+            'notes' => 'nullable|string|max:255',
         ]);
 
         // Create a new vehicle insurance record
         $vehicle = Vehicle::where('code', $request->vehicle_code)->first();
         $data = [
             'vehicle_id' => $vehicle->id,
+            'code' => 'INS-' . str_pad(VehicleInsurance::count() + 1, 4, '0', STR_PAD_LEFT),
             'insurance_provider' => $request->insurance_provider,
             'policy_number' => $request->policy_number,
             'coverage_start' => $request->coverage_start,
             'coverage_end' => $request->coverage_end,
             'premium' => $request->premium,
+            'notes' => $request->notes,
         ];
 
         DB::beginTransaction();
         try {
             VehicleInsurance::create($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Insurance ' . $vehicle->name . ' Successfully Created');
+            return redirect()->back()->with('success', 'Insurance ' . $vehicle->model . ' Successfully Created');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to create insurance ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -82,7 +84,8 @@ class VehicleInsuranceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $insurances = VehicleInsurance::with('vehicle')->findOrFail($id);
+        return view('vehicles.insurence.show', compact('insurances'));
     }
 
     /**
@@ -124,7 +127,7 @@ class VehicleInsuranceController extends Controller
             return redirect()->back()->with('success', 'Insurance Successfully Updated');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to update insurance ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -133,7 +136,6 @@ class VehicleInsuranceController extends Controller
      */
     public function destroy(string $id)
     {
-        // Delete the vehicle insurance record
         DB::beginTransaction();
         try {
             $insurances = VehicleInsurance::findOrFail($id);
@@ -142,10 +144,12 @@ class VehicleInsuranceController extends Controller
             return redirect()->back()->with('success', 'Insurance' . $insurances->vehicle->name . ' Successfully Deleted');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Failed to delete insurance ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
-
+    /**
+     * Export PDF of the specified resource.
+     */
     public function exportPdf($id)
     {
         $insurances = VehicleInsurance::with('vehicle')->findOrFail($id);

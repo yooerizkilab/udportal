@@ -45,8 +45,7 @@ class Vehicle extends Model
             'Inactive' => 'danger',
         ];
 
-        // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->status] ?? 'secondary';
+        return '<span class="badge badge-' . $statusColor[$this->status] . '">' . $this->status . '</span>';
     }
 
     public function type()

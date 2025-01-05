@@ -52,11 +52,12 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('vehicle_id');
             $table->string('code', 50)->unique();
-            $table->string('kilometer', 50)->nullable();
+            $table->string('mileage', 100)->nullable();
             $table->date('maintenance_date')->nullable();
             $table->longText('description')->nullable();
             $table->decimal('cost', 15, 2)->nullable();
             $table->date('next_maintenance')->nullable();
+            $table->enum('status', ['In Progress', 'Cancelled', 'Completed'])->default('In Progress');
             $table->longText('notes')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();
@@ -95,21 +96,6 @@ return new class extends Migration
             $table->foreign('vehicle_id')->references('id')->on('vehicle');
             $table->foreign('user_id')->references('id')->on('users');
         });
-
-        Schema::create('vehicle_transaction', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('vehicle_id');
-            $table->string('code', 50)->unique();
-            $table->string('type')->nullable();
-            $table->string('from', 50)->nullable();
-            $table->string('to', 50)->nullable();
-            $table->date('transaction_date')->nullable();
-            $table->longText('notes')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-
-            $table->foreign('vehicle_id')->references('id')->on('vehicle');
-        });
     }
 
     /**
@@ -117,7 +103,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicle_transaction');
         Schema::dropIfExists('vehicle_assignment');
         Schema::dropIfExists('vehicle_insurance_policy');
         Schema::dropIfExists('vehicle_maintenance_record');

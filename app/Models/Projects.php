@@ -12,6 +12,8 @@ class Projects extends Model
 
     protected $table = 'projects';
 
+    protected $appends = ['statusName'];
+
     protected $fillable = [
         'code',
         'name',
@@ -22,4 +24,9 @@ class Projects extends Model
         'description',
         'status',
     ];
+
+    public function getStatusNameAttribute()
+    {
+        return $this->status == 'Active' ? 'success' : 'danger';
+    }
 }

@@ -18,7 +18,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h4 class="m-0 font-weight-bold text-primary">DataTables Example</h4>
+                <h4 class="m-0 font-weight-bold text-primary">List Vehicles</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -80,9 +80,9 @@
                                     <td>{{ $vehicle->license_plate }}</td>
                                     <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                     <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
-                                    <td>{{ date('d M Y', strtotime($vehicle->inspected)) }}</td>
+                                    <td>{{ $vehicle->inspected ? date('d M Y', strtotime($vehicle->inspected)) : '-' }}</td>
                                     <td>{{ $vehicle->assigned->last()->full_name ?? '-' }}</td>
-                                    <td><span class="badge badge-{{ $vehicle->badgeClass }}">{{ $vehicle->status }}</span></td>
+                                    <td>{!! $vehicle->badgeClass !!}</td>
                                     <td>
                                         <div class="d-inline-flex">
                                             <a href="{{ route('vehicles.show', $vehicle->id) }}" class="btn btn-info mr-1 btn-circle">
@@ -112,6 +112,7 @@
                                                 data-purchase_date="{{ $vehicle->purchase_date }}"
                                                 data-purchase_price="{{ $vehicle->purchase_price }}"
                                                 data-description="{{ $vehicle->description }}"
+                                                data-status="{{ $vehicle->status }}"
                                                 data-origin="{{ $vehicle->origin }}"
                                                 data-photo="{{ $vehicle->photo }}"
                                                 data-target="#updateVehiclesModal">
@@ -142,7 +143,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h4 class="m-0 font-weight-bold text-primary">Type List Vehicles</h4>
+                <h4 class="m-0 font-weight-bold text-primary">List Type Vehicles</h4>
                 <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#addVehiclesTypeModal">
                     <i class="fas fa-list fa-md white-50"></i>
                 </button>
@@ -150,7 +151,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                        <thead class="bg-light">
+                        <thead class="thead-light">
                             <tr>
                                 <td width="5%">No</td>
                                 <td>Name</td>
@@ -515,6 +516,16 @@
                                     <textarea name="description" id="vehiclesDescription" class="form-control" cols="30" rows="5"></textarea>
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="vehiclesStatus" class="form-control">
+                                        <option value="" disabled selected>--Select Status--</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div> 
                     </form>
                 </div>
@@ -683,6 +694,7 @@
         var vehiclesPurchasePrice = button.data('purchase_price');
         var vehiclesPhoto = button.data('photo');
         var vehiclesDescription = button.data('description');
+        var vehiclesStatus = button.data('status');
         
         var modal = $(this);
         modal.find('.modal-body #vehiclesType').val(vehiclesType).trigger('change');
@@ -701,8 +713,9 @@
         modal.find('.modal-body #vehiclesInspected').val(vehiclesInspected);
         modal.find('.modal-body #vehiclesPurchaseDate').val(vehiclesPurchaseDate);
         modal.find('.modal-body #vehiclesPurchasePrice').val(vehiclesPurchasePrice);
-        // modal.find('.modal-body #vehiclesPhoto').val(vehiclesPhoto);
+        modal.find('.modal-body #vehiclesPhoto').val(vehiclesPhoto);
         modal.find('.modal-body #vehiclesDescription').val(vehiclesDescription);
+        modal.find('.modal-body #vehiclesStatus').val(vehiclesStatus).trigger('change');
 
         //replace action form
         var action = $('#updateVehiclesForm').attr('action');

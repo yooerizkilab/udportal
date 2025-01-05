@@ -79,16 +79,16 @@
     @endcan
 
     <!-- Nav Item - Vehicles Management Collapse Menu -->
-    <li class="nav-item {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index', 'vehicles.*']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['vehicles.*', 'vehicles-maintenances.index', 'insurances.index']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVehicles"
             aria-expanded="true" aria-controls="collapseVehicles">
             <i class="fas fa-fw fa-truck-fast"></i>
             <span>Vehicles Management</span>
         </a>
-        <div id="collapseVehicles" class="collapse {{ request()->routeIs(['vehicles.index', 'vehicles-maintenances.index', 'insurances.index','vehicles.*']) ? 'show' : '' }}" aria-labelledby="headingVehicles"
+        <div id="collapseVehicles" class="collapse {{ request()->routeIs(['vehicles.*', 'vehicles-maintenances.index', 'insurances.index']) ? 'show' : '' }}" aria-labelledby="headingVehicles"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('vehicles.index') ? 'active' : '' }}" href="{{ route('vehicles.index') }}">{{ __('Vehicles') }}</a>
+                <a class="collapse-item {{ request()->routeIs('vehicles.*') ? 'active' : '' }}" href="{{ route('vehicles.index') }}">{{ __('Vehicles') }}</a>
                 <a class="collapse-item {{ request()->routeIs('vehicles-maintenances.index') ? 'active' : '' }}" href="{{ route('vehicles-maintenances.index') }}">{{ __('Maintenances') }}</a>
                 <a class="collapse-item {{ request()->routeIs('insurances.index') ? 'active' : '' }}" href="{{ route('insurances.index') }}">{{ __('Insurances') }}</a>
             </div>

@@ -26,7 +26,6 @@ class VehicleMaintenanceController extends Controller
     public function index()
     {
         $maintenances = VehicleMaintenance::with('vehicle')->get();
-        // return $maintenances;
         return view('vehicles.maintenance.maintenances', compact('maintenances'));
     }
 
@@ -47,6 +46,7 @@ class VehicleMaintenanceController extends Controller
         $request->validate([
             'vehicle_code' => 'required|exists:vehicle,code',
             'maintenances_date' => 'required|date',
+            'mileage' => 'required|numeric',
             'maintenances_description' => 'nullable|string',
             'maintenances_cost' => 'required|numeric',
             'next_maintenances' => 'required|date',
@@ -56,21 +56,28 @@ class VehicleMaintenanceController extends Controller
         $vehicles = Vehicle::where('code', $request->vehicle_code)->first();
         $data = [
             'vehicle_id' => $vehicles->id,
+            'code' => 'MTCN-' . str_pad(VehicleMaintenance::count() + 1, 4, '0', STR_PAD_LEFT),
+            'mileage' => $request->mileage,
             'maintenance_date' => $request->maintenances_date,
             'description' => $request->maintenances_description,
             'cost' => $request->maintenances_cost,
             'next_maintenance' => $request->next_maintenances,
+            'status' => 'In Progress',
+            'photo' => null, // cooming soon
         ];
 
         DB::beginTransaction();
         try {
+            if ($vehicles->status == 'Maintenance' || $vehicles->status == 'Inactive') {
+                return redirect()->back()->with('error', 'Vehicle ' . $vehicles->model . ' is already in maintenance mode or inactive.');
+            }
             VehicleMaintenance::create($data);
             $vehicles->update(['status' => 'Maintenance']);
             DB::commit();
-            return redirect()->back()->with('success', 'Maintenance ' . $vehicles->code . ' Succes fully created');
+            return redirect()->back()->with('success', 'Maintenance ' . $vehicles->model . ' Succes fully created');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Maintenance ' . $e->getMessage() . ' Failed to create');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -79,7 +86,8 @@ class VehicleMaintenanceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $maintenance = VehicleMaintenance::with('vehicle')->find($id);
+        return view('vehicles.maintenance.show', compact('maintenance'));
     }
 
     /**
@@ -97,6 +105,7 @@ class VehicleMaintenanceController extends Controller
     {
         // Validate the request data
         $request->validate([
+            'mileage' => 'required|numeric',
             'maintenances_date' => 'required|date',
             'maintenances_description' => 'nullable|string',
             'maintenances_cost' => 'required|numeric',
@@ -106,6 +115,7 @@ class VehicleMaintenanceController extends Controller
         // Update the vehicle maintenance record
         $maintenance = VehicleMaintenance::find($id);
         $data = [
+            'mileage' => $request->mileage,
             'maintenance_date' => $request->maintenances_date,
             'description' => $request->maintenances_description,
             'cost' => $request->maintenances_cost,
@@ -116,10 +126,10 @@ class VehicleMaintenanceController extends Controller
         try {
             $maintenance->update($data);
             DB::commit();
-            return redirect()->back()->with('success', 'Maintenance ' . $maintenance->vehicle->name . ' Succes fully updated');
+            return redirect()->back()->with('success', 'Maintenance ' . $maintenance->vehicle->model . ' Succes fully updated');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Maintenance ' . $e->getMessage() . ' Failed to update');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -128,35 +138,61 @@ class VehicleMaintenanceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
-    }
-
-    public function completeMaintenance(Request $request, string $id)
-    {
-        $vehicle = VehicleMaintenance::find($id);
         DB::beginTransaction();
         try {
-            $vehicle->update(['status' => 'Completed']);
-            $vehicle->vehicle->update(['status' => 'Active']);
+            $maintenance = VehicleMaintenance::find($id);
+            $maintenance->delete();
             DB::commit();
-            return redirect()->back()->with('success', 'Maintenance ' . $vehicle->vehicle->name . ' Succes fully completed');
+            return redirect()->back()->with('success', 'Maintenance ' . $maintenance->vehicle->model . ' Succes fully deleted');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Maintenance ' . $e->getMessage() . ' Failed to complete');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
-    public function cancelMaintenance(Request $request, string $id)
+    /**
+     * Complete the specified resource from storage.
+     */
+    public function completeMaintenance(string $id)
     {
-        $vehicle = VehicleMaintenance::find($id);
-        // $vehicle->update(['status' => 'Maintenance']);
-        // return redirect()->back()->with('success', 'Maintenance ' . $vehicle->vehicle->code . ' Succes fully canceled');
+        DB::beginTransaction();
+        try {
+            $vehicle = VehicleMaintenance::with('vehicle')->find($id);
+            $vehicle->update(['status' => 'Completed']);
+            $vehicle->vehicle->update(['status' => 'Active']);
+            DB::commit();
+            return redirect()->back()->with('success', 'Maintenance ' . $vehicle->vehicle->model . ' Succes fully completed');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
-    public function exportPdf($id)
+    /**
+     * Cancel the specified resource from storage.
+     */
+    public function cancelMaintenance(string $id)
     {
-        $vehicles = VehicleMaintenance::with('vehicle')->findOrFail($id);
-        $pdf = PDF::loadView('vehicles.maintenance.pdf', compact('vehicles'));
+        DB::beginTransaction();
+        try {
+            $vehicle = VehicleMaintenance::with('vehicle')->find($id);
+            $vehicle->update(['status' => 'Cancelled']);
+            $vehicle->vehicle->update(['status' => 'Maintenance']);
+            DB::commit();
+            return redirect()->back()->with('success', 'Maintenance ' . $vehicle->vehicle->model . ' Succes fully canceled');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Print the specified resource from storage.
+     */
+    public function printMaintenance(string $id)
+    {
+        $maintenance = VehicleMaintenance::with('vehicle')->findOrFail($id);
+        $pdf = PDF::loadView('vehicles.maintenance.pdf', compact('maintenance'));
         return $pdf->stream('maintenance.pdf');
     }
 }

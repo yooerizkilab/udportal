@@ -70,6 +70,9 @@
                                                 <a href="{{ route('tools-maintenances.exportPdf', $maintenance->id) }}" class="btn btn-sm btn-info mr-1 btn-circle">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                <a href="{{ route('tools-maintenances.show', $maintenance->id) }}" class="btn btn-sm btn-primary mr-1 btn-circle">
+                                                    <i class="fas fa-eye fa-md white-50"></i>
+                                                </a>
                                                 @if ($maintenance->status != 'Completed' && $maintenance->status != 'Cancelled')
                                                 <form action="{{ route('tools-maintenances.completeMaintenance', $maintenance->id) }}" method="POST" id="completeMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
@@ -95,9 +98,6 @@
                                                     <i class="fas fa-pencil fa-md white-50"></i>
                                                 </button>
                                                 @endif
-                                                <a href="{{ route('tools-maintenances.show', $maintenance->id) }}" class="btn btn-sm btn-primary mr-1 btn-circle">
-                                                    <i class="fas fa-eye fa-md white-50"></i>
-                                                </a>
                                                 <form action="{{ route('tools-maintenances.destroy', $maintenance->id) }}" method="post" id="deleteMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
                                                     @method('DELETE')
