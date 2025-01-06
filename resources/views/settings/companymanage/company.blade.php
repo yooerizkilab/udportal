@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Company Management'
+])
 
 @push('css')
    <!-- Custom styles for this page -->

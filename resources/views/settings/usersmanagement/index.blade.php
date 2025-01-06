@@ -1,22 +1,24 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Users Management'
+])
 
 @push('css')
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('main-content')
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Users Management</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+    <p class="mb-4">
+        This page is used to manage Users All.
+    </p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                <h4 class="m-0 font-weight-bold text-primary">List Users</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -106,56 +108,13 @@
         </div>
     </div>
 
-    <!-- Modal View -->
-    <div class="modal fade" id="viewUsersModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewModalLabel">Modal View Users</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" id="nameUsers" class="form-control" required readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="last_name">Last Name</label>
-                                <input type="text" name="last_name" id="last_nameUsers" class="form-control" required readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" name="email" id="emailUsers" class="form-control" required readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="roles">Roles</label>
-                        <input type="text" name="roles" id="rolesUsers" class="form-control" required readonly>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Add -->
     <div class="modal fade" id="addUsersModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="addModalLabel">Add Users & Employees</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Add Users & Employees</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -279,9 +238,9 @@
     <div class="modal fade" id="editUsersModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="editModalLabel">Update Users</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editModalLabel">Update Users</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -405,9 +364,9 @@
     <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-primary">
-                    <h5 class="modal-title" id="importModalLabel">Import Users</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="importModalLabel">Import Users</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -439,22 +398,6 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
-</script>
-
-<script>
-    $('#viewUsersModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var userName = button.data('name');
-        var userLastName = button.data('last_name');
-        var userEmail = button.data('email');
-        var userRoles = button.data('role');
-       
-        var modal = $(this);
-        document.getElementById('nameUsers').value = userName;
-        document.getElementById('last_nameUsers').value = userLastName;
-        document.getElementById('emailUsers').value = userEmail;
-        document.getElementById('rolesUsers').value = userRoles;
-    })
 
     function printPDF() {
         var startDate = document.getElementById('startDate').value;
@@ -495,12 +438,12 @@
     function confirmUsersAdd() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to create this user!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Create it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addUsersForm').submit();
@@ -555,12 +498,12 @@
     function confirmUsersUpdate() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this user!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#editUsersForm').submit();
@@ -572,12 +515,12 @@
     function confirmUsersDelete() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this user!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit('deleteUsersForm');
@@ -589,12 +532,12 @@
     function confirmImportUsers() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to import this user!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Import it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#importUsresForm').submit();

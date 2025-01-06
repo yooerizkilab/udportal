@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
-
 class PermissionsController extends Controller
 {
 
@@ -18,6 +17,7 @@ class PermissionsController extends Controller
         $this->middleware('permission:update permissions', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete permissions', ['only' => ['destroy']]);
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -55,7 +55,7 @@ class PermissionsController extends Controller
             return redirect()->back()->with('success', 'Permission ' . $permissions->name . ' created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while creating the permission.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ class PermissionsController extends Controller
             return redirect()->back()->with('success', 'Permission ' . $permissions->name . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('permissions.index')->with('error', 'An error occurred while updating the permission.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ class PermissionsController extends Controller
             return redirect()->back()->with('success', 'Permission ' . $permissions->name . ' deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while deleting the permission.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

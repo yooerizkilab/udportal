@@ -138,7 +138,8 @@ class UsersController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $users = User::with('employe')->findOrFail($id);
+        return view('users.show', compact('users'));
     }
 
     /**
@@ -225,10 +226,10 @@ class UsersController extends Controller
             $users->syncRoles([$role->name]);
 
             DB::commit();
-            return redirect()->back()->with('success', 'User ' . $users->employe->full_name . ' updated successfully.');
+            return redirect()->back()->with('success', 'User ' . $users->fullName . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -237,7 +238,6 @@ class UsersController extends Controller
      */
     public function destroy(string $id)
     {
-        // Delete user
         DB::beginTransaction();
         try {
             $user = User::findOrFail($id);

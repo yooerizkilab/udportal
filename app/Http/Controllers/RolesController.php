@@ -61,7 +61,7 @@ class RolesController extends Controller
             return redirect()->back()->with('success', 'Role ' . $roles->name . ' created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while creating the role.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -86,7 +86,6 @@ class RolesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $role = Role::findOrFail($id);
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
@@ -98,13 +97,14 @@ class RolesController extends Controller
 
         DB::beginTransaction();
         try {
+            $role = Role::findOrFail($id);
             $role->name = $data['name'];
             $role->save();
             DB::commit();
             return redirect()->route('roles.index')->with('success', 'Role ' . $role->name . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('roles.index')->with('error', 'An error occurred while updating the role.');
+            return redirect()->route('roles.index')->with('error', $e->getMessage());
         }
     }
 
@@ -122,7 +122,7 @@ class RolesController extends Controller
             return redirect()->back()->with('success', 'Role ' . $roles->name . ' deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while deleting the role.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -138,21 +138,16 @@ class RolesController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        // cek jika role superadmin tidak bisa di assign
-        // if ($request->role == 1) {
-        //     return redirect()->back()->with('error', 'Superadmin role cannot be assigned permissions.');
-        // }
-
         DB::beginTransaction();
         try {
             $role = Role::findOrFail($request->role);
             $permissions = Permission::whereIn('id', $request->permissions)->get();
             $role->syncPermissions($permissions);
             DB::commit();
-            return redirect()->back()->with('success', 'Permissions successfully assigned to role ' . $role->name . '.');
+            return redirect()->back()->with('success', 'Permissions successfully assigned to role ' . $role->name . ' !');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

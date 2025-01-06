@@ -1,8 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Department Management'
+])
 
 @push('css')
-   <!-- Custom styles for this page -->
-   <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('main-content')
@@ -17,7 +19,7 @@
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                <h4 class="m-0 font-weight-bold text-primary">List Department</h4>
                 <div class="d-flex align-items-center flex-wrap">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
@@ -44,7 +46,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Code</th>
@@ -61,6 +63,9 @@
                                     <td>{{ $department->name }}</td>
                                     <td>{{ $department->description }}</td>
                                     <td class="text-center d-flex">
+                                        <a href="{{ route('departments.show', $department->id) }}" class="btn btn-info btn-circle mr-1">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                         <button type="button" class="btn btn-warning btn-circle mr-1"
                                             data-toggle="modal"
                                             data-id="{{ $department->id }}"
@@ -173,7 +178,7 @@
 @endsection
 
 @push('scripts')
-    <!-- Page level plugins -->
+<!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>

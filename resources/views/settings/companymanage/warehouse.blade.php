@@ -38,7 +38,7 @@
                         <i class="fas fa-file-import fa-md white-50"></i> Import Branches
                     </button> --}}
                     <!-- Tombol Add Users -->
-                    <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addBranchesModal">
+                    <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addWarehousesModal">
                         <i class="fas fa-warehouse fa-md white-50"></i> Add Warehouse
                     </button>
                 </div>
@@ -46,7 +46,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Code</th>
@@ -70,14 +70,24 @@
                                         </a>
                                         <button class="btn btn-warning mr-1 btn-circle"
                                             data-toggle="modal"
-                                            
+                                            data-id="{{ $warehouse->id }}"
+                                            data-companies="{{ $warehouse->company_id }}"
+                                            data-branch="{{ $warehouse->branch_id }}"
+                                            data-name="{{ $warehouse->name }}"
+                                            data-phone="{{ $warehouse->phone }}"
+                                            data-address="{{ $warehouse->address }}"
+                                            data-description="{{ $warehouse->description }}"
+                                            data-type="{{ $warehouse->type }}"
+                                            data-status="{{ $warehouse->status }}"
                                             data-target="#editWarehouseModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
                                         <form action="{{ route('warehouses.destroy', $warehouse->id) }}" method="POST" id="deleteWarehouseForm-{{ $warehouse->id }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteWarehouse({{ $warehouse->id }})"><i class="fas fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteWarehouse({{ $warehouse->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -93,6 +103,53 @@
         </div>
     </div>
 
+    <!-- Add Warehouse Modal-->
+    <div class="modal fade" id="addWarehousesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="exampleModalLabel">Add Warehouse</h4>
+                    <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('warehouses.store') }}" method="post" id="addWarehouseForm">
+                        @csrf
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAddWarehouse()"><i class="fas fa-check"></i> Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Warehouse Modal-->
+    <div class="modal fade" id="editWarehouseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="exampleModalLabel">Update Warehouse</h4>
+                    <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('warehouses.update', ':id') }}" method="post" id="editWarehouseForm">
+                        @csrf
+                        @method('PUT')
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmUpdateWarehouse()"><i class="fas fa-check"></i> Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -103,6 +160,80 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
+
+    function confirmAddWarehouse() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to create this warehouse!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Create it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#addWarehouseForm').submit();
+            }
+        });
+    }
+
+    $('#editWarehouseModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var company_id = button.data('company_id');
+        var name = button.data('name');
+        var description = button.data('description');
+        var phone = button.data('phone');
+        var address = button.data('address');
+        var type = button.data('type');
+        var status = button.data('status');
+
+        var modal = $(this);
+        modal.find('#id').val(id).trigger('change');
+        modal.find('#company_id').val(company_id).trigger('change');
+        modal.find('#name').val(name);
+        modal.find('#description').val(description);
+        modal.find('#phone').val(phone);
+        modal.find('#address').val(address);
+        modal.find('#type').val(type).trigger('change');
+        modal.find('#status').val(status).trigger('change');
+
+        // Ubah action form agar sesuai dengan id yang akan diupdate
+        var formAction = '{{ route("warehouses.update", ":id") }}';
+        formAction = formAction.replace(':id', id);
+        $('#editWarehouseForm').attr('action', formAction);
+    });
     
+    function confirmUpdateWarehouse() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to update this warehouse!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#editWarehouseForm').submit();
+            }
+        });
+    }
+    
+    function confirmDeleteWarehouse(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this warehouse!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#deleteWarehouseForm-' + id).submit();
+            }
+        });
+    }
 </script>
 @endpush

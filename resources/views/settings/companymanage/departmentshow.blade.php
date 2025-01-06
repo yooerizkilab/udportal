@@ -1,4 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Department Details'
+])
 
 @push('css')
 
@@ -6,14 +8,14 @@
 
 @section('main-content')
 
-<h1 class="h3 mb-2 text-gray-800">{{ __('Show Department') }}</h1>
+<h1 class="h3 mb-2 text-gray-800">{{ __('Details Department') }}</h1>
 <p class="mb-4">
-    this page is used to show department
+    this page is used to show details department
 </p>
 
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-        <h6 class="m-0 font-weight-bold text-primary">Department Details</h6>
+        <h4 class="m-0 font-weight-bold text-primary">Department Details</h4>
         <a href="{{ route('departments.index') }}" class="btn btn-primary btn-md mr-2"><i class="fas fa-reply"></i> Back</a>
     </div>
     <div class="card-body">

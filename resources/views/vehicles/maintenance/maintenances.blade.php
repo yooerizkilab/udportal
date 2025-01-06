@@ -140,11 +140,11 @@
 
     <!-- Modal Update Maintenances -->
     <div class="modal fade" id="updateMaintenancesModal" tabindex="-1" role="dialog" aria-labelledby="updateMaintenancesModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary justify-content-center">
+                <div class="modal-header bg-primary justify-content-center align-items-center">
                     <h4 class="modal-title text-white font-weight-bold mx-auto" id="updateMaintenancesModalLabel">Update Maintenances</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>

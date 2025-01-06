@@ -53,23 +53,21 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('transactions', 'ToolsTransactionController');
         Route::get('transactions-pdf/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
         Route::resource('tracking', 'ToolsTrackingController');
-        Route::resource('tools-maintenances', 'ToolsMaintenanceController'); // show maintenance detail development
+        Route::resource('tools-maintenances', 'ToolsMaintenanceController');
         Route::patch('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
         Route::patch('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
-        Route::get('tools-maintenances-export-detail/{id}', 'ToolsMaintenanceController@printMaintenance')->name('tools-maintenances.exportPdf'); // development print maintenance
+        Route::get('tools-maintenances-export-detail/{id}', 'ToolsMaintenanceController@printMaintenance')->name('tools-maintenances.exportPdf');
     });
 
-    // Vehicles Management development
+    // Vehicles Management Fix
     Route::group(['prefix' => 'vehicles'], function () {
         Route::resource('types', 'VehicleTypeController');
         Route::resource('vehicles', 'VehiclesController');
         Route::post('assign/{id}', 'VehiclesController@assign')->name('vehicles.assign');
-
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::patch('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         Route::patch('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
         Route::get('vehicles-maintenances-export-detail/{id}', 'VehicleMaintenanceController@printMaintenance')->name('vehicles-maintenances.exportPdf');
-
         Route::resource('insurances', 'VehicleInsuranceController');
         Route::get('insurances-export-detail/{id}', 'VehicleInsuranceController@exportPdf')->name('insurances.exportPdf');
     });

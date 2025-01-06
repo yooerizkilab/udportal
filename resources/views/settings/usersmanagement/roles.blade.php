@@ -1,28 +1,27 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Role & Permission Management'
+])
 
 @push('css')
-    <!-- Custom styles for this page -->
-    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('main-content')
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800">Role & Permission Management</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+    <p class="mb-4">
+        This page is used to manage roles and permissions.
+    </p>
 
     <div class="row">
-
         <div class="col-lg-6">
-
-            <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Role</h6>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addRoleModal">
-                            <i class="fas fa-plus"></i> Add Role
+                        <h4 class="m-0 font-weight-bold text-primary">Role</h4>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRoleModal">
+                            <i class="fas fa-user-shield"></i> Add Role
                         </button>
                     </div>
                     <div class="card-body">
@@ -41,7 +40,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $role->name }}</td>
                                             <td>
-                                                <div class="d-inline-flex">
+                                                <div class="text-center d-flex justify-content-center">
                                                     <button type="button" class="btn btn-info mr-1 btn-circle" data-toggle="modal" 
                                                             data-id="{{ $role->id }}" 
                                                             data-name="{{ $role->name }}" 
@@ -56,9 +55,9 @@
                                                             data-target="#editRoleModal">
                                                             <i class="fas fa-pencil-alt"></i>
                                                         </button>
-                                                        <form action="{{ route('roles.destroy', $role->id) }}" method="post" id="deleteRoleForm" class="d-inline">
+                                                        <form action="{{ route('roles.destroy', $role->id) }}" method="post" id="deleteRoleForm-{{ $role->id }}" class="d-inline">
                                                             @csrf
-                                                            <button type="button" onclick="confirmDeleteRole()" class="btn btn-danger btn-circle">
+                                                            <button type="button" onclick="confirmDeleteRole({{ $role->id }})" class="btn btn-danger btn-circle">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -78,13 +77,12 @@
                 </div>
             </div>
 
-            <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Permission</h6>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addPermissionModal">
-                            <i class="fas fa-plus"></i> Add Permission
+                        <h4 class="m-0 font-weight-bold text-primary">Permission</h4>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPermissionModal">
+                            <i class="fas fa-user-lock"></i> Add Permission
                         </button>
                     </div>
                     <div class="card-body">
@@ -103,16 +101,17 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $permission->name }}</td>
                                             <td>
-                                                <div class="d-inline-flex">
+                                                <div class="text-center d-flex justify-content-center">
                                                     <button type="button" class="btn btn-warning mr-2 btn-circle" data-toggle="modal"
                                                         data-id="{{ $permission->id }}"
                                                         data-name="{{ $permission->name }}"
                                                         data-target="#editPermissionModal">
                                                         <i class="fas fa-pencil"></i>
                                                     </button>
-                                                    <form action="" method="post" id="deletePermissionForm" class="d-inline">
+                                                    <form action="{{ route('permissions.destroy', $permission->id) }}" method="post" id="deletePermissionForm-{{ $permission->id }}" class="d-inline">
                                                         @csrf
-                                                        <button type="button" onclick="confirmPermissionDelete()" class="btn btn-danger btn-circle">
+                                                        @method('DELETE')
+                                                        <button type="button" onclick="confirmPermissionDelete({{ $permission->id }}})" class="btn btn-danger btn-circle">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -135,7 +134,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 bg-gradient-warning text-white">
-                    <h6 class="m-0 font-weight-bold">Assign Role to Permission</h6>
+                    <h4 class="m-0 font-weight-bold">Assign Role to Permission</h4>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('roles.assignPermissions') }}" method="post" id="assignRoleToPermissionForm">
@@ -168,17 +167,16 @@
                     </div>
                 </div>
             </div>
-        </div>
-                
+        </div>           
     </div>
 
     <!-- Modal Add Role -->
     <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addRoleModalLabel">Add Role</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-gradient-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addRoleModalLabel">Create Role</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -207,9 +205,9 @@
     <div class="modal fade" id="editRoleModal" tabindex="-1" aria-labelledby="editRoleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editRoleModalLabel">Modal Update Role</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-gradient-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editRoleModalLabel">Update Role</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -237,11 +235,11 @@
 
     <!-- Modal View Role Permission -->
     <div class="modal fade" id="viewRolePermissionModal" tabindex="-1" aria-labelledby="viewRolePermissionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewRolePermissionModalLabel">Modal View Role Permission</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-gradient-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="viewRolePermissionModalLabel">View Role Permission</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -276,9 +274,9 @@
     <div class="modal fade" id="addPermissionModal" tabindex="-1" aria-labelledby="addPermissionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPermissionModalLabel">Modal Add Permission</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-gradient-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addPermissionModalLabel">Create Permission</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -289,10 +287,6 @@
                             <label for="name">Name</label>
                             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" required>
                         </div>
-                        {{-- <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" required></textarea>
-                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -307,9 +301,9 @@
     <div class="modal fade" id="editPermissionModal" tabindex="-1" aria-labelledby="editPermissionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editPermissionModalLabel">Modal Update Permission</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-gradient-primary d-flex justify-content-center align-items-center">
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="editPermissionModalLabel">Update Permission</h4>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -321,10 +315,6 @@
                             <label for="name">Name</label>
                             <input type="text" name="name" id="namePermission" class="form-control" required>
                         </div>
-                        {{-- <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea name="description" id="description" class="form-control" required></textarea>
-                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -423,12 +413,12 @@
     function confirmAddRole(){
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to create this role!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Create it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#addRoleForm').submit();
@@ -455,16 +445,15 @@
         modal.find('#updateRoleForm').attr('action', formAction);
     });
     
-
     function confirmUpdateRole(){
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this role!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#updateRoleForm').submit();
@@ -474,18 +463,18 @@
         })
     }
 
-    function confirmDeleteRole(){
+    function confirmDeleteRole(id){
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this role!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $('#deleteRoleForm').submit();
+                $('#deleteRoleForm-' + id).submit();
             } else {
                 return false;
             }
@@ -495,12 +484,12 @@
     function confirmAddPermission() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to create this permission!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Create it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('addPermissionsForm').submit();
@@ -529,12 +518,12 @@
     function confirmUpdatePermission(){
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to update this permission!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Update it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('updatePermissionForm').submit();
@@ -544,18 +533,18 @@
         })
     }
 
-    function confirmPermissionDelete() {
+    function confirmPermissionDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to delete this permission!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit('#deletePermissionForm');
+                form.submit('#deletePermissionForm-' + id);
             } else {
                 return false;
             }
@@ -565,12 +554,12 @@
     function confirmAssignRoleToPermission() {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: "You want to assign permission this!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!'
+            confirmButtonText: 'Yes, Assign it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('assignRoleToPermissionForm').submit();

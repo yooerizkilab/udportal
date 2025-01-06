@@ -15,8 +15,8 @@
     </p>
     
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h4 class="m-0 font-weight-bold text-primary">Vehicles Insurances</h4>
+        <div class="card-header py-3 bg-gradient-primary d-flex justify-content-center">
+            <h4 class="m-0 font-weight-bold text-white">Vehicles Insurances</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -63,7 +63,7 @@
                 <div class="col-8">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
+                            <thead class="thead-light">
                                 <tr>
                                     <th width="5%">No</th>
                                     <th>Vehicle Code</th>
@@ -133,11 +133,11 @@
 
     <!-- Modal Update Insurances -->
     <div class="modal fade" id="updateInsurancesModal" tabindex="-1" role="dialog" aria-labelledby="updateInsurancesModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateInsurancesModalLabel">Update Insurances</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-primary justify-content-center align-items-center">
+                    <h5 class="modal-title text-white font-weight-bold mx-auto" id="updateInsurancesModalLabel">Update Insurances</h5>
+                    <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
