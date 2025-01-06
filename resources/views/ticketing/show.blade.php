@@ -21,16 +21,13 @@
                     <h4 class="m-0 font-weight-bold">
                         <i class="fas fa-ticket-alt mr-2"></i>Ticket Information
                     </h4>
-                    <div class="d-flex align-items-center">
-                        {{-- @if($tickets->user_id != auth()->user()->id) --}}
-                        @can('cancle ticket')
+                    <div class="d-flex align-items-center flex-wrap">
                         @if($tickets->status == 'Open')
                         <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal">
                             <i class="fas fa-window-close"></i>
                             Cancelled
                         </button>
                         @endif
-                        @endcan
                         @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled')
                         <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#solvedModal">
                             <i class="fas fa-check-circle"></i>
@@ -55,7 +52,6 @@
                                 <i class="fas fa-reply"></i> Back
                             </a>
                         @endif
-                        {{-- @endif --}}
                     </div>
                 </div>
                 <div class="card-body">

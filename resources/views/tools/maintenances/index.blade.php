@@ -51,6 +51,7 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead class="thead-light">
                                 <tr>
+                                    <th width="5%">No</th>
                                     <th>Tools Code</th>
                                     <th>Description</th>
                                     <th class="text-center">Date</th>
@@ -61,6 +62,7 @@
                             <tbody>
                                 @forelse ($maintenances as $maintenance)
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $maintenance->tools->code }}</td>
                                         <td>{{ strlen($maintenance->description) > 50 ? substr($maintenance->description, 0, 50) . '...' : $maintenance->description }}</td>
                                         <td class="text-center">{{ date('d-m-Y', strtotime($maintenance->maintenance_date)) }}</td>

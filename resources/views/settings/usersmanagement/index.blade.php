@@ -113,7 +113,7 @@
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
-                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Add Users & Employees</h4>
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="addModalLabel">Create Users & Employees</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>

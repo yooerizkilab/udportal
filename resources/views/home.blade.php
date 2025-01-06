@@ -54,11 +54,6 @@
                                 <div class="col-auto">
                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $widget['contracts'] }}</div>
                                 </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="{{ $widget['contracts'] }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-auto">

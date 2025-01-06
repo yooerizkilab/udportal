@@ -139,7 +139,7 @@ class UsersController extends Controller
     public function show(string $id)
     {
         $users = User::with('employe')->findOrFail($id);
-        return view('users.show', compact('users'));
+        return view('settings.usersmanagement.showuser', compact('users'));
     }
 
     /**
