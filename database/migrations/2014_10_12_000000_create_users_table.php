@@ -15,13 +15,32 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('code', 50)->unique();
-            $table->string('company', 50)->nullable();
             $table->string('name', 50)->nullable();
-            $table->string('password', 50)->nullable();
             $table->string('email', 50)->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('address')->nullable();
             $table->string('description')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Tabel branches
+        Schema::create('branches', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('company_id')
+                ->constrained('companies')
+                ->onDelete('restrict') // Tidak menggunakan cascade
+                ->onUpdate('cascade');
+            $table->string('code', 50)->unique();
+            $table->string('name', 50);
+            $table->string('database', 50)->nullable();
+            $table->string('email', 50)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('address')->nullable();
+            $table->enum('type', ['Head Office', 'Branch Office'])->default('Head Office');
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->string('description')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -36,25 +55,6 @@ return new class extends Migration
             $table->string('code', 50)->unique();
             $table->string('name', 50);
             $table->string('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        // Tabel branches
-        Schema::create('branches', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('company_id')
-                ->constrained('companies')
-                ->onDelete('restrict') // Tidak menggunakan cascade
-                ->onUpdate('cascade');
-            $table->string('code', 50)->unique();
-            $table->enum('type', ['Head Office', 'Branch Office'])->default('Head Office');
-            $table->string('name', 50);
-            $table->string('phone', 50)->nullable();
-            $table->string('address')->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
-            $table->string('description')->nullable();
-            $table->string('photo')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

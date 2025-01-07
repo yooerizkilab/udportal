@@ -70,4 +70,13 @@ class LoginController extends Controller
         request()->merge([$field => $login]);
         return $field;
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // Ambil nama branch melalui relasi
+        $branchDB = $user->employe->branch->database ?? null;
+
+        // Simpan nama branch ke dalam session
+        session()->put('company_db', $branchDB);
+    }
 }

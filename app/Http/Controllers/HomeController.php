@@ -7,6 +7,7 @@ use App\Models\Contract;
 use App\Models\User;
 use App\Models\Tools;
 use App\Models\Vehicle;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {

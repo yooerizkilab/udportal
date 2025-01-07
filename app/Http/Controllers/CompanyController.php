@@ -36,9 +36,7 @@ class CompanyController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'company' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
             'email' => 'required|string|email|max:255',
             'phone' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -48,9 +46,7 @@ class CompanyController extends Controller
         // Create a new company
         $data = [
             'code' => 'C' . str_pad(Company::count() + 1, 3, '0', STR_PAD_LEFT),
-            'company' => $request->company,
             'name' => $request->name,
-            'password' => $request->password,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
@@ -93,9 +89,7 @@ class CompanyController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'company' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
             'email' => 'required|string|email|max:255',
             'phone' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -104,9 +98,7 @@ class CompanyController extends Controller
 
         // Update the company
         $data = [
-            'company' => $request->company,
             'name' => $request->name,
-            'password' => $request->password,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,

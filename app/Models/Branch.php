@@ -17,10 +17,12 @@ class Branch extends Model
     protected $fillable = [
         'company_id',
         'code',
-        'type',
         'name',
+        'database',
+        'email',
         'phone',
         'address',
+        'type',
         'status',
         'description',
         'photo'
@@ -39,5 +41,10 @@ class Branch extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employe::class);
     }
 }

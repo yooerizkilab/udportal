@@ -20,7 +20,7 @@ class SAPService
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.sap.url'), '/') . '/';
+        $this->baseUrl = rtrim(config('sap.sapb1.url'), '/') . '/';
         $this->setCompanyDb();
         $this->initializeClient();
         $this->initializeSession();
@@ -70,8 +70,8 @@ class SAPService
         try {
             $response = $this->client->post('Login', [
                 'json' => [
-                    'UserName' => config('services.sap.username'),
-                    'Password' => config('services.sap.password'),
+                    'UserName' => config('sap.sapb1.username'),
+                    'Password' => config('sap.sapb1.password'),
                     'CompanyDB' => $this->companyDb,
                 ],
                 'headers' => [

@@ -50,8 +50,8 @@
                             <tr>
                                 <th width="5%">No</th>
                                 <th>Code</th>
-                                <th>Company</th>
                                 <th>Name</th>
+                                <th>Address</th>
                                 <th width="10%" class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -60,8 +60,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $company->code }}</td>
-                                    <td>{{ $company->company }}</td>
                                     <td>{{ $company->name }}</td>
+                                    <td>{{ $company->address }}</td>
                                     <td class="text-center d-flex">
                                         <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>

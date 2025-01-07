@@ -1,8 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.admin', [
+    'title' => 'Branch Management'
+])
 
 @push('css')
-   <!-- Custom styles for this page -->
-   <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('main-content')
@@ -49,6 +51,7 @@
                                 <th width="5%">No</th>
                                 <th>Code</th>
                                 <th>Branch</th>
+                                <th>Database</th>
                                 <th>Type</th>
                                 <th>Status</th>
                                 <th width="10%" class="text-center">Action</th>
@@ -60,6 +63,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $branch->code }}</td>
                                     <td>{{ $branch->name }}</td>
+                                    <td>{{ $branch->database }}</td>
                                     <td>{{ $branch->type }}</td>
                                     <td>{!! $branch->activeBranch !!}</td>
                                     <td class="text-center d-flex">

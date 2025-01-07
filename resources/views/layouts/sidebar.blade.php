@@ -23,7 +23,7 @@
     <!-- Nav Item - Kontract Management-->
     <li class="nav-item {{ Nav::isRoute('contract.*') }}">
         <a class="nav-link" href="{{ route('contract.index') }}">
-            <i class="fas fa-fw fa-address-card"></i>
+            <i class="fas fa-fw fa-file-contract"></i>
             <span>Contract Management</span></a>
     </li>
     @endcan

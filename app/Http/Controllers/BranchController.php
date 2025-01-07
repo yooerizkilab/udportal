@@ -36,10 +36,12 @@ class BranchController extends Controller
         $request->validate([
             'company_id' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:Head Office,Branch Office',
+            'database' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
             'phone' => 'required|numeric',
             'address' => 'required|string',
             'description' => 'nullable|string',
+            'type' => 'required|string|in:Head Office,Branch Office',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -54,11 +56,13 @@ class BranchController extends Controller
         $data = [
             'company_id' => $request->company_id,
             'code' => 'B' . str_pad(Branch::count() + 1, 3, '0', STR_PAD_LEFT),
-            'type' => $request->type,
             'name' => $request->name,
+            'database' => $request->database,
+            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
             'description' => $request->description,
+            'type' => $request->type,
             'photo' => isset($photoFile) ? $photoFile : null
         ];
 
@@ -98,12 +102,14 @@ class BranchController extends Controller
         // validate the request
         $request->validate([
             'company_id' => 'required|string|exists:companies,id',
-            'type' => 'required|string|in:Head Office,Branch Office',
             'name' => 'required|string|max:255',
+            'database' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
             'phone' => 'required|numeric',
             'address' => 'required|string',
             'status' => 'required|string|in:Active,Inactive',
             'description' => 'nullable|string',
+            'type' => 'required|string|in:Head Office,Branch Office',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -117,12 +123,14 @@ class BranchController extends Controller
         // update the branch
         $data = [
             'company_id' => $request->company_id,
-            'type' => $request->type,
             'name' => $request->name,
+            'database' => $request->database,
+            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
             'status' => $request->status,
             'description' => $request->description,
+            'type' => $request->type,
             'photo' => isset($photoFile) ? $photoFile : null
         ];
 
