@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 use App\Providers\RouteServiceProvider;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\SAPServices;
 
 class LoginController extends Controller
 {
@@ -77,6 +81,33 @@ class LoginController extends Controller
         $branchDB = $user->employe->branch->database ?? null;
 
         // Simpan nama branch ke dalam session
-        session()->put('company_db', $branchDB);
+        Session::put('company_db', $branchDB);
+        Log::info('Company DB: ' . $branchDB);
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            app(SAPServices::class)->logout();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+        // Lanjutkan proses logout Laravel
+        $this->guard()->logout();
+
+        // Invalidate session
+        $request->session()->invalidate();
+
+        // Regenerate token
+        $request->session()->regenerateToken();
+
+        // Jika ada respon khusus setelah logout
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
     }
 }

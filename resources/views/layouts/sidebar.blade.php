@@ -87,45 +87,64 @@
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('vehicles.*') ? 'active' : '' }}" href="{{ route('vehicles.index') }}">{{ __('Vehicles') }}</a>
-                <a class="collapse-item {{ request()->routeIs('vehicles-maintenances.index') ? 'active' : '' }}" href="{{ route('vehicles-maintenances.index') }}">{{ __('Maintenances') }}</a>
-                <a class="collapse-item {{ request()->routeIs('insurances.index') ? 'active' : '' }}" href="{{ route('insurances.index') }}">{{ __('Insurances') }}</a>
+                <a class="collapse-item {{ request()->routeIs('vehicles-maintenances.*') ? 'active' : '' }}" href="{{ route('vehicles-maintenances.index') }}">{{ __('Maintenances') }}</a>
+                <a class="collapse-item {{ request()->routeIs('insurances.*') ? 'active' : '' }}" href="{{ route('insurances.index') }}">{{ __('Insurances') }}</a>
             </div>
         </div>
     </li>
 
-    <!-- Nav Item - Vouchers Management Collapse Menu -->
-    {{-- @can('view vouchers')
-    <li class="nav-item {{ request()->routeIs('vouchers.index') ? 'active' : '' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVouchers"
-            aria-expanded="true" aria-controls="collapseVouchers">
-            <i class="fas fa-fw fa-ticket"></i>
-            <span>Vouchers Management</span>
+    <!-- Nav Item - Incomings Inventory Plan Collapse Menu -->
+    <li class="nav-item {{ request()->routeIs(['incomings-supplier.*', 'incomings-inventory.*']) ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseIncomings"
+            aria-expanded="true" aria-controls="collapseIncomings">
+            <i class="fas fa-fw fa-truck-fast"></i>
+            <span>Incomings Inven Plan</span>
         </a>
-        <div id="collapseVouchers" class="collapse {{ request()->routeIs('vouchers.index') ? 'show' : '' }}" aria-labelledby="headingVouchers"
+        <div id="collapseIncomings" class="collapse {{ request()->routeIs(['incomings-supplier.*', 'incomings-inventory.*']) ? 'show' : '' }}" aria-labelledby="headingIncomings"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('vouchers.index') ? 'active' : '' }}" href="{{ route('vouchers.index') }}">{{ __('Vouchers') }}</a>
+                <a class="collapse-item {{ request()->routeIs('incomings-supplier.*') ? 'active' : '' }}" href="{{ route('incomings-supplier.index') }}">{{ __('Supplier') }}</a>
+                <a class="collapse-item {{ request()->routeIs('incomings-inventory.*') ? 'active' : '' }}" href="{{ route('incomings-inventory.index') }}">{{ __('Incomings Inventory') }}</a>
             </div>
         </div>
     </li>
-    @endcan --}}
-    
-    <!-- Nav Item - Equipment Management Collapse Menu -->
-    {{-- @can('view equipments')
-    <li class="nav-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEquipment"
-            aria-expanded="true" aria-controls="collapseEquipment">
-            <i class="fas fa-fw fa-screwdriver-wrench"></i>
-            <span>Equip Management</span>
+
+    <!-- Cost Bid Analysis Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCostBidAnalysis" 
+            aria-expanded="true" aria-controls="collapseCostBidAnalysis">
+            <i class="fas fa-fw fa-chart-bar"></i>
+            <span>Cost Bid Analysis</span>
         </a>
-        <div id="collapseEquipment" class="collapse {{ request()->routeIs('equipments.index') ? 'show' : '' }}" aria-labelledby="headingEquipment"
+        <div id="collapseCostBidAnalysis" class="collapse" aria-labelledby="headingCostBidAnalysis" 
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('equipments.index') ? 'active' : '' }}" href="{{ route('equipments.index') }}">Equipment</a>
+                <a class="collapse-item" href="">{{ __('Cost Bid Vendor') }}</a>
+                {{-- <a class="collapse-item" href="">{{ __('Cost Bid Inventory') }}</a> --}}
+                <a class="collapse-item" href="">{{ __('Cost Bid Analysis') }}</a>
             </div>
         </div>
     </li>
-    @endcan --}}
+
+    <!-- Nav Item - Business Master Collapse Menu -->
+    <li class="nav-item ">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBusiness"
+            aria-expanded="true" aria-controls="collapseBusiness">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Business Partner</span>
+        </a>
+        <div id="collapseBusiness" class="collapse" aria-labelledby="headingBusiness"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ route('bussines-master.index') }}">{{ __('Business Master') }}</a>
+                <a class="collapse-item" href="">{{ __('Activity') }}</a>
+                <a class="collapse-item" href="">{{ __('Campaign Generation Wizard') }}</a>
+                <a class="collapse-item" href="">{{ __('Campaign') }}</a>
+                <a class="collapse-item" href="">{{ __('Internal Reconciliations') }}</a>
+                <a class="collapse-item" href="">{{ __('Business Partner Report') }}</a>
+            </div>
+        </div>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider">

@@ -72,15 +72,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('insurances-export-detail/{id}', 'VehicleInsuranceController@exportPdf')->name('insurances.exportPdf');
     });
 
-    // Vouchers Management
-    // Route::group(['prefix' => 'vouchers'], function () {
-    //     Route::resource('vouchers', 'VouchersController');
-    // });
-
-    // Equipment Management
-    // Route::group(['prefix' => 'equipments'], function () {
-    //     Route::resource('equipments', 'EquipmentsController');
-    // });
+    // Dev Incomming Inventory
+    Route::group(['prefix' => 'incomings-plan'], function () {
+        Route::resource('incomings-supplier', 'IncomingSupplierController');
+        Route::resource('incomings-inventory', 'IncomingInventoryController');
+    });
 
     // Settings Management development
     Route::group(['prefix' => 'settings'], function () {
@@ -96,6 +92,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('roles', 'RolesController');
         Route::patch('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
         Route::resource('permissions', 'PermissionsController');
+    });
+
+    // Dev Try SAP
+    Route::group(['prefix' => 'sap'], function () {
+
+        // Business Partner
+        Route::group(['namespace' => 'BussinesPartner', 'prefix' => 'business-partner'], function () {
+            Route::resource('bussines-master', 'BussinesMasterController');
+        });
     });
 
     // Profile Fix

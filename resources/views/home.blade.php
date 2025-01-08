@@ -83,8 +83,11 @@
     </div>
     @endif
 
+    {{--  get session --}}
+    <h4>SESSION : {{ session('company_db') }}</h4>
+
     <!-- Content may profile photo end decription for Users -->
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-gradient-primary text-white">
@@ -92,7 +95,6 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Profile Photo Section -->
                         <div class="col-md-4 text-center">
                             <div class="profile-photo-container mb-3">
                                 <img src="https://randomuser.me/api/portraits/men/47.jpg" 
@@ -100,12 +102,7 @@
                                     class="rounded-circle img-thumbnail"
                                     style="width: 200px; height: 200px; object-fit: cover;">
                             </div>
-                            {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updatePhotoModal">
-                                <i class="fas fa-camera"></i> Update Photo
-                            </button> --}}
-                        </div>
-    
-                        <!-- Profile Information Section -->
+                        </div> 
                         <div class="col-md-8">
                             <div class="profile-info">
                                 <h4 class="mb-3">{{ auth()->user()->fullName }}</h4>
@@ -129,17 +126,13 @@
                                     <label class="form-label">Bio</label>
                                     <p class="text-muted">{{ auth()->user()->description ?? 'No bio available' }}</p>
                                 </div>
-    
-                                {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                                    <i class="fas fa-edit"></i> Edit Profile
-                                </button> --}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     
 @endsection
 

@@ -91,7 +91,6 @@
     
                     <!-- Tools Table -->
                     <div class="form-group">
-                        <label class="form-label">Selected Tools</label>
                         <div class="table-responsive">
                             <table class="table table-bordered" id="tools-table">
                                 <thead class="bg-primary text-white">

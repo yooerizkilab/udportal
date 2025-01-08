@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 
-class SAPService
+class SAPServices
 {
     protected Client $client;
     protected ?string $sessionId = null;
     protected string $baseUrl;
-    protected string $companyDb;
+    protected ?string $companyDb = null;
     protected const CACHE_PREFIX = 'sap_session_';
     protected const CACHE_DURATION = 3600; // 1 hour
 
@@ -22,31 +22,6 @@ class SAPService
     {
         $this->baseUrl = rtrim(config('sap.sapb1.url'), '/') . '/';
         $this->setCompanyDb();
-        $this->initializeClient();
-        $this->initializeSession();
-    }
-
-    protected function setCompanyDb(): void
-    {
-        $this->companyDb = Session::get('company_db');
-
-        if (!$this->companyDb && Auth::check()) {
-            $this->companyDb = Auth::user()->company_db;
-        }
-
-        if (!$this->companyDb) {
-            throw new \Exception('Company database not found in session or user data');
-        }
-    }
-
-    protected function getCacheKey(): string
-    {
-        $userId = Auth::id() ?? 'guest';
-        return self::CACHE_PREFIX . $userId . '_' . $this->companyDb;
-    }
-
-    protected function initializeClient(): void
-    {
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'verify' => false,
@@ -54,10 +29,37 @@ class SAPService
             'connect_timeout' => 10,
             'http_errors' => true,
         ]);
+
+        $this->initSession();
     }
 
-    protected function initializeSession(): void
+    protected function setCompanyDb(): void
     {
+        // Ambil nama branch melalui session
+        // $this->companyDb = 'SIMULASI_NEW_UD';
+
+        // Jika tidak ada di session, coba ambil dari user yang terautentikasi
+        if (!$this->companyDb && Auth::check()) {
+            $user = Auth::user();
+            $this->companyDb = $user->employe->branch->database ?? null;
+            Log::info('Company DB from user:', ['company_db' => $this->companyDb]);
+        }
+
+        if (!$this->companyDb) {
+            throw new \Exception('Database branch tidak ditemukan. Silahkan hubungi administrator.');
+        }
+    }
+
+    protected function getCacheKey(): string
+    {
+        $userId = Auth::id() ?? 'guest';
+        $companyKey = $this->companyDb ?? 'default';
+        return self::CACHE_PREFIX . $userId . '_' . $companyKey;
+    }
+
+    protected function initSession(): void
+    {
+        // Coba ambil session dari cache
         $this->sessionId = Cache::get($this->getCacheKey());
 
         if (!$this->sessionId) {
@@ -67,6 +69,10 @@ class SAPService
 
     protected function authenticate(): void
     {
+        if (!$this->companyDb) {
+            throw new \Exception('Database branch harus diset sebelum melakukan autentikasi.');
+        }
+
         try {
             $response = $this->client->post('Login', [
                 'json' => [
@@ -85,15 +91,16 @@ class SAPService
             if ($this->sessionId) {
                 Cache::put($this->getCacheKey(), $this->sessionId, self::CACHE_DURATION);
             } else {
-                throw new \Exception('Session ID not found in response');
+                throw new \Exception('Session ID tidak ditemukan dalam response');
             }
         } catch (RequestException $e) {
-            Log::error('SAP Authentication failed', [
+            Log::error('SAP Authentication gagal', [
                 'error' => $e->getMessage(),
                 'company_db' => $this->companyDb,
+                'user_id' => Auth::id(),
                 'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null
             ]);
-            throw new \Exception('Authentication to SAP B1 failed: ' . $e->getMessage());
+            throw new \Exception('Autentikasi ke SAP B1 gagal: ' . $e->getMessage());
         }
     }
 
@@ -112,19 +119,21 @@ class SAPService
             $response = $request();
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
+            // Jika session expired, coba authenticate ulang
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 Cache::forget($this->getCacheKey());
                 $this->authenticate();
                 return json_decode($request()->getBody()->getContents(), true);
             }
 
-            Log::error('SAP API Request failed', [
+            Log::error('SAP API Request gagal', [
                 'error' => $e->getMessage(),
                 'company_db' => $this->companyDb,
+                'user_id' => Auth::id(),
                 'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null
             ]);
 
-            throw new \Exception('SAP API request failed: ' . $e->getMessage());
+            throw new \Exception('SAP API request gagal: ' . $e->getMessage());
         }
     }
 
@@ -209,7 +218,6 @@ class SAPService
                     ]
                 ]);
 
-                // Clear the session from cache
                 Cache::forget($this->getCacheKey());
                 $this->sessionId = null;
 
@@ -217,31 +225,33 @@ class SAPService
             }
             return false;
         } catch (RequestException $e) {
-            Log::error('SAP Logout failed', [
+            Log::error('SAP Logout gagal', [
                 'error' => $e->getMessage(),
                 'company_db' => $this->companyDb,
+                'user_id' => Auth::id(),
                 'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null
             ]);
 
-            // Still clear local session even if remote logout fails
             Cache::forget($this->getCacheKey());
             $this->sessionId = null;
 
-            throw new \Exception('Logout from SAP B1 failed: ' . $e->getMessage());
+            throw new \Exception('Logout dari SAP B1 gagal: ' . $e->getMessage());
         }
     }
 
-    public function changeCompanyDb(string $newCompanyDb): void
+    public function refreshCompanyDb(): void
     {
-        // Logout from current session
-        $this->logout();
+        if (Auth::check()) {
+            $user = Auth::user();
+            $branchDB = $user->employe->branch->database ?? null;
 
-        // Set new company db
-        $this->companyDb = $newCompanyDb;
-        Session::put('company_db', $newCompanyDb);
-
-        // Re-authenticate with new company
-        $this->authenticate();
+            if ($branchDB && $branchDB !== $this->companyDb) {
+                $this->logout();
+                $this->companyDb = $branchDB;
+                Session::put('company_db', $branchDB);
+                $this->authenticate();
+            }
+        }
     }
 
     public function __destruct()
@@ -251,7 +261,7 @@ class SAPService
                 $this->logout();
             }
         } catch (\Exception $e) {
-            Log::error('Error during SAP service cleanup', [
+            Log::error('Error saat cleanup SAP service', [
                 'error' => $e->getMessage(),
                 'company_db' => $this->companyDb
             ]);

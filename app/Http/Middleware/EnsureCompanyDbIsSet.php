@@ -17,8 +17,8 @@ class EnsureCompanyDbIsSet
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Session::has('company_db') && !Auth::user()->employe->branch->database) {
-            throw new \Exception('Company database not configured');
+        if (!Session::has('company_db') && !Auth::user()->employe?->branch?->database) {
+            throw new \Exception('Database branch tidak tersedia. Silahkan hubungi administrator.');
         }
 
         return $next($request);

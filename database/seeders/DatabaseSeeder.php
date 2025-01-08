@@ -6,6 +6,9 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\IncomingInventory;
+use App\Models\IncomingShipments;
+use App\Models\IncomingSupplier;
 use App\Models\TicketsCategories;
 use App\Models\Tools;
 use App\Models\ToolsMaintenance;
@@ -38,9 +41,6 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             VehicleTypesSeeder::class,
             VehicleSeeder::class,
-            // MaintenanceRecordsSeeder::class,
-            // AssignmentsSeeder::class,
-            // InsurancePoliciesSeeder::class,
             ToolsCategorieSeeder::class,
             ToolsSeeder::class,
             ToolsMaintenanceSeeder::class,
@@ -48,6 +48,9 @@ class DatabaseSeeder extends Seeder
             TicketsCategoriesSeeder::class,
             TicketsSeeder::class,
             TicketsCommentsSeeder::class,
+            IncomingSupplierSeeder::class,
+            IncomingInventorySeeder::class,
+            IncomingShipmentsSeeder::class
         ]);
     }
 }
