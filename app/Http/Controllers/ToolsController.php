@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tools;
 use App\Models\ToolsCategorie;
-use App\Models\ToolsTransaction;
+use App\Models\Projects;
 
 class ToolsController extends Controller
 {
@@ -128,9 +128,54 @@ class ToolsController extends Controller
     public function show(string $id)
     {
         $tools = Tools::with('categorie', 'owner')->findOrFail($id);
+        $log = Tools::with('maintenance', 'activity', 'transaction')->find($id);
 
-        // return $tools;
-        return view('tools.show', compact('tools'));
+        // Gabungkan aktivitas
+        $activities = collect();
+
+        // Ambil aktivitas maintenance
+        foreach ($log->maintenance as $main) {
+            $activities->push([
+                'type' => 'Maintenence',
+                'details' => [
+                    'date' => date('d-m-Y', strtotime($main->maintenance_date)),
+                    'status' => $main->status,
+                    'description' => $main->description,
+                ],
+            ]);
+        }
+
+        // Ambil data proyek sekali saja
+        $projectMap = Projects::whereIn('id', $log->transaction->pluck('source_project_id')
+            ->merge($log->transaction->pluck('destination_project_id')))
+            ->get()
+            ->keyBy('id'); // Map proyek berdasarkan ID untuk akses cepat
+
+        foreach ($log->transaction as $tran) {
+            // Siapkan details dari activity
+            $details = [];
+            foreach ($log->activity as $act) {
+                $details[] = [
+                    'last_location' => $act->last_location,
+                ];
+            }
+
+            // Ambil nama proyek dari map
+            $sourceProjectName = $projectMap[$tran->source_project_id]->name ?? 'Unknown';
+            $destinationProjectName = $projectMap[$tran->destination_project_id]->name ?? 'Unknown';
+
+            // Tambahkan data ke activities
+            $activities->push([
+                'type' => 'Activity',
+                'transaction' => $tran->type,
+                'source' => $sourceProjectName,
+                'destination' => $destinationProjectName,
+                'date' => date('d-m-Y', strtotime($tran->created_at)),
+                'details' => $details,
+            ]);
+        }
+
+        return view('tools.show', compact('tools', 'activities'));
     }
 
     /**
@@ -156,6 +201,7 @@ class ToolsController extends Controller
             'origin' => 'nullable|string|max:255',
             'quantity' => 'nullable|integer|min:1',
             'unit' => 'nullable|in:ROL,PCS,SET,UNIT,METER,LITER,KG',
+            'status' => 'required|string|max:255',
             'description' => 'nullable|string',
             'purchase_date' => 'nullable|date',
             'purchase_price' => 'nullable|numeric|min:0',
@@ -182,6 +228,7 @@ class ToolsController extends Controller
             'origin' => $request->origin,
             'quantity' => $request->quantity,
             'unit' => $request->unit,
+            'status' => $request->status,
             'description' => $request->description,
             'purchase_date' => $request->purchase_date,
             'purchase_price' => $request->purchase_price,

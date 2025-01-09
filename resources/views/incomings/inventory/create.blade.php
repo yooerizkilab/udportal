@@ -118,25 +118,35 @@
         })
     }
 
-    $('#add-rows').on('click', function() {
+    $('#add-rows').on('click', function () {
         var table = $('#items-table').DataTable();
         var rowCount = table.rows().count();
+        
+        // Tambahkan baris baru dengan input dinamis
         table.row.add([
             rowCount + 1,
             '<input type="text" name="items[' + rowCount + '][item_name]" class="form-control">',
             '<input type="text" name="items[' + rowCount + '][quantity]" class="form-control">',
-            '<div class="text-center">' + 
-                '<button type="button" class="btn btn-danger btn-circle" onclick="deleteRow(this)">' +
+            '<div class="text-center">' +
+                '<button type="button" class="btn btn-danger btn-circle delete-row">' +
                 '<i class="fas fa-trash"></i>' +
                 '</button>' +
             '</div>'
         ]).draw(false);
     });
 
-    function deleteRow(button) {
+    // Hapus baris dari tabel
+    $('#items-table tbody').on('click', '.delete-row', function () {
         var table = $('#items-table').DataTable();
-        table.row($(button).closest('tr')).remove().draw();
-    }
+
+        // Hapus baris
+        table.row($(this).closest('tr')).remove().draw();
+
+        // Perbarui index semua baris
+        table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            this.cell(rowIdx, 0).data(rowIdx + 1).draw(false);
+        });
+    });
     
 </script>
 @endpush

@@ -143,14 +143,34 @@ class IncomingInventoryController extends Controller
                 'drop_site_id' => $request->warehouse_id,
             ]);
 
-            // Simpan data transaksi baru
-            foreach ($request->items as $item) {
-                IncomingInventory::updateOrCreate([
-                    'shipment_id' => $incoming->id,
-                    'item_name' => $item['item_name'],
-                    'quantity' => $item['quantity'],
-                ]);
+            // Ambil item yang ada di database untuk transaksi ini
+            $existingItems = IncomingInventory::where('shipment_id', $incoming->id)
+                ->pluck('id', 'item_name')
+                ->toArray();
+
+            // Data item baru dari request
+            $newItems = collect($request->items)->mapWithKeys(function ($item) {
+                return [$item['item_name'] => $item['quantity']];
+            });
+
+            // Hapus item yang tidak ada di data baru
+            foreach ($existingItems as $itemName => $itemId) {
+                if (!$newItems->has($itemName)) {
+                    IncomingInventory::find($itemId)->delete();
+                }
             }
+
+            // Tambah atau update item baru
+            foreach ($newItems as $itemName => $quantity) {
+                IncomingInventory::updateOrCreate(
+                    [
+                        'shipment_id' => $incoming->id,
+                        'item_name' => $itemName,
+                        'quantity' => $quantity
+                    ],
+                );
+            }
+
             DB::commit();
             return redirect()->back()->with('success', 'Incoming ' . $incoming->code . ' updated successfully');
         } catch (\Exception $e) {

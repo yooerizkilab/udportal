@@ -29,6 +29,7 @@
                                 <th>Delivery Note</th>
                                 <th>Delivery Date</th>
                                 <th>Type</th>
+                                <th>Status</th>
                                 <th width="20%" class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -38,7 +39,8 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $transaction->document_code }}</td>
                                     <td>{{ date('d M Y', strtotime($transaction->delivery_date)) }}</td>
-                                    <td><span class="badge badge-{{ $transaction->badgeClass }}">{{ $transaction->type }}</span></td>
+                                    <td>{!! $transaction->typeName !!}</td>
+                                    <td>{!! $transaction->statusName !!}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
                                             <a href="{{ route('transactions.generateDN', $transaction->id) }}" class="btn btn-success btn-circle mr-2"><i class="fas fa-print"></i></a>

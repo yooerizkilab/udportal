@@ -118,17 +118,45 @@
                                             <tr>
                                                 <th width="5%">#</th>
                                                 <th class="text-center">Activity</th>
-                                                <th class="text-center" width="15%">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+                                            @if($activities->isNotEmpty())
+                                                @foreach ($activities as $index => $activity)
+                                                    <tr>
+                                                        <td class="text-center">{{ $index + 1 }}</td>
+                                                        <td>
+                                                            <strong>Type:</strong> {{ $activity['type'] }}<br>
+                                                            @if($activity['type'] === 'Maintenence')
+                                                                <strong>Date:</strong> {{ $activity['details']['date'] }}<br>
+                                                                <strong>Status:</strong> {{ $activity['details']['status'] }}<br>
+                                                                <strong>Description:</strong> {{ $activity['details']['description'] }}<br>
+                                                            @elseif($activity['type'] === 'Activity')
+                                                                <strong>Transaction:</strong> {{ $activity['transaction'] }}<br>
+                                                                <strong>Source:</strong> {{ $activity['source'] }}<br>
+                                                                <strong>Destination:</strong> {{ $activity['destination'] }}<br>
+                                                                <strong>Date:</strong> {{ $activity['date'] }}<br>
+                                                                <strong>Details:</strong>
+                                                                <ul>
+                                                                    @foreach ($activity['details'] as $detail)
+                                                                        <li>
+                                                                            {{-- <strong>Date:</strong> {{ $detail['date'] }}<br> --}}
+                                                                            <strong>Last Location:</strong> {{ $detail['last_location'] }}
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="2" class="text-center">No activities available.</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
-                                </div>
+                                </div>                                                             
                             </div>
                         </div>
                     </div>

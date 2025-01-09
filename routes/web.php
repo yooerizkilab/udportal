@@ -45,14 +45,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
     });
 
-    // Tools Management Fix
+    // Tools Management Fix - BUG
     Route::group(['prefix' => 'tools'], function () {
         Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('tools', 'ToolsController');
         Route::resource('projects', 'ProjectsController');
         Route::resource('transactions', 'ToolsTransactionController');
         Route::get('transactions-pdf/{id}', 'ToolsTransactionController@generateDN')->name('transactions.generateDN');
-        Route::resource('tracking', 'ToolsTrackingController');
         Route::resource('tools-maintenances', 'ToolsMaintenanceController');
         Route::patch('tools-maintenances/completed/{id}', 'ToolsMaintenanceController@completeMaintenance')->name('tools-maintenances.completeMaintenance');
         Route::patch('tools-maintenances/cenceled/{id}', 'ToolsMaintenanceController@cancelMaintenance')->name('tools-maintenances.cancelMaintenance');
@@ -78,6 +77,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('incomings-inventory', 'IncomingInventoryController');
         Route::get('incomings-inventory-export-pdf/{id}', 'IncomingInventoryController@printPdf')->name('incomings-inventory.exportPdf');
     });
+
+    Route::group(['prefix' => 'bids'], function () {});
 
     // Settings Management development
     Route::group(['prefix' => 'settings'], function () {

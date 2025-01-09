@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             ToolsSeeder::class,
             ToolsMaintenanceSeeder::class,
             ToolsTransactionSeeder::class,
+            ToolsShipmentsSeeder::class,
             TicketsCategoriesSeeder::class,
             TicketsSeeder::class,
             TicketsCommentsSeeder::class,

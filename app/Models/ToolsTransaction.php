@@ -12,30 +12,63 @@ class ToolsTransaction extends Model
 
     protected $table = 'tools_transactions';
 
-    protected $appends = ['badgeClass'];
+    protected $appends = ['typeName', 'statusName'];
 
     protected $fillable = [
         'user_id',
-        'tool_id',
         'source_project_id',
         'destination_project_id',
         'document_code',
         'document_date',
         'delivery_date',
-        'quantity',
-        'unit',
         'driver',
         'driver_phone',
         'transportation',
         'plate_number',
-        'last_location',
+        'status',
         'type',
         'notes',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($transaction) {
+            if ($transaction->delivery_date <= now()->toDateString()) {
+                $transaction->status = 'Completed';
+            }
+        });
+    }
+
+    public function gettypeNameAttribute()
+    {
+        $color = [
+            'Return' => 'secondary',
+            'Delivery Note' => 'success',
+            'Transfer' => 'primary',
+        ];
+
+        return '<span class="badge badge-' . $color[$this->type] . '">' . $this->type . '</span>';
+    }
+
+    public function getstatusNameAttribute()
+    {
+        $color = [
+            'In Progress' => 'secondary',
+            'Completed' => 'success',
+            'Cancelled' => 'danger'
+        ];
+
+        return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function tools()
     {
-        return $this->belongsTo(Tools::class, 'tool_id', 'id');
+        return $this->hasMany(ToolsShipments::class, 'transactions_id', 'id');
     }
 
     public function sourceTransactions()
@@ -48,32 +81,8 @@ class ToolsTransaction extends Model
         return $this->belongsTo(Projects::class, 'destination_project_id', 'id');
     }
 
-    public function user()
+    public function shipments()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function employee()
-    {
-        return $this->hasOneThrough(
-            Employe::class,
-            User::class,
-            'id',         // Foreign key di tabel User
-            'user_id',    // Foreign key di tabel Employee
-            'user_id',    // Local key di tabel ToolTransaction
-            'id'          // Local key di tabel User
-        );
-    }
-
-    public function getBadgeClassAttribute()
-    {
-        $statusColor = [
-            'Return' => 'secondary',
-            'Delivery Note' => 'success',
-            'Transfer' => 'primary',
-        ];
-
-        // Berikan warna default jika status tidak ditemukan
-        return $statusColor[$this->type] ?? 'success';
+        return $this->hasMany(ToolsShipments::class, 'id', 'transactions_id');
     }
 }

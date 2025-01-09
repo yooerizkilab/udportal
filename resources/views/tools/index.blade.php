@@ -78,8 +78,8 @@
                                     <td>{{ $tool->name }}</td>
                                     <td>{{ $tool->unit }}</td>
                                     <td>{{ $tool->quantity }}</td>
-                                    <td><span class="badge badge-{{ $tool->badge }}">{{ $tool->condition }}</span></td>
-                                    <td><span class="badge badge-{{ $tool->badgeClass }}">{{ $tool->status }}</span></td>
+                                    <td>{!! $tool->conditionName !!}</span></td>
+                                    <td>{!! $tool->statusName !!}</td>
                                     <td>
                                         <div class="d-inline-flex">
                                             <a href="{{ route('tools.show', $tool->id) }}" class="btn btn-info mr-1 btn-circle">
@@ -99,6 +99,7 @@
                                                 data-origin="{{ $tool->origin }}"
                                                 data-quantity="{{ $tool->quantity }}"
                                                 data-unit="{{ $tool->unit }}"
+                                                data-status="{{ $tool->status }}"
                                                 data-description ="{{ $tool->description }}"
                                                 data-purchase_date="{{ $tool->purchase_date }}"
                                                 data-purchase_price="{{ $tool->purchase_price }}"
@@ -390,6 +391,14 @@
                     <form action="{{ route('tools.update', ':id') }}" method="post" id="updateToolsForm">
                         @csrf
                         @method('PUT') 
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select name="status" id="statusEdit" class="form-control">
+                                <option value="" disabled selected>--Select Status--</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -607,6 +616,7 @@
         var toolsOrigin = button.data('origin')
         var toolsQuantity = button.data('quantity')
         var toolsUnit = button.data('unit')
+        var toolsStatus = button.data('status')
         var toolsDescription = button.data('description')
         var toolsPurchaseDate = button.data('purchase_date')
         var toolsPurchasePrice = button.data('purchase_price')
@@ -627,7 +637,8 @@
         modal.find('#yearEdit').val(toolsYear);
         modal.find('#originEdit').val(toolsOrigin);
         modal.find('#quantityEdit').val(toolsQuantity);
-        modal.find('#unitEdit').val(toolsUnit);
+        modal.find('#unitEdit').val(toolsUnit).trigger('change');
+        modal.find('#statusEdit').val(toolsStatus).trigger('change');
         modal.find('#descriptionEdit').val(toolsDescription);
         modal.find('#purchase_dateEdit').val(toolsPurchaseDate);
         modal.find('#purchase_priceEdit').val(toolsPurchasePrice);

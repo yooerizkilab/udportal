@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\User;
 use App\Models\ToolsTransaction;
+use App\Models\ToolsShipments;
 use App\Models\Tools;
 use App\Models\Projects;
 
@@ -22,11 +22,7 @@ class ToolsTransactionController extends Controller
      */
     public function index()
     {
-        // show all transactions where document_code, if document_code same show one transaction 
-        $uniqueDocuments = ToolsTransaction::select('document_code', DB::raw('MAX(id) as id'))
-            ->groupBy('document_code')
-            ->get();
-        $transactions = ToolsTransaction::whereIn('id', $uniqueDocuments->pluck('id'))->get();
+        $transactions = ToolsTransaction::select('id', 'document_code', 'delivery_date', 'type', 'status')->get();
         return view('tools.transaction.index', compact('transactions'));
     }
 
@@ -53,6 +49,8 @@ class ToolsTransactionController extends Controller
      */
     public function store(Request $request)
     {
+
+        // return $request->all();
         // Validate the form data
         $request->validate([
             'type_delivery' => 'required|string|in:Delivery Note,Transfer,Return',
@@ -101,6 +99,24 @@ class ToolsTransactionController extends Controller
         // Start database transaction
         DB::beginTransaction();
         try {
+
+            $deliveryNote = ToolsTransaction::create([
+                'user_id' => auth()->user()->id,
+                'source_project_id' => $request->source_project_id,
+                'destination_project_id' => $request->destination_project_id,
+                'document_code' => $code,
+                'document_date' => date('Y-m-d'),
+                'delivery_date' => $request->delivery_date,
+                'ppic' => auth()->user()->full_name,
+                'driver' => $request->driver_name,
+                'driver_phone' => $request->driver_phone,
+                // 'transportation' => $request->transportation, (next)
+                // 'plat_number' => $request->plat_number, (next)
+                'status' => 'In Progress',
+                'type' => $request->type_delivery,
+                'notes' => $request->notes,
+            ]);
+
             // Loop dan simpan setiap tools
             foreach ($request->tools as $tool) {
                 $toolData = json_decode($tool, true);
@@ -122,20 +138,12 @@ class ToolsTransactionController extends Controller
                     return redirect()->back()->with('error', 'Tool code ' . $toolData['code'] . ' is in maintenance.');
                 }
 
-                ToolsTransaction::create([
-                    'user_id' => auth()->user()->id ?? null,
+                ToolsShipments::create([
+                    'transactions_id' => $deliveryNote->id,
                     'tool_id' => $toolCode->id,
-                    'source_project_id' => $request->source_project_id,
-                    'destination_project_id' => $request->destination_project_id,
-                    'document_code' => $code,
-                    'document_date' => date('Y-m-d'),
-                    'delivery_date' => $request->delivery_date,
                     'quantity' => $toolCode->quantity,
-                    'driver' => $request->driver_name,
-                    'driver_phone' => $request->driver_phone,
-                    'type' => $request->type_delivery,
+                    'unit' => $toolCode->unit,
                     'last_location' => $toolData['location'],
-                    'notes' => $request->notes,
                 ]);
 
                 // Update kondisi tool
@@ -158,11 +166,7 @@ class ToolsTransactionController extends Controller
      */
     public function show(string $id)
     {
-        $transactions = ToolsTransaction::findOrFail($id)->document_code;
-        $deliveryNote = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
-            ->where('document_code', $transactions)
-            ->get();
-
+        $deliveryNote = ToolsTransaction::with(['user', 'tools.tool', 'sourceTransactions', 'destinationTransactions'])->findOrFail($id);
         return view('tools.transaction.show', compact('deliveryNote'));
     }
 
@@ -171,13 +175,9 @@ class ToolsTransactionController extends Controller
      */
     public function edit(string $id)
     {
-        $transactions = ToolsTransaction::findOrFail($id)->document_code;
-        $transaction = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
-            ->where('document_code', $transactions)
-            ->get();
         $projects = Projects::all();
-
-        return view('tools.transaction.edit', compact('transaction', 'projects'));
+        $deliveryNote = ToolsTransaction::with(['user', 'tools.tool', 'sourceTransactions', 'destinationTransactions'])->findOrFail($id);
+        return view('tools.transaction.edit', compact('deliveryNote', 'projects'));
     }
 
     /**
@@ -195,58 +195,71 @@ class ToolsTransactionController extends Controller
             'destination_project_id' => 'required|exists:projects,id|different:source_project_id',
             'notes' => 'nullable|string|max:1000',
             'tools' => 'required|array',
-            'tools.*' => 'required|json',
+            'tools.*' => 'required'
         ]);
 
         DB::beginTransaction();
         try {
-            // Ambil transaksi utama untuk mendapatkan document_code
-            $mainTransaction = ToolsTransaction::findOrFail($id);
-            $documentCode = $mainTransaction->document_code;
+            // Ambil data transaksi utama berdasarkan ID
+            $deliveryNote = ToolsTransaction::findOrFail($id);
 
-            // Hapus semua transaksi dengan document_code yang sama
-            ToolsTransaction::where('document_code', $documentCode)->delete();
+            // Update transaksi utama
+            $deliveryNote->update([
+                'user_id' => auth()->user()->id,
+                'source_project_id' => $request->source_project_id,
+                'destination_project_id' => $request->destination_project_id,
+                'delivery_date' => $request->delivery_date,
+                'ppic' => auth()->user()->full_name,
+                'driver' => $request->driver_name,
+                'driver_phone' => $request->driver_phone,
+                'status' => 'In Progress',
+                'type' => $request->type_delivery,
+                'notes' => $request->notes,
+            ]);
 
-            // Buat array untuk menyimpan data transaksi baru
-            $transactionsData = [];
+            // Kumpulkan tool codes dari request
+            $newToolCodes = [];
+            foreach ($request->tools as $toolData) {
+                $toolInfo = json_decode($toolData, true);
+                $newToolCodes[] = $toolInfo['code'];
+            }
 
-            // Loop setiap tool dan siapkan data transaksi
-            foreach ($request->tools as $tool) {
-                $toolData = json_decode($tool, true);
+            // Hapus items yang tidak ada di request
+            ToolsShipments::where('transactions_id', $deliveryNote->id)
+                ->whereHas('tool', function ($query) use ($newToolCodes) {
+                    $query->whereNotIn('code', $newToolCodes);
+                })
+                ->delete();
 
-                if (!isset($toolData['code'], $toolData['location'])) {
-                    throw new \Exception('Invalid tool data.');
+            // Update atau create item baru
+            foreach ($request->tools as $toolData) {
+                $toolInfo = json_decode($toolData, true);
+
+                // Cari tool berdasarkan code
+                $tool = Tools::where('code', $toolInfo['code'])->first();
+                if (!$tool) {
+                    return redirect()->back()->with('error', 'Tool with code ' . $toolInfo['code'] . ' not found.');
                 }
 
-                $toolCode = Tools::where('code', $toolData['code'])->first();
-                if (!$toolCode) {
-                    throw new \Exception('Tool code ' . $toolData['code'] . ' not found.');
+                if ($tool->status == 'Maintenance' || $tool->status == 'Inactive' || $tool->condition == 'Broken') {
+                    return redirect()->back()->with('error', 'Tool code ' . $toolInfo['code'] . ' is in maintenance.');
                 }
 
-                if ($toolCode->status == 'Maintenance') {
-                    throw new \Exception('Tool code ' . $toolData['code'] . ' is in maintenance.');
-                }
+                ToolsShipments::updateOrCreate(
+                    [
+                        'transactions_id' => $deliveryNote->id,
+                        'tool_id' => $tool->id,
+                        'quantity' => $tool->quantity,
+                        'unit' => $tool->unit,
+                        'last_location' => $toolInfo['location']
+                    ],
+                );
+            }
 
-                // Tambahkan data transaksi baru ke array
-                $transactionsData[] = [
-                    'user_id' => auth()->user()->id,
-                    'tool_id' => $toolCode->id,
-                    'source_project_id' => $request->source_project_id,
-                    'destination_project_id' => $request->destination_project_id,
-                    'document_code' => $documentCode,
-                    'document_date' => $mainTransaction->document_date,
-                    'delivery_date' => $request->delivery_date,
-                    'quantity' => $toolCode->quantity,
-                    'driver' => $request->driver_name,
-                    'driver_phone' => $request->driver_phone,
-                    'type' => $request->type_delivery,
-                    'last_location' => $toolData['location'],
-                    'notes' => $request->notes,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-
-                // Update kondisi tool
+            // Update kondisi tool
+            foreach ($request->tools as $toolData) {
+                $toolInfo = json_decode($toolData, true);
+                $toolCode = Tools::where('code', $toolInfo['code'])->first();
                 if ($request->type_delivery === 'Return') {
                     $toolCode->update(['condition' => 'New']);
                 } else {
@@ -254,11 +267,8 @@ class ToolsTransactionController extends Controller
                 }
             }
 
-            // Insert semua data transaksi sekaligus
-            ToolsTransaction::insert($transactionsData);
-
             DB::commit();
-            return redirect()->back()->with('success', 'Transaction ' . $documentCode . ' updated successfully.');
+            return redirect()->back()->with('success', 'Transaction ' . $deliveryNote->document_code . ' updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -272,10 +282,14 @@ class ToolsTransactionController extends Controller
     {
         DB::beginTransaction();
         try {
-            $documentCode = ToolsTransaction::findOrFail($id)->document_code;
-            ToolsTransaction::where('document_code', $documentCode)->delete();
+            $deliveryNote = ToolsTransaction::findOrFail($id);
+            $getItemDeliveryNote = ToolsShipments::where('transactions_id', $deliveryNote->id)->get();
+            foreach ($getItemDeliveryNote as $item) {
+                $item->delete();
+            }
+            $deliveryNote->delete();
             DB::commit();
-            return redirect()->back()->with('success', 'Transaction ' . $documentCode . ' deleted successfully.');
+            return redirect()->back()->with('success', 'Transaction ' . $deliveryNote->document_code . ' deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error',  $e->getMessage());
@@ -287,14 +301,7 @@ class ToolsTransactionController extends Controller
      */
     public function generateDN(String $id)
     {
-        // Dapatkan document_code berdasarkan $id
-        $documentCode = ToolsTransaction::findOrFail($id)->document_code;
-        // Dapatkan data delivery note
-        $deliveryNote = ToolsTransaction::with(['tools', 'sourceTransactions', 'destinationTransactions'])
-            ->where('document_code', $documentCode)
-            ->get();
-
-        // Pass data to the PDF view
+        $deliveryNote = ToolsTransaction::with(['user', 'tools.tool', 'sourceTransactions', 'destinationTransactions'])->findOrFail($id);
         $pdf = Pdf::loadView('tools.transaction.dn', compact('deliveryNote'));
 
         // Return the PDF stream

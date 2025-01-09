@@ -83,22 +83,30 @@ return new class extends Migration
         Schema::create('tools_transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-            $table->foreignId('tool_id')->constrained('tools')->onDelete('restrict');
             $table->foreignId('source_project_id')->constrained('projects')->onDelete('restrict'); // Project asal
             $table->foreignId('destination_project_id')->constrained('projects')->onDelete('restrict'); // Project tujuan
             $table->string('document_code', 50);
             $table->date('document_date')->DBDefault(DB::raw('CURRENT_DATE'));
             $table->date('delivery_date');
             $table->string('ppic', 50)->nullable();
-            $table->integer('quantity')->default(1);
-            $table->string('unit', 50)->nullable();
             $table->string('driver', 50)->nullable();
             $table->string('driver_phone', 20)->nullable();
             $table->string('transportation', 50)->nullable();
             $table->string('plate_number', 50)->nullable();
-            $table->string('last_location', 255)->nullable();
+            $table->enum('status', ['In Progress', 'Completed', 'Cancelled'])->default('In Progress');
             $table->enum('type', ['Delivery Note', 'Transfer', 'Return'])->default('Delivery Note');
             $table->longText('notes')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('tools_transactions_shipments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('transactions_id')->references('id')->on('tools_transactions')->onDelete('cascade');
+            $table->foreignId('tool_id')->constrained('tools')->onDelete('restrict');
+            $table->integer('quantity')->default(1);
+            $table->string('unit', 50)->nullable();
+            $table->string('last_location', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -109,6 +117,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('tools_transactions_shipments');
         Schema::dropIfExists('tools_transactions');
         Schema::dropIfExists('tools_maintenance');
         Schema::dropIfExists('tools');

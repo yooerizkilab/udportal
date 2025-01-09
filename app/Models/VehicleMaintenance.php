@@ -27,11 +27,6 @@ class VehicleMaintenance extends Model
         'photo'
     ];
 
-    public function vehicle()
-    {
-        return $this->belongsTo(Vehicle::class);
-    }
-
     public function getStatusNameAttribute()
     {
         $color = [
@@ -41,5 +36,10 @@ class VehicleMaintenance extends Model
         ];
 
         return '<span class="badge badge-' . $color[$this->status] . '">' . $this->status . '</span>';
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
     }
 }

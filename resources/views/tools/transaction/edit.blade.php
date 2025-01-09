@@ -21,7 +21,7 @@
             </a>
         </div>
         <div class="card-body">
-            <form action="{{ route('transactions.update', $transaction[0]->id) }}" method="POST" id="deliveryNoteForm">
+            <form action="{{ route('transactions.update', $deliveryNote->id) }}" method="POST" id="deliveryNoteForm">
                 @csrf
                 @method('PUT')
                 <div class="row mb-4">
@@ -30,9 +30,9 @@
                         <label for="type_delivery">Type of Delivery</label>
                         <select name="type_delivery" class="form-control" id="type_delivery">
                             <option value="">-- Select Type Delivery --</option>
-                            <option value="Delivery Note" {{ $transaction[0]->type == 'Delivery Note' ? 'selected' : '' }}>Delivery Note</option>
-                            <option value="Transfer" {{ $transaction[0]->type == 'Transfer' ? 'selected' : '' }}>Transfer</option>
-                            <option value="Return" {{ $transaction[0]->type == 'Return' ? 'selected' : '' }}>Return</option>
+                            <option value="Delivery Note" {{ $deliveryNote->type == 'Delivery Note' ? 'selected' : '' }}>Delivery Note</option>
+                            <option value="Transfer" {{ $deliveryNote->type == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                            <option value="Return" {{ $deliveryNote->type == 'Return' ? 'selected' : '' }}>Return</option>
                         </select>
                     </div>
 
@@ -40,7 +40,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="driver_name">Driver Name</label>
-                            <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name', $transaction[0]->driver) }}" required>
+                            <input type="text" class="form-control @error('driver_name') is-invalid @enderror" id="driver_name" name="driver_name" placeholder="Driver Name" value="{{ old('driver_name', $deliveryNote->driver) }}" required>
                         </div>
                         
                         <div class="form-group">
@@ -48,7 +48,7 @@
                             <select name="source_project_id" id="source_project_id" class="form-control">
                                 <option disabled>--Select Source Project--</option>
                                 @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}" {{ $transaction[0]->source_project_id == $project->id ? 'selected' : '' }}>
+                                    <option value="{{ $project->id }}" {{ $deliveryNote->source_project_id == $project->id ? 'selected' : '' }}>
                                         {{ $project->name }} - {{ $project->code }}
                                     </option>
                                 @endforeach
@@ -59,7 +59,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="driver_phone" class="form-label">Driver Phone</label>   
-                            <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone', $transaction[0]->driver_phone) }}" required>
+                            <input type="text" class="form-control @error('driver_phone') is-invalid @enderror" id="driver_phone" name="driver_phone" placeholder="Driver Phone" value="{{ old('driver_phone', $deliveryNote->driver_phone) }}" required>
                         </div>
                         <div class="text-center mt-4">
                             <i class="fas fa-arrow-right fa-4x text-primary"></i>
@@ -68,7 +68,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="delivery_date" class="form-label">Delivery Date</label>
-                            <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', $transaction[0]->delivery_date) }}" required autocomplete="off">
+                            <input type="date" class="form-control @error('delivery_date') is-invalid @enderror" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', $deliveryNote->delivery_date) }}" required autocomplete="off">
                         </div>
                         
                         <div class="form-group">
@@ -76,7 +76,7 @@
                             <select name="destination_project_id" id="destination_project_id" class="form-control">
                                 <option disabled>--Select Destination Project--</option>
                                 @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}" {{ $transaction[0]->destination_project_id == $project->id ? 'selected' : '' }}>
+                                    <option value="{{ $project->id }}" {{ $deliveryNote->destination_project_id == $project->id ? 'selected' : '' }}>
                                         {{ $project->name }} - {{ $project->code }}
                                     </option>
                                 @endforeach
@@ -105,17 +105,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($transaction as $item)
+                                @foreach($deliveryNote->tools as $item)
                                 <tr>
-                                    <td>{{ $item->tools->code }}</td>
+                                    <td>{{ $item->tool->code }}</td>
                                     <td>{{ $item->last_location }}</td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-danger btn-circle" onclick="removeToolRow(this, '{{ $item->tools->code }}')">
+                                        <button type="button" class="btn btn-danger btn-circle" onclick="removeToolRow(this, '{{ $item->tool->code }}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
-                                <input type="hidden" name="tools[]" value="{{ json_encode(['code' => $item->tools->code, 'location' => $item->last_location]) }}">
+                                <input type="hidden" name="tools[]" value="{{ json_encode(['code' => $item->tool->code, 'location' => $item->last_location]) }}">
                                 @endforeach
                             </tbody>
                         </table>
@@ -128,7 +128,7 @@
                 <!-- Notes -->
                 <div class="form-group">
                     <label for="notes" class="form-label">Notes</label>
-                    <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes', $transaction[0]->notes) }}</textarea>
+                    <textarea class="form-control @error('notes') is-invalid @enderror" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3">{{ old('notes', $deliveryNote->notes) }}</textarea>
                 </div>
 
                 <div class="text-right">
@@ -150,8 +150,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize scannedItems with existing tools
     const scannedItems = new Set([
-        @foreach($transaction as $item)
-            '{{ $item->tools->code }}',
+        @foreach($deliveryNote->tools as $item)
+            '{{ $item->tool->code }}',
         @endforeach
     ]);
     
@@ -271,9 +271,14 @@ document.addEventListener('DOMContentLoaded', function() {
         row.remove();
         scannedItems.delete(code);
         
-        // Remove hidden input
-        const input = document.querySelector(`input[value='${JSON.stringify({ code, location })}']`);
-        if (input) input.remove();
+        // Cari dan hapus hidden input yang sesuai
+        const inputs = document.querySelectorAll('input[name="tools[]"]');
+        inputs.forEach(input => {
+            const data = JSON.parse(input.value);
+            if (data.code === code) {
+                input.remove();
+            }
+        });
     };
 
     // Show error message

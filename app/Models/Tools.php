@@ -12,7 +12,7 @@ class Tools extends Model
 
     protected $table = 'tools';
 
-    protected $appends = ['badge', 'badgeClass'];
+    protected $appends = ['conditionName', 'statusName'];
 
     protected $fillable = [
         'owner_id',
@@ -38,7 +38,7 @@ class Tools extends Model
         'photo',
     ];
 
-    public function getBadgeAttribute()
+    public function getConditionNameAttribute()
     {
         $statusColor = [
             'New' => 'success',
@@ -46,10 +46,10 @@ class Tools extends Model
             'Broken' => 'danger'
         ];
 
-        return $statusColor[$this->condition] ?? 'secondary';
+        return '<span class="badge badge-' . $statusColor[$this->condition] . '">' . $this->condition . '</span>';
     }
 
-    public function getBadgeClassAttribute()
+    public function getStatusNameAttribute()
     {
         $statusColor = [
             'Maintenance' => 'danger',
@@ -57,7 +57,7 @@ class Tools extends Model
             'Inactive' => 'secondary',
         ];
 
-        return $statusColor[$this->status] ?? 'secondary';
+        return '<span class="badge badge-' . $statusColor[$this->status] . '">' . $this->status . '</span>';
     }
 
     public function categorie()
@@ -70,9 +70,25 @@ class Tools extends Model
         return $this->belongsTo(Company::class, 'owner_id', 'id');
     }
 
-    // change owner to company
-    public function owners()
+    public function maintenance()
     {
-        return $this->belongsTo(Company::class, 'owner_id', 'id');
+        return $this->hasMany(ToolsMaintenance::class, 'tool_id', 'id');
+    }
+
+    public function activity()
+    {
+        return $this->hasMany(ToolsShipments::class, 'tool_id', 'id');
+    }
+
+    public function transaction()
+    {
+        return $this->hasManyThrough(
+            ToolsTransaction::class,
+            ToolsShipments::class,
+            'tool_id',
+            'id',
+            'id',
+            'transactions_id'
+        );
     }
 }

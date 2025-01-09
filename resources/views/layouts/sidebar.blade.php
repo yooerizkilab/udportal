@@ -57,19 +57,18 @@
 
     <!-- Nav Item - Tools Management Collapse Menu -->
     @can('view tools')
-    <li class="nav-item {{ request()->routeIs(['tools.*', 'tracking.*','transactions.*', 'projects.*','tools-maintenances.*']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['tools.*','transactions.*', 'projects.*','tools-maintenances.*']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTools"
             aria-expanded="true" aria-controls="collapseTools">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Tools Management</span>
         </a>
-        <div id="collapseTools" class="collapse {{ request()->routeIs(['tools.*', 'tracking.*', 'tools-maintenances.*','transactions.*' ,'projects.*']) ? 'show' : '' }}" aria-labelledby="headingTools"
+        <div id="collapseTools" class="collapse {{ request()->routeIs(['tools.*', 'tools-maintenances.*','transactions.*' ,'projects.*']) ? 'show' : '' }}" aria-labelledby="headingTools"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->routeIs('tools.*') ? 'active' : '' }}" href="{{ route('tools.index') }}">Tools</a>
                 <a class="collapse-item {{ request()->routeIs('projects.*') ? 'active' : '' }}" href="{{ route('projects.index') }}">Project</a>
                 <a class="collapse-item {{ request()->routeIs('transactions.*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">Transactions</a>
-                <a class="collapse-item {{ request()->routeIs('tracking.*') ? 'active' : '' }}" href="{{ route('tracking.index') }}">Tracking</a>
                 <a class="collapse-item {{ request()->routeIs('tools-maintenances.index') ? 'active' : '' }}" href="{{ route('tools-maintenances.index') }}">Maintenances</a>
             </div>
         </div>

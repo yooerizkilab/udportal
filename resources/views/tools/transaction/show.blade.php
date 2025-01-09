@@ -28,23 +28,23 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="30%">Document Code</td>
-                            <td>: {{ $deliveryNote[0]->document_code }}</td>
+                            <td>: {{ $deliveryNote->document_code }}</td>
                         </tr>
                         <tr>
                             <td>Document Date</td>
-                            <td>: {{ date('d F Y', strtotime($deliveryNote[0]->document_date)) }}</td>
+                            <td>: {{ date('d F Y', strtotime($deliveryNote->document_date)) }}</td>
                         </tr>
                         <tr>
                             <td>Delivery Date</td>
-                            <td>: {{ date('d F Y', strtotime($deliveryNote[0]->delivery_date)) }}</td>
+                            <td>: {{ date('d F Y', strtotime($deliveryNote->delivery_date)) }}</td>
                         </tr>
                         <tr>
                             <td>Type</td>
-                            <td>: {{ $deliveryNote[0]->type }}</td>
+                            <td>: {{ $deliveryNote->type }}</td>
                         </tr>
                         <tr>
                             <td>Notes</td>
-                            <td>: {{ $deliveryNote[0]->notes ?? '-' }}</td>
+                            <td>: {{ $deliveryNote->notes ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
@@ -53,19 +53,19 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="30%">Driver Name</td>
-                            <td>: {{ $deliveryNote[0]->driver }}</td>
+                            <td>: {{ $deliveryNote->driver }}</td>
                         </tr>
                         <tr>
                             <td>Phone Number</td>
-                            <td>: {{ $deliveryNote[0]->driver_phone }}</td>
+                            <td>: {{ $deliveryNote->driver_phone }}</td>
                         </tr>
                         <tr>
-                            <td>Last Location</td>
-                            <td>: {{ $deliveryNote[0]->last_location }}</td>
+                            <td>Transport</td>
+                            <td>: {{ $deliveryNote->transportation ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <td>Car </td>
-                            <td>: {{ $deliveryNote[0]->plate_number ?? '-' }}</td>
+                            <td>Plat Number </td>
+                            <td>: {{ $deliveryNote->plate_number ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
@@ -77,19 +77,19 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="30%">Project Code</td>
-                            <td>: {{ $deliveryNote[0]->sourceTransactions->code }}</td>
+                            <td>: {{ $deliveryNote->sourceTransactions->code }}</td>
                         </tr>
                         <tr>
                             <td>Project Name</td>
-                            <td>: {{ $deliveryNote[0]->sourceTransactions->name }}</td>
+                            <td>: {{ $deliveryNote->sourceTransactions->name }}</td>
                         </tr>
                         <tr>
                             <td>PPIC</td>
-                            <td>: {{ $deliveryNote[0]->sourceTransactions->ppic }}</td>
+                            <td>: {{ $deliveryNote->sourceTransactions->ppic }}</td>
                         </tr>
                         <tr>
                             <td>Address</td>
-                            <td>: {{ $deliveryNote[0]->sourceTransactions->address }}</td>
+                            <td>: {{ $deliveryNote->sourceTransactions->address }}</td>
                         </tr>
                     </table>
                 </div>
@@ -98,19 +98,19 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="30%">Project Code</td>
-                            <td>: {{ $deliveryNote[0]->destinationTransactions->code }}</td>
+                            <td>: {{ $deliveryNote->destinationTransactions->code }}</td>
                         </tr>
                         <tr>
                             <td>Project Name</td>
-                            <td>: {{ $deliveryNote[0]->destinationTransactions->name }}</td>
+                            <td>: {{ $deliveryNote->destinationTransactions->name }}</td>
                         </tr>
                         <tr>
                             <td>PPIC</td>
-                            <td>: {{ $deliveryNote[0]->destinationTransactions->ppic }}</td>
+                            <td>: {{ $deliveryNote->destinationTransactions->ppic }}</td>
                         </tr>
                         <tr>
                             <td>Address</td>
-                            <td>: {{ $deliveryNote[0]->destinationTransactions->address }}</td>
+                            <td>: {{ $deliveryNote->destinationTransactions->address }}</td>
                         </tr>
                     </table>
                 </div>
@@ -131,27 +131,19 @@
                                     <th>Type</th>
                                     <th>Quantity</th>
                                     <th>Unit</th>
-                                    <th>Condition</th>
-                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($deliveryNote as $index => $note)
+                                @foreach($deliveryNote->tools as $note)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $note->tools->code }}</td>
-                                    <td>{{ $note->tools->serial_number }}</td>
-                                    <td>{{ $note->tools->name }}</td>
-                                    <td>{{ $note->tools->brand }}</td>
-                                    <td>{{ $note->tools->type }}</td>
-                                    <td>{{ $note->quantity }}</td>
-                                    <td>{{ $note->tools->unit }}</td>
-                                    <td>{{ $note->tools->condition }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $note->tools->badgeClass }}">
-                                            {{ $note->tools->status }}
-                                        </span>
-                                    </td>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $note->tool->code }}</td>
+                                   <td>{{ $note->tool->serial_number }}</td>
+                                   <td>{{ $note->tool->name }}</td>
+                                   <td>{{ $note->tool->brand }}</td>
+                                   <td>{{ $note->tool->type }}</td>
+                                   <td>{{ $note->quantity }}</td>
+                                   <td>{{ $note->tool->unit }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

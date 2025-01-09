@@ -112,11 +112,9 @@
                                         </p>
                                     </div>
                                     <!-- Ticket Title -->
-                                    {{-- @if() --}}
-                                    <h6 class="h5 font-weight-bold text-gray-800 mb-1">
-                                        <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-dark text-800">{{ strlen($ticket->title) > 10 ? substr($ticket->title, 0, 10) . '...' : $ticket->title }}</a>
-                                    </h6> 
-                                    {{-- @endif        --}}
+                                    <h5 class="font-weight-bold text-gray-800 mb-1">
+                                        <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-dark text-800">{{ strlen($ticket->title) > 5 ? substr($ticket->title, 0, 5) . '...' : $ticket->title }}</a>
+                                    </h5> 
                                     <!-- User Name -->
                                     <p class="text-gray-700 mb-1">
                                         <i class="fas fa-user mr-1"></i> {{ $ticket->user->name }}

@@ -178,7 +178,7 @@
             </div>
             <div class="document-title">
                 <h1>DELIVERY NOTE</h1>
-                <p>Document Number: {{ $deliveryNote->first()->document_code }}</p>
+                <p>Document Number: {{ $deliveryNote->document_code }}</p>
             </div>
             <div class="qr-code">
                 <!-- QR Code placeholder -->
@@ -189,22 +189,22 @@
         <table class="doc-info">
             <tr>
                 <td class="label">Document Date</td>
-                <td>: {{ date('d-m-Y', strtotime($deliveryNote->first()->document_date)) }}</td>
+                <td>: {{ date('d-m-Y', strtotime($deliveryNote->document_date)) }}</td>
                 <td class="label">Delivered Date</td>
-                <td>: {{ date('d-m-Y', strtotime($deliveryNote->first()->delivery_date)) }}</td>
+                <td>: {{ date('d-m-Y', strtotime($deliveryNote->delivery_date)) }}</td>
             </tr>
             <tr>
                 <td class="label">Driver Name</td>
-                <td>: {{ $deliveryNote->first()->driver }}</td>
+                <td>: {{ $deliveryNote->driver }}</td>
                 <td class="label">Driver Phone</td>
-                <td>: {{ $deliveryNote->first()->driver_phone }}</td>
+                <td>: {{ $deliveryNote->driver_phone }}</td>
 
             </tr>
             <tr>
                 <td class="label">Transportation</td>
-                <td>: -</td>
+                <td>: {{ $deliveryNote->transportation ?? '-' }} - {{ $deliveryNote->plate_number ?? '-' }}</td>
                 <td class="label">Type transaction</td>
-                <td>: <b>{{ $deliveryNote->first()->type }}</b></td>
+                <td>: <b>{{ $deliveryNote->type }}</b></td>
             </tr>
         </table>
 
@@ -213,11 +213,11 @@
                 <td width="48%">
                     <div class="address-box">
                         <h3>FROM (Source Location)</h3>
-                        <strong>{{ $deliveryNote->first()->sourceTransactions->name }} ({{ $deliveryNote->first()->sourceTransactions->code }})</strong><br>
-                        {{ $deliveryNote->first()->sourceTransactions->address }}<br><br>
-                        <strong>Contact Person:</strong> {{ $deliveryNote->first()->sourceTransactions->ppic }} (PPIC)<br>
-                        <strong>Phone:</strong> {{ $deliveryNote->first()->sourceTransactions->phone }}<br>
-                        <strong>Email:</strong> {{ $deliveryNote->first()->sourceTransactions->email }}
+                        <strong>{{ $deliveryNote->sourceTransactions->name }} ({{ $deliveryNote->sourceTransactions->code }})</strong><br>
+                        {{ $deliveryNote->sourceTransactions->address }}<br><br>
+                        <strong>Contact Person:</strong> {{ $deliveryNote->sourceTransactions->ppic }} (PPIC)<br>
+                        <strong>Phone:</strong> {{ $deliveryNote->sourceTransactions->phone }}<br>
+                        <strong>Email:</strong> {{ $deliveryNote->sourceTransactions->email }}
                     </div>
                 </td>
                 <td width="4%"></td>
@@ -242,22 +242,20 @@
                     <th width="25%">Name</th>
                     <th width="15%">Brand</th>
                     <th width="15%">Serial Number</th>
-                    <th width="10%">Condition</th>
                     <th width="7%">Qty</th>
                     <th width="8%">Unit</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($deliveryNote as $item)
+                @foreach ($deliveryNote->tools as $item)
                 <tr>
                     <td class="center">{{ $loop->iteration }}</td>
-                    <td>{{ $item->tools->code }}</td>
-                    <td>{{ $item->tools->name }}</td>
-                    <td>{{ $item->tools->brand }}</td>
-                    <td>{{ $item->tools->serial_number }}</td>
-                    <td class="center">{{ $item->tools->condition }}</td>
+                    <td>{{ $item->tool->code }}</td>
+                    <td>{{ $item->tool->name }}</td>
+                    <td>{{ $item->tool->brand }}</td>
+                    <td>{{ $item->tool->serial_number }}</td>
                     <td class="center">{{ $item->quantity }}</td>
-                    <td class="center">{{ $item->tools->unit }}</td>
+                    <td class="center">{{ $item->tool->unit }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -265,7 +263,7 @@
 
         <div class="notes-section">
             <h3>Notes & Instructions:</h3>
-            <p>{{ $deliveryNote->first()->notes }}</p>
+            <p>{{ $deliveryNote->notes }}</p>
         </div>
 
         <hr>
