@@ -49,8 +49,8 @@ class DatabaseSeeder extends Seeder
             TicketsSeeder::class,
             TicketsCommentsSeeder::class,
             IncomingSupplierSeeder::class,
+            IncomingShipmentsSeeder::class,
             IncomingInventorySeeder::class,
-            IncomingShipmentsSeeder::class
         ]);
     }
 }

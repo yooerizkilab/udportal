@@ -72,10 +72,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('insurances-export-detail/{id}', 'VehicleInsuranceController@exportPdf')->name('insurances.exportPdf');
     });
 
-    // Dev Incomming Inventory
+    // Incomming Inventory Plan Fix
     Route::group(['prefix' => 'incomings-plan'], function () {
         Route::resource('incomings-supplier', 'IncomingSupplierController');
         Route::resource('incomings-inventory', 'IncomingInventoryController');
+        Route::get('incomings-inventory-export-pdf/{id}', 'IncomingInventoryController@printPdf')->name('incomings-inventory.exportPdf');
     });
 
     // Settings Management development

@@ -18,7 +18,6 @@ class IncomingShipments extends Model
         'code',
         'branch_id',
         'supplier_id',
-        'item_id',
         'drop_site_id',
         'eta',
         'status',
@@ -48,7 +47,7 @@ class IncomingShipments extends Model
 
     public function item()
     {
-        return $this->belongsTo(IncomingInventory::class, 'item_id', 'id');
+        return $this->hasMany(IncomingInventory::class, 'shipment_id', 'id');
     }
 
     public function drop()

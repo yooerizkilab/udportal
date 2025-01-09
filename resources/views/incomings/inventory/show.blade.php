@@ -25,27 +25,27 @@
                     <table class="table table-borderless">
                         <tr>
                             <td width="30%">PO Code</td>
-                            <td>: {{ $incomings[0]->code }}</td>
+                            <td>: {{ $incomings->code }}</td>
                         </tr>
                         <tr>
                             <td>Branch</td>
-                            <td>: {{ $incomings[0]->branch->name ?? '-' }}</td>
+                            <td>: {{ $incomings->branch->name ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Supplier</td>
-                            <td>: {{ $incomings[0]->supplier->name ?? '-' }}</td>
+                            <td>: {{ $incomings->supplier->name ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>ETA</td>
-                            <td>: {{ date('d F Y', strtotime($incomings[0]->eta ?? '-' )) }}</td>
+                            <td>: {{ date('d F Y', strtotime($incomings->eta ?? '-' )) }}</td>
                         </tr>
                         <tr>
                             <td>Warehouses / Drop Site</td>
-                            <td>: {{ $incomings[0]->drop->name ?? '-' }}</td>
+                            <td>: {{ $incomings->drop->name ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Status</td>
-                            <td>: {!! $incomings[0]->statusName ?? '-' !!}</td>
+                            <td>: {!! $incomings->statusName ?? '-' !!}</td>
                         </tr>
                     </table>
                 </div>
@@ -63,11 +63,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($incomings as $incoming)
+                                @forelse ($incomings->item as $incoming)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $incoming->item->item_name }}</td>
-                                        <td>{{ $incoming->item->quantity }}</td>
+                                        <td>{{ $incoming->item_name }}</td>
+                                        <td>{{ $incoming->quantity }}</td>
                                     </tr>
                                 @empty
                                     <tr>

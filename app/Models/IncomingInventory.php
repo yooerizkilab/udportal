@@ -13,6 +13,7 @@ class IncomingInventory extends Model
     protected $table = 'incoming_inventory';
 
     protected $fillable = [
+        'shipment_id',
         'item_name',
         'quantity',
     ];

@@ -23,24 +23,21 @@
         </a>
     </div>
     <div class="card-body">
-        <form action="{{ route('incomings-inventory.update', $incomings[0]->id) }}" method="POST" id="updateIncomingInventoryForm">
+        <form action="{{ route('incomings-inventory.update', $incomings->id) }}" method="POST" id="updateIncomingInventoryForm">
             @csrf
             @method('PUT')
-            <div class="row mb-4">
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="branch_id">Branch <span class="text-danger">*</span></label>
                         <select name="branch_id" id="branch_id" class="form-control @error('branch_id') is-invalid @enderror" required>
                             <option value="">Select Branch</option>
                             @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}" {{ old('branch_id', $incomings[0]->branch->id) == $branch->id ? 'selected' : '' }}>
+                                <option value="{{ $branch->id }}" {{ old('branch_id', $incomings->branch->id) == $branch->id ? 'selected' : '' }}>
                                     {{ $branch->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('branch_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
 
@@ -50,14 +47,11 @@
                         <select name="supplier_id" id="supplier_id" class="form-control @error('supplier_id') is-invalid @enderror" required>
                             <option value="">Select Supplier</option>
                             @foreach ($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}" {{ old('supplier_id', $incomings[0]->supplier->id) == $supplier->id ? 'selected' : '' }}>
+                                <option value="{{ $supplier->id }}" {{ old('supplier_id', $incomings->supplier->id) == $supplier->id ? 'selected' : '' }}>
                                     {{ $supplier->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('supplier_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
             </div>
@@ -69,14 +63,11 @@
                         <select name="warehouse_id" id="warehouse_id" class="form-control @error('warehouse_id') is-invalid @enderror" required>
                             <option value="">Select Warehouse</option>
                             @foreach ($warehouses as $warehouse)
-                                <option value="{{ $warehouse->id }}" {{ old('warehouse_id', $incomings[0]->drop->id) == $warehouse->id ? 'selected' : '' }}>
+                                <option value="{{ $warehouse->id }}" {{ old('warehouse_id', $incomings->drop->id) == $warehouse->id ? 'selected' : '' }}>
                                     {{ $warehouse->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('warehouse_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
                 </div>
 
@@ -84,10 +75,7 @@
                     <div class="form-group">
                         <label for="eta">Expected Arrival Date <span class="text-danger">*</span></label>
                         <input type="date" name="eta" id="eta" class="form-control @error('eta') is-invalid @enderror" 
-                            value="{{ old('eta', $incomings[0]->eta) }}" required>
-                        @error('eta')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            value="{{ old('eta', $incomings->eta) }}" required>
                     </div>
                 </div>
             </div>
@@ -104,19 +92,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($incomings as $index => $incoming)
+                        @foreach ($incomings->item as $index => $incoming)
                             <tr data-row-id="{{ $incoming->id }}">
                                 <td>{{ $index + 1 }}</td>
                                 <td>
                                     <input type="hidden" name="items[{{ $index }}][id]" value="{{ $incoming->id }}">
                                     <input type="text" name="items[{{ $index }}][item_name]" 
                                         class="form-control @error('items.' . $index . '.item_name') is-invalid @enderror"
-                                        value="{{ old('items.' . $index . '.item_name', $incoming->item->item_name) }}" required>
+                                        value="{{ old('items.' . $index . '.item_name', $incoming->item_name) }}" required>
                                 </td>
                                 <td>
                                     <input type="text" name="items[{{ $index }}][quantity]" 
                                         class="form-control @error('items.' . $index . '.quantity') is-invalid @enderror"
-                                        value="{{ old('items.' . $index . '.quantity', $incoming->item->quantity) }}" required>
+                                        value="{{ old('items.' . $index . '.quantity', $incoming->quantity) }}" required>
                                 </td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-danger btn-circle" onclick="deleteRow(this)">

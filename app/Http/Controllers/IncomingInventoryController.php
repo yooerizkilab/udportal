@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IncomingInventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\IncomingShipments;
 use App\Models\IncomingSupplier;
 use App\Models\Branch;
@@ -13,15 +14,19 @@ use App\Models\Warehouses;
 class IncomingInventoryController extends Controller
 {
     /**
+     * Create a new controller instance. 
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $incomings = IncomingShipments::select('code', DB::raw('MAX(id) as id'), DB::raw('MAX(branch_id) as branch_id'), DB::raw('MAX(eta) as eta'), DB::raw('MAX(status) as status'),)
-            ->groupBy('code')
-            ->get();
-        $incomings->load('branch');
-
+        $incomings = IncomingShipments::with('branch', 'drop')->get();
         return view('incomings.inventory.index', compact('incomings'));
     }
 
@@ -30,12 +35,11 @@ class IncomingInventoryController extends Controller
      */
     public function create()
     {
-        $branches = Branch::all();
-        $warehouses = Warehouses::all();
-        $suppliers = IncomingSupplier::all();
-        $items = IncomingInventory::all();
+        $branches = Branch::select('id', 'name')->get();
+        $warehouses = Warehouses::select('id', 'name')->get();
+        $suppliers = IncomingSupplier::select('id', 'name')->get();
 
-        return view('incomings.inventory.create', compact('branches', 'warehouses', 'suppliers', 'items'));
+        return view('incomings.inventory.create', compact('branches', 'warehouses', 'suppliers'));
     }
 
     /**
@@ -65,18 +69,19 @@ class IncomingInventoryController extends Controller
 
         DB::beginTransaction();
         try {
+            $incoming = IncomingShipments::create([
+                'code' => $code,
+                'branch_id' => $request->branch_id,
+                'supplier_id' => $request->supplier_id,
+                'eta' => $request->eta,
+                'drop_site_id' => $request->warehouse_id,
+            ]);
+
             foreach ($request->items as $item) {
-                $items = IncomingInventory::create([
+                IncomingInventory::create([
+                    'shipment_id' => $incoming->id,
                     'item_name' => $item['item_name'],
                     'quantity' => $item['quantity'],
-                ]);
-                $incoming = IncomingShipments::create([
-                    'code' => $code,
-                    'branch_id' => $request->branch_id,
-                    'supplier_id' => $request->supplier_id,
-                    'item_id' => $items->id,
-                    'eta' => $request->eta,
-                    'drop_site_id' => $request->warehouse_id,
                 ]);
             }
             DB::commit();
@@ -92,11 +97,7 @@ class IncomingInventoryController extends Controller
      */
     public function show(string $id)
     {
-        $getId = IncomingShipments::find($id)->code;
-        $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')
-            ->where('code', $getId)
-            ->get();
-
+        $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')->findOrFail($id);
         return view('incomings.inventory.show', compact('incomings'));
     }
 
@@ -105,17 +106,12 @@ class IncomingInventoryController extends Controller
      */
     public function edit(string $id)
     {
-        $branches = Branch::all();
-        $warehouses = Warehouses::all();
-        $suppliers = IncomingSupplier::all();
-        $items = IncomingInventory::all();
+        $branches = Branch::select('id', 'name')->get();
+        $warehouses = Warehouses::select('id', 'name')->get();
+        $suppliers = IncomingSupplier::select('id', 'name')->get();
+        $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')->findOrFail($id);
 
-        $getId = IncomingShipments::find($id)->code;
-        $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')
-            ->where('code', $getId)
-            ->get();
-
-        return view('incomings.inventory.edit', compact('incomings', 'branches', 'warehouses', 'suppliers', 'items'));
+        return view('incomings.inventory.edit', compact('incomings', 'branches', 'warehouses', 'suppliers'));
     }
 
     /**
@@ -136,25 +132,23 @@ class IncomingInventoryController extends Controller
 
         DB::beginTransaction();
         try {
-            // Hapus data incoming dan inventory sebelumnya dengan code yang sama
-            $getId = IncomingShipments::find($id)->code;
-            $getItems = IncomingInventory::where('id', IncomingShipments::find($id)->item_id)->first();
-            IncomingShipments::where('code', $getId)->delete();
-            IncomingInventory::where('id', $getItems->id)->delete();
+            // Temukan data transaksi
+            $incoming = IncomingShipments::findOrFail($id);
+
+            // Update data transaksi
+            $incoming->update([
+                'branch_id' => $request->branch_id,
+                'supplier_id' => $request->supplier_id,
+                'eta' => $request->eta,
+                'drop_site_id' => $request->warehouse_id,
+            ]);
 
             // Simpan data transaksi baru
             foreach ($request->items as $item) {
-                $items = IncomingInventory::create([
+                IncomingInventory::updateOrCreate([
+                    'shipment_id' => $incoming->id,
                     'item_name' => $item['item_name'],
                     'quantity' => $item['quantity'],
-                ]);
-                $incoming = IncomingShipments::find($id);
-                $incoming->create([
-                    'branch_id' => $request->branch_id,
-                    'supplier_id' => $request->supplier_id,
-                    'item_id' => $items->id,
-                    'eta' => $request->eta,
-                    'drop_site_id' => $request->warehouse_id,
                 ]);
             }
             DB::commit();
@@ -172,15 +166,24 @@ class IncomingInventoryController extends Controller
     {
         DB::beginTransaction();
         try {
-            $incomingShipment = IncomingShipments::find($id);
-            $getIncomingCode = $incomingShipment->code;
-            IncomingShipments::where('code', $getIncomingCode)->delete();
-            IncomingInventory::where('id', $incomingShipment->item_id)->delete();
+            $getIncomingId = IncomingShipments::find($id);
+            $getItem = IncomingInventory::where('shipment_id', $getIncomingId->id)->get();
+            foreach ($getItem as $item) {
+                $item->delete();
+            }
+            $getIncomingId->delete();
             DB::commit();
-            return redirect()->back()->with('success', 'Incoming ' . $getIncomingCode . ' deleted successfully');
+            return redirect()->back()->with('success', 'Incoming ' . $getIncomingId->code . ' deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    public function printPdf(string $id)
+    {
+        $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')->findOrFail($id);
+        $pdf = PDF::loadView('incomings.inventory.pdf', compact('incomings'));
+        return $pdf->stream('incomings.pdf');
     }
 }

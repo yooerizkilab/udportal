@@ -45,6 +45,7 @@
                         <td class="text-center">{!! $incoming->statusName !!}</td>
                         <td class="text-center">
                             <div class="d-inline-flex">
+                                <a href="{{ route('incomings-inventory.exportPdf', $incoming->id) }}" class="btn btn-success btn-circle mr-1"><i class="fas fa-print"></i></a>
                                 <a href="{{ route('incomings-inventory.show', $incoming->id) }}" class="btn btn-info btn-circle mr-1"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('incomings-inventory.edit', $incoming->id) }}" class="btn btn-warning btn-circle mr-1">
                                     <i class="fas fa-pencil"></i>
