@@ -128,51 +128,57 @@ class ToolsController extends Controller
     public function show(string $id)
     {
         $tools = Tools::with('categorie', 'owner')->findOrFail($id);
-        $log = Tools::with('maintenance', 'activity', 'transaction')->find($id);
+        $log = Tools::with('maintenance', 'transactions.transaction')->find($id);
 
         // Gabungkan aktivitas
         $activities = collect();
 
         // Ambil aktivitas maintenance
-        foreach ($log->maintenance as $main) {
-            $activities->push([
-                'type' => 'Maintenence',
-                'details' => [
-                    'date' => date('d-m-Y', strtotime($main->maintenance_date)),
-                    'status' => $main->status,
-                    'description' => $main->description,
-                ],
-            ]);
+        if ($log->maintenance->isNotEmpty()) {
+            foreach ($log->maintenance as $main) {
+                $activities->push([
+                    'type' => 'Maintenance',
+                    'details' => [
+                        'date' => date('d-m-Y', strtotime($main->maintenance_date)),
+                        'description' => $main->description,
+                        'cost' => $main->cost,
+                        'status' => $main->status,
+                        'completed_at' => date('d-m-Y', strtotime($main->completion_date)),
+                    ],
+                ]);
+            }
         }
 
-        // Ambil data proyek sekali saja
-        $projectMap = Projects::whereIn('id', $log->transaction->pluck('source_project_id')
-            ->merge($log->transaction->pluck('destination_project_id')))
-            ->get()
-            ->keyBy('id'); // Map proyek berdasarkan ID untuk akses cepat
+        // Ambil aktivitas transaksi
+        if ($log->transactions->isNotEmpty()) {
+            foreach ($log->transactions as $detail) {
+                $tran = $detail->transaction;
 
-        foreach ($log->transaction as $tran) {
-            // Siapkan details dari activity
-            $details = [];
-            foreach ($log->activity as $act) {
-                $details[] = [
-                    'last_location' => $act->last_location,
-                ];
+                // Ambil data proyek sekali saja
+                $projectMap = Projects::whereIn('id', $detail->transaction->pluck('source_project_id')
+                    ->merge($detail->transaction->pluck('destination_project_id')))
+                    ->get()
+                    ->keyBy('id'); // Map proyek berdasarkan ID untuk akses cepat
+                $sourceProjectName = $projectMap[$tran->source_project_id]->name ?? 'Unknown';
+                $destinationProjectName = $projectMap[$tran->destination_project_id]->name ?? 'Unknown';
+
+                if ($tran) {
+                    $activities->push([
+                        'type' => 'Activity',
+                        'transaction' => $tran->type,
+                        'date' => date('d-m-Y', strtotime($tran->created_at)),
+                        'driver' => $tran->driver,
+                        'driver_phone' => $tran->driver_phone,
+                        'status' => $tran->statusName,
+                        'notes' => $tran->notes,
+                        'details' => [
+                            'source_project' => $sourceProjectName,
+                            'destination_project' => $destinationProjectName,
+                            'last_location' => $detail->last_location,
+                        ],
+                    ]);
+                }
             }
-
-            // Ambil nama proyek dari map
-            $sourceProjectName = $projectMap[$tran->source_project_id]->name ?? 'Unknown';
-            $destinationProjectName = $projectMap[$tran->destination_project_id]->name ?? 'Unknown';
-
-            // Tambahkan data ke activities
-            $activities->push([
-                'type' => 'Activity',
-                'transaction' => $tran->type,
-                'source' => $sourceProjectName,
-                'destination' => $destinationProjectName,
-                'date' => date('d-m-Y', strtotime($tran->created_at)),
-                'details' => $details,
-            ]);
         }
 
         return view('tools.show', compact('tools', 'activities'));

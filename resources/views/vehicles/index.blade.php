@@ -81,7 +81,7 @@
                                     <td>{{ date('d M Y', strtotime($vehicle->tax_year)) }}</td>
                                     <td>{{ date('d M Y', strtotime($vehicle->tax_five_year)) }}</td>
                                     <td>{{ $vehicle->inspected ? date('d M Y', strtotime($vehicle->inspected)) : '-' }}</td>
-                                    <td>{{ $vehicle->assigned->last()->full_name ?? '-' }}</td>
+                                    <td>{{ $vehicle->assigned->last()->employe->full_name ?? '-' }}</td>
                                     <td>{!! $vehicle->badgeClass !!}</td>
                                     <td>
                                         <div class="d-inline-flex">
@@ -151,7 +151,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                        <thead class="thead-light">
+                        <thead class="bg-light">
                             <tr>
                                 <td width="5%">No</td>
                                 <td>Name</td>
@@ -411,6 +411,14 @@
                     <form action="{{ route('vehicles.update', ':id') }}" id="updateVehiclesForm" method="post">
                         @csrf
                         @method('PUT')
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select name="status" id="vehiclesStatus" class="form-control">
+                                <option value="" disabled selected>--Select Status--</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -514,16 +522,6 @@
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea name="description" id="vehiclesDescription" class="form-control" cols="30" rows="5"></textarea>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="vehiclesStatus" class="form-control">
-                                        <option value="" disabled selected>--Select Status--</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
                                 </div>
                             </div>
                         </div> 

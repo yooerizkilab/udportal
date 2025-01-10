@@ -121,29 +121,41 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($activities->isNotEmpty())
+                                            @if (!empty($activities) && count($activities) > 0)
                                                 @foreach ($activities as $index => $activity)
                                                     <tr>
                                                         <td class="text-center">{{ $index + 1 }}</td>
                                                         <td>
-                                                            <strong>Type:</strong> {{ $activity['type'] }}<br>
-                                                            @if($activity['type'] === 'Maintenence')
-                                                                <strong>Date:</strong> {{ $activity['details']['date'] }}<br>
-                                                                <strong>Status:</strong> {{ $activity['details']['status'] }}<br>
-                                                                <strong>Description:</strong> {{ $activity['details']['description'] }}<br>
-                                                            @elseif($activity['type'] === 'Activity')
-                                                                <strong>Transaction:</strong> {{ $activity['transaction'] }}<br>
-                                                                <strong>Source:</strong> {{ $activity['source'] }}<br>
-                                                                <strong>Destination:</strong> {{ $activity['destination'] }}<br>
-                                                                <strong>Date:</strong> {{ $activity['date'] }}<br>
+                                                            <strong>Type:</strong>
+                                                            <span class="text-{{ $activity['type'] == 'Maintenance' ? 'warning' : 'info' }} font-weight-bold">
+                                                                {{ $activity['type'] }}
+                                                            </span><br>
+                                    
+                                                            @if ($activity['type'] === 'Maintenance')
+                                                                <strong>Date:</strong> {{ $activity['details']['date'] ?? '-' }}<br>
+                                                                <strong>Description:</strong> {{ $activity['details']['description'] ?? '-' }}<br>
+                                                                <strong>Cost:</strong> {{ $activity['details']['cost'] ?? '-' }}<br>
+                                                                <strong>Status:</strong>
+                                                                <span class="text-{{ ($activity['details']['status'] ?? '') == 'Completed' ? 'success' : 'secondary' }} font-weight-bold">
+                                                                    {{ $activity['details']['status'] ?? '-' }}
+                                                                </span><br>
+                                                                <strong>Completed At:</strong> {{ $activity['details']['completed_at'] ?? '-' }}
+                                                            @elseif ($activity['type'] === 'Activity')
+                                                                <strong>Transaction:</strong>
+                                                                <span class="text-{{ $activity['transaction'] == 'Delivery Note' ? 'primary' : 'secondary' }} font-weight-bold">
+                                                                    {{ $activity['transaction'] }}
+                                                                </span><br>
+                                                                <strong>Date:</strong> {{ $activity['date'] ?? '-' }}<br>
+                                                                <strong>Driver:</strong> {{ $activity['driver'] ?? '-' }}<br>
+                                                                <strong>Driver Phone:</strong> {{ $activity['driver_phone'] ?? '-' }}<br>
+                                                                <strong>Status:</strong> {!! $activity['status'] ?? '-' !!}<br>
+                                                                <strong>Notes:</strong> {{ $activity['notes'] ?? '-' }}<br>
+                                    
                                                                 <strong>Details:</strong>
                                                                 <ul>
-                                                                    @foreach ($activity['details'] as $detail)
-                                                                        <li>
-                                                                            {{-- <strong>Date:</strong> {{ $detail['date'] }}<br> --}}
-                                                                            <strong>Last Location:</strong> {{ $detail['last_location'] }}
-                                                                        </li>
-                                                                    @endforeach
+                                                                    <li><strong>Source Project:</strong> {{ $activity['details']['source_project'] ?? '-' }}</li>
+                                                                    <li><strong>Destination Project:</strong> {{ $activity['details']['destination_project'] ?? '-' }}</li>
+                                                                    <li><strong>Last Location:</strong> {{ $activity['details']['last_location'] ?? '-' }}</li>
                                                                 </ul>
                                                             @endif
                                                         </td>

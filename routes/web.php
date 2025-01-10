@@ -20,10 +20,6 @@ Route::get('/', function () {
 // Authentication
 Auth::routes();
 
-// Trecking vie frontend
-Route::get('tracking/tools', 'ToolsTrackingController@indexFrontend')->name('trackings.tools');
-Route::get('tracking/tools/{id}', 'ToolsTrackingController@show')->name('tracking.tools');
-
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
@@ -45,7 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('cancel/{id}', 'TicketingController@cancled')->name('ticketing.cancled');
     });
 
-    // Tools Management Fix - BUG
+    // Tools Management Fix 
     Route::group(['prefix' => 'tools'], function () {
         Route::resource('categories', 'ToolsCategoriesController');
         Route::resource('tools', 'ToolsController');
@@ -75,9 +71,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'incomings-plan'], function () {
         Route::resource('incomings-supplier', 'IncomingSupplierController');
         Route::resource('incomings-inventory', 'IncomingInventoryController');
-        Route::get('incomings-inventory-export-pdf/{id}', 'IncomingInventoryController@printPdf')->name('incomings-inventory.exportPdf');
+        Route::get('incomings-inventory-export-detail/{id}', 'IncomingInventoryController@printPdf')->name('incomings-inventory.exportPdf');
     });
 
+    // Bids Management Development
     Route::group(['prefix' => 'bids'], function () {});
 
     // Settings Management development

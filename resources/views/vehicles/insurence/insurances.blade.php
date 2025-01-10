@@ -136,7 +136,7 @@
         <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary justify-content-center align-items-center">
-                    <h5 class="modal-title text-white font-weight-bold mx-auto" id="updateInsurancesModalLabel">Update Insurances</h5>
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="updateInsurancesModalLabel">Update Insurances</h4>
                     <button type="button" class="close position-absolute" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -162,16 +162,16 @@
                             <input type="number" class="form-control" id="premium" name="premium" placeholder="Enter Premium">
                         </div>
                         <div class="form-group">
-                            <label for="notes">Notes</label>
-                            <textarea class="form-control" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3"></textarea>
-                        </div>
-                        <div class="form-group">
                             <label for="coverage_start">Start Date</label>
                             <input type="date" class="form-control" id="start" name="coverage_start" placeholder="Enter Start Date">
                         </div>
                         <div class="form-group">
                             <label for="coverage_end">End Date</label>
                             <input type="date" class="form-control" id="end" name="coverage_end" placeholder="Enter End Date">
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Notes</label>
+                            <textarea class="form-control" placeholder="Enter notes (optional)" id="notes" name="notes" rows="3"></textarea>
                         </div>
                     </form>
                     <div class="modal-footer">

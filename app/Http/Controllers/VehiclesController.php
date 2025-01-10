@@ -28,8 +28,8 @@ class VehiclesController extends Controller
     {
         $vehicleTypes = VehicleType::all();
         $vehicleOwnerships = Company::all();
-        $vehicles = Vehicle::with('type', 'ownership', 'assigned')->get();
         $users = User::all();
+        $vehicles = Vehicle::with('type', 'ownership', 'assigned.employe')->get();
         return view('vehicles.index', compact('vehicles', 'vehicleTypes', 'vehicleOwnerships', 'users'));
     }
 
@@ -111,8 +111,32 @@ class VehiclesController extends Controller
     public function show(string $id)
     {
         $vehicle = Vehicle::with('type', 'ownership')->findOrFail($id);
-        // $vehicleHistory = 
-        return view('vehicles.show', compact('vehicle'));
+        $logs = Vehicle::with('assigned.employe', 'maintenanceRecords')->find($id);
+        // return $logs;
+        $activities = collect();
+
+        foreach ($logs->assigned as $assignment) {
+            $activities->push([
+                'type' => 'Assigned',
+                'user' => $assignment->employe->full_name,
+                'date' => $assignment->assignment_date,
+                'return_date' => $assignment->return_date,
+                'notes' => $assignment->notes,
+            ]);
+        }
+
+        foreach ($logs->maintenanceRecords as $maintenanceRecord) {
+            $activities->push([
+                'type' => 'Maintenance',
+                'date' => $maintenanceRecord->maintenance_date,
+                'description' => $maintenanceRecord->description,
+                'status' => $maintenanceRecord->status,
+            ]);
+        }
+
+        // return $activities;
+
+        return view('vehicles.show', compact('vehicle', 'activities'));
     }
 
     /**

@@ -118,15 +118,40 @@
                                             <tr>
                                                 <th width="5%">#</th>
                                                 <th class="text-center">Activity</th>
-                                                <th class="text-center" width="15%">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+                                            @if(!empty($activities) && count($activities) > 0)
+                                                @foreach ($activities as $index => $activity)
+                                                    <tr>
+                                                        <td class="text-center">{{ $index + 1 }}</td>
+                                                        <td>
+                                                            <strong>Type:</strong> 
+                                                            <span class="text-{{ $activity['type'] == 'Maintenance' ? 'warning' : 'info' }} font-weight-bold">{{ $activity['type'] }}</span><br>
+                                                            @if($activity['type'] === 'Maintenance')
+                                                                <strong>Date:</strong> {{ $activity['date'] ?? '-' }}
+                                                                <i class="fas fa-arrow-right"></i>
+                                                                <strong>Description:</strong> {{ $activity['description'] ?? '-' }}
+                                                                <i class="fas fa-arrow-right"></i>
+                                                                <strong>Status:</strong>
+                                                                <span class="text-{{ $activity['status'] == 'Completed' ? 'success' : 'secondary' }} font-weight-bold">{{ $activity['status'] }}</span>
+                                                            @elseif($activity['type'] === 'Assigned')
+                                                                <strong>Assigned:</strong> {{ $activity['user'] ?? '-' }}
+                                                                <i class="fas fa-arrow-right"></i>
+                                                                <strong>Date:</strong> {{ date('d M Y', strtotime($activity['date'])) ?? '-' }}
+                                                                <i class="fas fa-arrow-right"></i>
+                                                                <strong>Return Date:</strong> {{ $activity['return_date'] ?? '-' }}
+                                                                <i class="fas fa-arrow-right"></i>
+                                                                <strong>Notes:</strong> {{ $activity['notes'] ?? '-' }}
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="2" class="text-center">No activities available.</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

@@ -75,20 +75,8 @@ class Tools extends Model
         return $this->hasMany(ToolsMaintenance::class, 'tool_id', 'id');
     }
 
-    public function activity()
+    public function transactions()
     {
         return $this->hasMany(ToolsShipments::class, 'tool_id', 'id');
-    }
-
-    public function transaction()
-    {
-        return $this->hasManyThrough(
-            ToolsTransaction::class,
-            ToolsShipments::class,
-            'tool_id',
-            'id',
-            'id',
-            'transactions_id'
-        );
     }
 }
