@@ -6,6 +6,8 @@ namespace Database\Seeders;
 
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\CostBidsAnalysis;
+use App\Models\CostBidsInventory;
 use App\Models\IncomingInventory;
 use App\Models\IncomingShipments;
 use App\Models\IncomingSupplier;
@@ -52,6 +54,11 @@ class DatabaseSeeder extends Seeder
             IncomingSupplierSeeder::class,
             IncomingShipmentsSeeder::class,
             IncomingInventorySeeder::class,
+            CostBidsVendorSeeder::class,
+            CostBidsInventorySeeder::class,
+            CostBidsSeeder::class,
+            CostBidsInventoryVendorSeeder::class,
+            CostBidsAnalysisSeeder::class
         ]);
     }
 }

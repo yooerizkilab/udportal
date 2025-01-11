@@ -6,8 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class SAPServices
 {
@@ -17,11 +17,12 @@ class SAPServices
     protected ?string $companyDb = null;
     protected const CACHE_PREFIX = 'sap_session_';
     protected const CACHE_DURATION = 3600; // 1 hour
+    protected Request $request;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->baseUrl = rtrim(config('sap.sapb1.url'), '/') . '/';
-        $this->setCompanyDb();
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'verify' => false,
@@ -29,20 +30,28 @@ class SAPServices
             'connect_timeout' => 10,
             'http_errors' => true,
         ]);
+    }
 
+    public function connect(): void
+    {
+        $this->setCompanyDb();
         $this->initSession();
     }
 
     protected function setCompanyDb(): void
     {
-        // Ambil nama branch melalui session
-        // $this->companyDb = 'SIMULASI_NEW_UD';
+        // Coba ambil dari session menggunakan request
+        $this->companyDb = $this->request->session()->get('company_db');
 
         // Jika tidak ada di session, coba ambil dari user yang terautentikasi
         if (!$this->companyDb && Auth::check()) {
             $user = Auth::user();
             $this->companyDb = $user->employe->branch->database ?? null;
-            Log::info('Company DB from user:', ['company_db' => $this->companyDb]);
+
+            // Jika berhasil mendapatkan dari user, simpan ke session
+            if ($this->companyDb) {
+                $this->request->session()->put('company_db', $this->companyDb);
+            }
         }
 
         if (!$this->companyDb) {
@@ -109,7 +118,7 @@ class SAPServices
         return [
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'odata.maxpagesize=100'
+            'Prefer' => 'odata.maxpagesize=10'
         ];
     }
 
@@ -248,7 +257,7 @@ class SAPServices
             if ($branchDB && $branchDB !== $this->companyDb) {
                 $this->logout();
                 $this->companyDb = $branchDB;
-                Session::put('company_db', $branchDB);
+                $this->request->session()->put('company_db', $branchDB);
                 $this->authenticate();
             }
         }

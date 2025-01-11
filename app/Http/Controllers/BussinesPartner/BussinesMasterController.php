@@ -5,7 +5,6 @@ namespace App\Http\Controllers\BussinesPartner;
 use App\Http\Controllers\Controller;
 use App\Services\SAPServices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class BussinesMasterController extends Controller
 {
@@ -17,7 +16,6 @@ class BussinesMasterController extends Controller
     {
         $this->middleware('auth');
         $this->sapServices = $sapServices;
-        // $this->middleware('EnsureCompanyDbIsSet');
     }
 
 
@@ -26,13 +24,16 @@ class BussinesMasterController extends Controller
      */
     public function index()
     {
-        $bussinesPartner = $this->sapServices->get('BusinessPartners');
-        return $bussinesPartner;
-        // $test = Session::get('company_db');
+        $this->sapServices->connect();
 
-        // return $test;
-        return view('bussinesPartner.bussinesMaster.index');
+        $bussinesPartners = $this->sapServices->get('BusinessPartners');
+        $bussinesMaster = collect($bussinesPartners);
+        return $bussinesMaster;
+
+        // Kirim data ke view
+        return view('bussinesPartner.bussinesMaster.index', compact('bussinesPartners'));
     }
+
 
     /**
      * Show the form for creating a new resource.

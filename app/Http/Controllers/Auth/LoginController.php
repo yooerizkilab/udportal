@@ -82,7 +82,6 @@ class LoginController extends Controller
 
         // Simpan nama branch ke dalam session
         Session::put('company_db', $branchDB);
-        Log::info('Company DB: ' . $branchDB);
     }
 
     public function logout(Request $request)

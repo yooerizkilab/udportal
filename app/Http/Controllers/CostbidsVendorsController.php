@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostBidsVendor;
 use Illuminate\Http\Request;
 
 class CostbidsVendorsController extends Controller
@@ -11,7 +12,8 @@ class CostbidsVendorsController extends Controller
      */
     public function index()
     {
-        //
+        $vendors = CostBidsVendor::all();
+        return view('bids.vendors.index', compact('vendors'));
     }
 
     /**

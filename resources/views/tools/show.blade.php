@@ -71,11 +71,11 @@
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Condition</span>
-                                    <span class="badge badge-{{ $tools->badge }}">{{ $tools->condition }}</span>
+                                    <span>{!! $tools->conditionName !!}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Status</span>
-                                    <span class="badge badge-{{ $tools->badgeClass }}">{{ $tools->status }}</span>
+                                    <span>{!! $tools->statusName !!}</span>
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Purchase Price</span>

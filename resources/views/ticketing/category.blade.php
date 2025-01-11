@@ -17,7 +17,7 @@
     
     <div class="card shadow mb-4">
         <div class="card-header py-3 bg-gradient-primary d-flex justify-content-center">
-            <h4 class="m-0 font-weight-bold text-white">{{ __('Add Ticket Category') }}</h4>
+            <h4 class="m-0 font-weight-bold text-white">{{ __('Create Ticket Category & List Ticket Category') }}</h4>
         </div>
         <div class="card-body">
             <form action="{{ route('ticketing-categories.store') }}" method="POST" id="addTicketCategoryForm">
@@ -37,14 +37,13 @@
                     </div>
                 </div>
             </form>
-            <div class="float-right">
+            <div class="float-right my-3">
                 <button type="button" class="btn btn-primary" onclick="confirmAddTicketCategory()">
                     <i class="fas fa-receipt"></i> Save
                 </button>
             </div>
             
             <!-- Table -->
-            <h4 class="m-0 font-weight-bold text-primary my-3">List Ticket Category</h4>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead class="thead-light">

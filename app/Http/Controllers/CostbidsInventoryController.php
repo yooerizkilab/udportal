@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CostBidsVendor;
+use App\Models\CostBidsInventory;
 
 class CostbidsInventoryController extends Controller
 {
@@ -11,7 +13,9 @@ class CostbidsInventoryController extends Controller
      */
     public function index()
     {
-        //
+        $vendors = CostBidsVendor::all();
+        $inventories = CostBidsInventory::all();
+        return view('bids.analysis.index', compact('vendors', 'inventories'));
     }
 
     /**
@@ -19,7 +23,9 @@ class CostbidsInventoryController extends Controller
      */
     public function create()
     {
-        //
+        $vendors = CostBidsVendor::all();
+        $inventories = CostBidsInventory::all();
+        return view('bids.analysis.create', compact('vendors', 'inventories'));
     }
 
     /**
@@ -27,7 +33,7 @@ class CostbidsInventoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $request->all();
     }
 
     /**

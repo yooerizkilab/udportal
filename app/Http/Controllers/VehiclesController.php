@@ -134,8 +134,6 @@ class VehiclesController extends Controller
             ]);
         }
 
-        // return $activities;
-
         return view('vehicles.show', compact('vehicle', 'activities'));
     }
 

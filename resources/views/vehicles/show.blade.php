@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
                                     <span class="font-weight-bold text-muted">Status</span>
-                                    <span class="text-{{ $vehicle->status == 'Active' ? 'success' : 'danger' }} font-weight-bold">{{ $vehicle->status }}</span>
+                                    {!! $vehicle->badgeClass !!}
                                 </div>
                             </div>
                         </div>
