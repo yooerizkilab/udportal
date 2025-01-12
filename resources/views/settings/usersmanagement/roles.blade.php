@@ -133,7 +133,7 @@
 
         <div class="col-lg-6">
             <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-gradient-warning text-white">
+                <div class="card-header py-3 bg-gradient-warning text-white d-flex justify-content-center">
                     <h4 class="m-0 font-weight-bold">Assign Role to Permission</h4>
                 </div>
                 <div class="card-body">
@@ -195,7 +195,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" onclick="confirmAddRole()" class="btn btn-primary"> <i class="fas fa-check"></i> Save changes</button>
+                    <button type="button" onclick="confirmAddRole()" class="btn btn-primary"> <i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -291,7 +291,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddPermission()"><i class="fas fa-check"></i> Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAddPermission()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>

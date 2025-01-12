@@ -45,7 +45,7 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label for="warehouse_id">Warehouse</label>
+                    <label for="warehouse_id">Warehouse / Drop Site</label>
                     <select name="warehouse_id" id="warehouse_id" class="form-control">
                         <option value="" disabled selected>Select Warehouse</option>
                         @foreach ($warehouses as $warehouse)
