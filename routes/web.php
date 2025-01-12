@@ -76,8 +76,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Bids Management Development
     Route::group(['prefix' => 'bids'], function () {
-        Route::resource('bids-vendors', 'CostbidsVendorsController');
-        Route::resource('bids-inventory', 'CostbidsInventoryController');
+        Route::resource('bids-analysis', 'CostBidsAnalysisController');
     });
 
     // Settings Management development

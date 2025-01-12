@@ -13,24 +13,18 @@ class CostBidsAnalysis extends Model
     protected $table = 'cost_bids_analysis';
 
     protected $fillable = [
-        'cost_bids_id',
-        'selected_vendor_id',
-        'total_price',
-        'discount_percentage',
-        'discount_amount',
-        'total_after_discount',
-        'terms_of_payment',
-        'lead_time',
-        'notes',
+        'cost_bids_item_id',
+        'cost_bids_vendor_id',
+        'price',
     ];
 
-    public function costBids()
+    public function costBidsItem()
     {
-        return $this->belongsTo(CostBids::class, 'cost_bids_id', 'id');
+        return $this->belongsTo(CostBidsItems::class, 'cost_bids_item_id', 'id');
     }
 
     public function costBidsVendor()
     {
-        return $this->belongsTo(CostBidsVendor::class, 'selected_vendor_id', 'id');
+        return $this->belongsTo(CostBidsVendor::class, 'cost_bids_vendor_id', 'id');
     }
 }

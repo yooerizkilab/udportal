@@ -109,18 +109,16 @@
     </li>
 
     <!-- Cost Bid Analysis Collapse Menu -->
-    <li class="nav-item {{ request()->routeIs(['bids-vendors.*', 'bids-inventory.*']) ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs(['bids-analysis.*']) ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCostBidAnalysis" 
             aria-expanded="true" aria-controls="collapseCostBidAnalysis">
             <i class="fas fa-fw fa-chart-bar"></i>
             <span>Cost Bids Analysis</span>
         </a>
-        <div id="collapseCostBidAnalysis" class="collapse {{ request()->routeIs(['bids-vendors.*', 'bids-inventory.*']) ? 'show' : '' }}" aria-labelledby="headingCostBidAnalysis" 
+        <div id="collapseCostBidAnalysis" class="collapse {{ request()->routeIs(['bids-analysis.*']) ? 'show' : '' }}" aria-labelledby="headingCostBidAnalysis" 
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ request()->routeIs('bids-vendors.index') ? 'active' : '' }}" href="{{ route('bids-vendors.index') }}">{{ __('Bids Vendor') }}</a>
-                <a class="collapse-item {{ request()->routeIs('bids-inventory.index') ? 'active' : '' }}" href="{{ route('bids-inventory.index') }}">{{ __('Bids') }}</a>
-                <a class="collapse-item" href="">{{ __('Bids Analysis') }}</a>
+                <a class="collapse-item {{ request()->routeIs('bids-analysis.index') ? 'active' : '' }}" href="{{ route('bids-analysis.index') }}">{{ __('Bids Analysis') }}</a>
             </div>
         </div>
     </li>

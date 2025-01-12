@@ -3,7 +3,6 @@
 ])
 
 @push('css')
-<!-- Custom styles for this page -->
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 @endpush
 
@@ -15,159 +14,83 @@
 
 <!-- List Bids Analysis -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
         <h6 class="m-0 font-weight-bold text-primary">Create Bids Analysis</h6>
+        <a href="{{ route('bids-analysis.index') }}" class="btn btn-primary btn-md mr-2">
+            <i class="fas fa-reply"></i> 
+            Back
+        </a>
     </div>
     <div class="card-body">
-        <form action="" method="POST" id="bidForm">
+        <form action="{{ route('bids-analysis.store') }}" method="POST" id="bidForm">
             @csrf
             <!-- Bid Information -->
             <div class="row mb-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label>Bid Number</label>
-                        <input type="text" class="form-control" name="bid_number" value="UDMW/I/2024" readonly>
+                        <label>Project Name</label>
+                        <input type="text" class="form-control" name="project_name" required>
                     </div>
                 </div>
-                <div class="col-md-4">
+                
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Date</label>
-                        <input type="date" class="form-control" name="bid_date" required>
+                        <input type="date" class="form-control" name="bid_date" value="{{ date('Y-m-d') }}" required>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Company</label>
-                        <input type="text" class="form-control" name="company_name" placeholder="Enter company name" required>
+                        <label>Number of Vendors</label>
+                        <select class="form-control" id="vendorCount" name="vendor_count">
+                            <option value="2">2 Vendors</option>
+                            <option value="3" selected>3 Vendors</option>
+                            <option value="4">4 Vendors</option>
+                            <option value="5">5 Vendors</option>
+                        </select>
                     </div>
                 </div>
+            </div>
+
+            <!-- Vendor Names -->
+            <div class="row mb-4" id="vendorNamesContainer">
+                <!-- Vendor name inputs will be dynamically added here -->
             </div>
 
             <!-- Items Table -->
             <div class="table-responsive mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="font-weight-bold">Items</h6>
-                    <button type="button" class="btn btn-primary btn-sm m-3" id="addItem">
+                    <button type="button" class="btn btn-primary btn-sm m-1" id="addItem">
                         <i class="fas fa-plus-circle mr-1"></i> Add Item
                     </button>
                 </div>
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="bidsTable">
                     <thead>
-                        <tr>
+                        <tr id="headerRow">
                             <th rowspan="2" class="align-middle">No</th>
                             <th rowspan="2" class="align-middle">Description</th>
                             <th rowspan="2" class="align-middle">QTY</th>
                             <th rowspan="2" class="align-middle">UOM</th>
-                            <th colspan="2" class="text-center">PT BCD</th>
-                            <th colspan="2" class="text-center">PT XYZ</th>
-                            <th colspan="2" class="text-center">PT PQR</th>
+                            <!-- Vendor columns will be added dynamically -->
                             <th rowspan="2" class="align-middle">Action</th>
                         </tr>
-                        <tr>
-                            <th class="text-center">Price/Unit</th>
-                            <th class="text-center">Total</th>
-                            <th class="text-center">Price/Unit</th>
-                            <th class="text-center">Total</th>
-                            <th class="text-center">Price/Unit</th>
-                            <th class="text-center">Total</th>
+                        <tr id="subHeaderRow">
+                            <!-- Price/Unit and Total columns will be added dynamically -->
                         </tr>
                     </thead>
                     <tbody id="itemsContainer">
-                        <tr class="item-row">
-                            <td>1</td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" name="items[0][description]" required>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm quantity" name="items[0][quantity]" required>
-                            </td>
-                            <td>
-                                <select class="form-control form-control-sm" name="items[0][uom]" required>
-                                    <option value="pcs">PCS</option>
-                                    <option value="unit">Unit</option>
-                                    <option value="set">Set</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm price vendor1-price" name="items[0][vendor1_price]" required>
-                            </td>
-                            <td class="vendor1-total">0</td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm price vendor2-price" name="items[0][vendor2_price]" required>
-                            </td>
-                            <td class="vendor2-total">0</td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm price vendor3-price" name="items[0][vendor3_price]" required>
-                            </td>
-                            <td class="vendor3-total">0</td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm remove-item">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        <!-- Item rows will be added here -->
                     </tbody>
-                    <tfoot>
-                        <tr class="bg-light font-weight-bold">
-                            <td colspan="4" class="text-right">TOTAL</td>
-                            <td colspan="2" id="vendor1-grand-total">0</td>
-                            <td colspan="2" id="vendor2-grand-total">0</td>
-                            <td colspan="2" id="vendor3-grand-total">0</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="text-right">DISCOUNT (%)</td>
-                            <td colspan="2">
-                                <input type="number" class="form-control form-control-sm" name="vendor1_discount" value="0">
-                            </td>
-                            <td colspan="2">
-                                <input type="number" class="form-control form-control-sm" name="vendor2_discount" value="0">
-                            </td>
-                            <td colspan="2">
-                                <input type="number" class="form-control form-control-sm" name="vendor3_discount" value="0">
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr class="bg-light font-weight-bold">
-                            <td colspan="4" class="text-right">TOTAL After Discount</td>
-                            <td colspan="2" id="vendor1-final-total">0</td>
-                            <td colspan="2" id="vendor2-final-total">0</td>
-                            <td colspan="2" id="vendor3-final-total">0</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="text-right">Terms of Payment (Days)</td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="terms_of_payment_vendor1">
-                            </td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="terms_of_payment_vendor2">
-                            </td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="terms_of_payment_vendor3">
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="text-right">Lead Time (Days)</td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="lead_time_vendor1">
-                            </td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="lead_time_vendor2">
-                            </td>
-                            <td colspan="2">
-                                <input type="text" class="form-control form-control-sm" name="lead_time_vendor3">
-                            </td>
-                            <td></td>
-                        </tr>
+                    <tfoot id="tableFooter">
+                        <!-- Footer rows will be added dynamically -->
                     </tfoot>
                 </table>
             </div>
         </form>
         <div class="float-right">
-            <button type="button" class="btn btn-primary" id="addItem">
-                <i class="fas fa-plus"></i> Submit
+            <button type="button" class="btn btn-primary" onclick="confirmAddAnalysis()">
+                <i class="fas fa-save"></i> Submit
             </button>
         </div>
     </div>
@@ -175,94 +98,302 @@
 @endsection
 
 @push('scripts')
-<!-- Page level plugins -->
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
-$(document).ready(function() {
-    // Add new item row
-    $('#addItem').click(function() {
-        const rowCount = $('.item-row').length;
-        const newRow = $('.item-row').first().clone();
+    $(document).ready(function() {
+        let vendors = [];
         
-        // Update row number and name attributes
-        newRow.find('td:first').text(rowCount + 1);
-        newRow.find('input, select').each(function() {
-            const name = $(this).attr('name');
-            if (name) {
-                $(this).attr('name', name.replace('[0]', `[${rowCount}]`));
+        // Initialize the form
+        function initializeForm() {
+            const vendorCount = parseInt($('#vendorCount').val());
+            vendors = [];
+            
+            // Clear existing vendor inputs
+            $('#vendorNamesContainer').empty();
+            
+            // Add vendor name inputs
+            for(let i = 0; i < vendorCount; i++) {
+                const vendorInput = `
+                    <div class="col-md-${12/vendorCount}">
+                        <div class="form-group">
+                            <label>Vendor ${i + 1} Name</label>
+                            <input type="text" class="form-control vendor-name" 
+                                name="vendor_names[]" 
+                                data-vendor-index="${i}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vendor ${i + 1} Email</label>
+                            <input type="email" class="form-control" 
+                                name="vendor_emails[]"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Vendor ${i + 1} Phone</label>
+                            <input type="text" class="form-control" 
+                                name="vendor_phones[]"
+                                required>
+                        </div>
+                    </div>`;
+                $('#vendorNamesContainer').append(vendorInput);
             }
-            $(this).val(''); // Clear values
-        });
+            
+            updateTableStructure();
+            addInitialRow();
+        }
         
-        newRow.find('.vendor1-total, .vendor2-total, .vendor3-total').text('0');
-        $('#itemsContainer').append(newRow);
+        // Update table structure based on vendor count
+        function updateTableStructure() {
+            const vendorCount = parseInt($('#vendorCount').val());
+            
+            // Update vendors array
+            vendors = Array.from($('.vendor-name')).map(input => ({
+                name: input.value || `Vendor ${$(input).data('vendor-index') + 1}`,
+                index: $(input).data('vendor-index')
+            }));
+            
+            // Update header
+            let headerHtml = `
+                <th rowspan="2" class="align-middle">No</th>
+                <th rowspan="2" class="align-middle">Description</th>
+                <th rowspan="2" class="align-middle">QTY</th>
+                <th rowspan="2" class="align-middle">UOM</th>`;
+                
+            let subHeaderHtml = '';
+            
+            vendors.forEach(vendor => {
+                headerHtml += `<th colspan="2" class="text-center vendor-header-${vendor.index}">${vendor.name}</th>`;
+                subHeaderHtml += `
+                    <th class="text-center">Price/Unit</th>
+                    <th class="text-center">Total</th>`;
+            });
+            
+            headerHtml += '<th rowspan="2" class="align-middle">Action</th>';
+            
+            $('#headerRow').html(headerHtml);
+            $('#subHeaderRow').html(subHeaderHtml);
+            
+            // Update footer structure
+            updateFooterStructure();
+        }
         
-        calculateTotals();
-    });
-    
-    // Remove item row
-    $(document).on('click', '.remove-item', function() {
-        if ($('.item-row').length > 1) {
-            $(this).closest('tr').remove();
+        // Update footer structure
+        function updateFooterStructure() {
+            let footerHtml = `
+                <tr class="bg-light font-weight-bold">
+                    <td colspan="4" class="text-right">TOTAL</td>`;
+                    
+            vendors.forEach(vendor => {
+                footerHtml += `
+                    <td colspan="2" id="vendor${vendor.index}-grand-total">
+                        <input type="hidden" name="vendor${vendor.index}_grand_total">
+                    </td>`;
+            });
+            
+            footerHtml += '<td></td></tr>';
+            
+            // Add discount row
+            footerHtml += `
+                <tr>
+                    <td colspan="4" class="text-right">DISCOUNT (%)</td>`;
+                    
+            vendors.forEach(vendor => {
+                footerHtml += `
+                    <td colspan="2">
+                        <input type="number" class="form-control form-control-sm" 
+                            name="vendor${vendor.index}_discount">
+                    </td>`;
+            });
+            
+            footerHtml += '<td></td></tr>';
+            
+            // Add final total row
+            footerHtml += `
+                <tr class="bg-light font-weight-bold">
+                    <td colspan="4" class="text-right">TOTAL After Discount</td>`;
+                    
+            vendors.forEach(vendor => {
+                footerHtml += `
+                    <td colspan="2" id="vendor${vendor.index}-final-total">
+                        <input type="hidden" name="vendor${vendor.index}_final_total" value="0">
+                    </td>`;
+            });
+            
+            footerHtml += '<td></td></tr>';
+            
+            // Add terms of payment row
+            footerHtml += `
+                <tr>
+                    <td colspan="4" class="text-right">Terms of Payment (Days)</td>`;
+                    
+            vendors.forEach(vendor => {
+                footerHtml += `
+                    <td colspan="2">
+                        <input type="text" class="form-control form-control-sm" 
+                            name="terms_of_payment_vendor${vendor.index}">
+                    </td>`;
+            });
+            
+            footerHtml += '<td></td></tr>';
+            
+            // Add lead time row
+            footerHtml += `
+                <tr>
+                    <td colspan="4" class="text-right">Lead Time (Days)</td>`;
+                    
+            vendors.forEach(vendor => {
+                footerHtml += `
+                    <td colspan="2">
+                        <input type="text" class="form-control form-control-sm" 
+                            name="lead_time_vendor${vendor.index}">
+                    </td>`;
+            });
+            
+            footerHtml += '<td></td></tr>';
+            
+            $('#tableFooter').html(footerHtml);
+        }
+        
+        // Add new item row
+        function addInitialRow() {
+            const newRow = createItemRow(0);
+            $('#itemsContainer').html(newRow);
             calculateTotals();
         }
-    });
-    
-    // Calculate totals when prices or quantities change
-    $(document).on('input', '.quantity, .price', function() {
-        calculateTotals();
-    });
-    
-    // Calculate totals when discount changes
-    $('input[name$="_discount"]').on('input', function() {
-        calculateTotals();
-    });
-    
-    function calculateTotals() {
-        let vendor1Total = 0;
-        let vendor2Total = 0;
-        let vendor3Total = 0;
         
-        $('.item-row').each(function() {
-            const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+        function createItemRow(index) {
+            let rowHtml = `
+                <tr class="item-row">
+                    <td>${index + 1}</td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm" 
+                            name="items[${index}][description]" required>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm quantity" 
+                            name="items[${index}][quantity]" required>
+                    </td>
+                    <td>
+                        <select class="form-control form-control-sm" name="items[${index}][uom]" required>
+                            <option value="PCS">PCS</option>
+                            <option value="UNIT">UNIT</option>
+                            <option value="set">Set</option>
+                        </select>
+                    </td>`;
             
-            // Calculate for each vendor
-            const vendor1Price = parseFloat($(this).find('.vendor1-price').val()) || 0;
-            const vendor2Price = parseFloat($(this).find('.vendor2-price').val()) || 0;
-            const vendor3Price = parseFloat($(this).find('.vendor3-price').val()) || 0;
+            vendors.forEach(vendor => {
+                rowHtml += `
+                    <td>
+                        <input type="number" class="form-control form-control-sm price vendor${vendor.index}-price" 
+                            name="items[${index}][vendor${vendor.index}_price]" required>
+                    </td>
+                    <td class="vendor${vendor.index}-total">0</td>`;
+            });
             
-            const vendor1RowTotal = quantity * vendor1Price;
-            const vendor2RowTotal = quantity * vendor2Price;
-            const vendor3RowTotal = quantity * vendor3Price;
-            
-            $(this).find('.vendor1-total').text(vendor1RowTotal.toLocaleString());
-            $(this).find('.vendor2-total').text(vendor2RowTotal.toLocaleString());
-            $(this).find('.vendor3-total').text(vendor3RowTotal.toLocaleString());
-            
-            vendor1Total += vendor1RowTotal;
-            vendor2Total += vendor2RowTotal;
-            vendor3Total += vendor3RowTotal;
+            rowHtml += `
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btn-circle remove-item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                
+            return rowHtml;
+        }
+        
+        // Event Handlers
+        $('#vendorCount').change(initializeForm);
+        
+        $(document).on('input', '.vendor-name', updateTableStructure);
+        
+        $('#addItem').click(function() {
+            const rowCount = $('.item-row').length;
+            const newRow = createItemRow(rowCount);
+            $('#itemsContainer').append(newRow);
+            calculateTotals();
         });
         
-        // Update grand totals
-        $('#vendor1-grand-total').text(vendor1Total.toLocaleString());
-        $('#vendor2-grand-total').text(vendor2Total.toLocaleString());
-        $('#vendor3-grand-total').text(vendor3Total.toLocaleString());
+        $(document).on('click', '.remove-item', function() {
+            if ($('.item-row').length > 1) {
+                $(this).closest('tr').remove();
+
+                // reset index for remaining rows
+                $('.item-row').each(function(index) {
+                    $(this).find('td:first').text(index + 1);
+                })
+                calculateTotals();
+            }
+        });
         
-        // Calculate totals after discount
-        const vendor1Discount = parseFloat($('input[name="vendor1_discount"]').val()) || 0;
-        const vendor2Discount = parseFloat($('input[name="vendor2_discount"]').val()) || 0;
-        const vendor3Discount = parseFloat($('input[name="vendor3_discount"]').val()) || 0;
+        $(document).on('input', '.quantity, .price', calculateTotals);
+        $(document).on('input', 'input[name$="_discount"]', calculateTotals);
         
-        const vendor1Final = vendor1Total * (1 - vendor1Discount/100);
-        const vendor2Final = vendor2Total * (1 - vendor2Discount/100);
-        const vendor3Final = vendor3Total * (1 - vendor3Discount/100);
-        
-        $('#vendor1-final-total').text(vendor1Final.toLocaleString());
-        $('#vendor2-final-total').text(vendor2Final.toLocaleString());
-        $('#vendor3-final-total').text(vendor3Final.toLocaleString());
-    }
-});
+        // Calculate totals
+        function calculateTotals() {
+            vendors.forEach(vendor => {
+                let vendorTotal = 0;
+                
+                $('.item-row').each(function() {
+                    const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                    const price = parseFloat($(this).find(`.vendor${vendor.index}-price`).val()) || 0;
+                    const rowTotal = quantity * price;
+                    
+                    $(this).find(`.vendor${vendor.index}-total`).text(rowTotal.toLocaleString());
+                    vendorTotal += rowTotal;
+                });
+                
+                // Update grand total text dan hidden input
+                $(`#vendor${vendor.index}-grand-total`).text(vendorTotal.toLocaleString());
+                
+                // Cek apakah input hidden sudah ada
+                if ($(`input[name="vendor${vendor.index}_grand_total"]`).length) {
+                    // Update value jika sudah ada
+                    $(`input[name="vendor${vendor.index}_grand_total"]`).val(vendorTotal);
+                } else {
+                    // Buat baru jika belum ada
+                    $(`#vendor${vendor.index}-grand-total`).after(`
+                        <input type="hidden" name="vendor${vendor.index}_grand_total" value="${vendorTotal}">
+                    `);
+                }
+                
+                const discount = parseFloat($(`input[name="vendor${vendor.index}_discount"]`).val()) || 0;
+                const finalTotal = vendorTotal * (1 - discount/100);
+                
+                // Update final total text dan hidden input
+                $(`#vendor${vendor.index}-final-total`).text(finalTotal.toLocaleString());
+                
+                // Cek apakah input hidden sudah ada
+                if ($(`input[name="vendor${vendor.index}_final_total"]`).length) {
+                    // Update value jika sudah ada
+                    $(`input[name="vendor${vendor.index}_final_total"]`).val(finalTotal);
+                } else {
+                    // Buat baru jika belum ada
+                    $(`#vendor${vendor.index}-final-total`).after(`
+                        <input type="hidden" name="vendor${vendor.index}_final_total" value="${finalTotal}">
+                    `);
+                }
+            });
+        }
+
+        initializeForm();
+    });
+
+    function confirmAddAnalysis() {
+            Swal.fire({
+                title: 'Confirmation',
+                text: 'Are you sure you want to add this bid analysis?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Add',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#bidForm').submit();
+                }
+            });
+        }
 </script>
 @endpush

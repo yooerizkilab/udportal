@@ -13,19 +13,20 @@ class CostBidsVendor extends Model
     protected $table = 'cost_bids_vendor';
 
     protected $fillable = [
+        'cost_bids_id',
         'name',
         'phone',
         'email',
         'address',
+        'grand_total',
+        'discount',
+        'final_total',
+        'terms_of_payment',
+        'lead_time',
     ];
 
-    public function costInventory()
+    public function costBids()
     {
-        return $this->belongsTo(CostBidsInventoryVendor::class, 'id', 'cost_bids_vendor_id');
-    }
-
-    public function costAnalysis()
-    {
-        return $this->belongsTo(CostBidsAnalysis::class, 'id', 'selected_vendor_id');
+        return $this->belongsTo(CostBids::class, 'cost_bids_id', 'id');
     }
 }

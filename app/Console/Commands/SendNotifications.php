@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\QontakSevices;
 use App\Models\Vehicle;
 use App\Models\Contract;
+use App\Models\IncomingShipments;
 use Carbon\Carbon;
 
 class SendNotifications extends Command
@@ -53,6 +54,8 @@ class SendNotifications extends Command
         $this->contractNotifications($intervals);
 
         $this->vehicleTaxNotifications($intervals);
+
+        $this->incomingInventoryPlanNotifications($intervals);
 
         $this->info('Notifications sent successfully');
     }
@@ -203,6 +206,51 @@ class SendNotifications extends Command
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private function incomingInventoryPlanNotifications($interval)
+    {
+        // Implement incoming inventory plan notifications
+        foreach ($interval as $interval) {
+            $targetDate = now()->addDays($interval);
+            $incomings = IncomingShipments::with('branch', 'supplier', 'item', 'drop')
+                ->whereDate('eta', '=', $targetDate)
+                ->orWhere('eta', '<', now())
+                ->get();
+
+            if ($incomings->isEmpty()) {
+                Log::info("No incoming shipments found for interval: {$interval}");
+                continue;
+            }
+
+            $formatDate = Carbon::parse($incomings->eta)->format('d F Y');
+            $phone = '62895341341001';
+            $name = 'John Doe';
+            $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
+            $body = [
+                [
+                    'key' => '1',
+                    'value_text' => $incomings->branch->name,
+                    'value' => 'name',
+                ],
+                [
+                    'key' => '2',
+                    'value_text' => $incomings->supplier->name,
+                    'value' => 'company',
+                ],
+                [
+                    'key' => '3',
+                    'value_text' => $formatDate,
+                    'value' => 'expired',
+                ],
+            ];
+            try {
+                $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
+                Log::info("Notification sent for contract {$incomings->id}: {$response}");
+            } catch (\Exception $e) {
+                Log::error("Error sending notification for contract {$incomings->id}: {$e->getMessage()}");
             }
         }
     }

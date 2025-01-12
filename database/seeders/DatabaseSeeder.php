@@ -54,11 +54,10 @@ class DatabaseSeeder extends Seeder
             IncomingSupplierSeeder::class,
             IncomingShipmentsSeeder::class,
             IncomingInventorySeeder::class,
-            CostBidsVendorSeeder::class,
-            CostBidsInventorySeeder::class,
             CostBidsSeeder::class,
-            CostBidsInventoryVendorSeeder::class,
-            CostBidsAnalysisSeeder::class
+            // CostBidsVendorSeeder::class,
+            // CostBidsItemsSeeder::class,
+            // CostBidsAnalysisSeeder::class
         ]);
     }
 }

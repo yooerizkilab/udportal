@@ -14,17 +14,18 @@ class CostBids extends Model
 
     protected $fillable = [
         'code',
+        'project_name',
         'document_date',
-        'for_company',
+        'bid_date',
     ];
 
-    public function costBidsInventoryVendor()
+    public function vendors()
     {
-        return $this->hasMany(CostBidsInventoryVendor::class, 'cost_bids_id', 'id');
+        return $this->hasMany(CostBidsVendor::class, 'cost_bids_id', 'id');
     }
 
-    public function costBidsAnalysis()
+    public function items()
     {
-        return $this->hasMany(CostBidsAnalysis::class, 'cost_bids_id', 'id');
+        return $this->hasMany(CostBidsItems::class, 'cost_bids_id', 'id');
     }
 }
