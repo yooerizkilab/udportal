@@ -18,7 +18,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 2,
                 'category_id' => 1,
                 'assigned_id' => 1, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0001',
                 'title' => 'Test Ticket 1',
                 'description' => 'This is a test ticket 1',
@@ -34,7 +34,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 1,
                 'category_id' => 2,
                 'assignee_id' => 2, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0002',
                 'title' => 'Test Ticket 2',
                 'description' => 'This is a test ticket 2',
@@ -50,7 +50,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 2,
                 'category_id' => 3,
                 'assignee_id' => 1, // Assignee to Department
-                'fixed_by' => 1, // User Fixed
+                'user_by' => 1, // User Fixed
                 'code' => 'TICKET-0003',
                 'title' => 'Test Ticket 3',
                 'description' => 'This is a test ticket 3',
@@ -66,7 +66,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 1,
                 'category_id' => 4,
                 'assigned_id' => 2, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0004',
                 'title' => 'Test Ticket 4',
                 'description' => 'This is a test ticket 4',
@@ -82,7 +82,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 2,
                 'category_id' => 5,
                 'assignee_id' => 1, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0005',
                 'title' => 'Test Ticket 5',
                 'description' => 'This is a test ticket 5',
@@ -98,7 +98,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 3,
                 'category_id' => 2,
                 'assignee_id' => 2, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0006',
                 'title' => 'Test Ticket 6',
                 'description' => 'This is a test ticket 6',
@@ -114,7 +114,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 1,
                 'category_id' => 3,
                 'assignee_id' => 3, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0007',
                 'title' => 'Test Ticket 7',
                 'description' => 'This is a test ticket 7',
@@ -130,7 +130,7 @@ class TicketsSeeder extends Seeder
                 'user_id' => 3,
                 'category_id' => 4,
                 'assignee_id' => 1, // Assignee to Department
-                'fixed_by' => null, // User Fixed
+                'user_by' => null, // User Fixed
                 'code' => 'TICKET-0008',
                 'title' => 'Test Ticket 8',
                 'description' => 'This is a test ticket 8',

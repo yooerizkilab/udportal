@@ -208,7 +208,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('vehicles.store') }}" id="addVehiclesForm" method="post">
+                    <form action="{{ route('vehicles.store') }}" id="addVehiclesForm" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -337,7 +337,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('types.store') }}" id="addVehiclesTypeForm" method="post">
+                    <form action="{{ route('types.store') }}" id="addVehiclesTypeForm" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="name">Vehicle Type</label>

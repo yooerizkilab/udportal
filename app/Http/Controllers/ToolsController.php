@@ -85,8 +85,8 @@ class ToolsController extends Controller
         $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
-            $photoFile = $request->name . '.' . $photo->getClientOriginalExtension();
-            $photo->move(public_path('img/tools'), $photoFile);
+            $photoFile = time() . '.' . $photo->getClientOriginalExtension();
+            $photo->storeAs('public/tools/thoto', $photoFile);
         }
 
         $tools = [
@@ -221,8 +221,8 @@ class ToolsController extends Controller
         $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
-            $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
-            $photo->move(public_path('img/tools'), $photoFile);
+            $photoFile = time() . '.' . $photo->getClientOriginalExtension();
+            $photo->storeAs('public/Tools/Photo', $photoFile);
         }
 
         $data = [

@@ -19,7 +19,7 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
             <h4 class="m-0 font-weight-bold text-primary">List Vehicles Reimbursements</h4>
             <div class="d-flex align-items-center flex-wrap">
-                <select name="type" class="form-control mr-2 mb-2 w-auto" id="exportName">
+                <select name="user_name" class="form-control mr-2 mb-2 w-auto" id="userName">
                     <option value="" disabled selected>--Select Users--</option>
                     @foreach ($users as $user)
                         <option value="{{ $user->id }}">{{ $user->full_name }}</option>
@@ -36,6 +36,7 @@
                     <a class="dropdown-item" href="#" id="exportAll">Export All</a>
                     <a class="dropdown-item" href="#" id="exportPending">Export Pending</a>
                     <a class="dropdown-item" href="#" id="exportApproved">Export Approved</a>
+                    <a class="dropdown-item" href="#" id="printFiltered">Export Filtered</a>
                 </div>
             </div>
         </div>
@@ -70,18 +71,23 @@
                                 <td>{!! $reimbursement->statusName !!}</td>
                                 <td class="text-center">
                                     <div class="d-inline-flex">
-                                        <form action="" method="post">
-                                            @csrf
-                                            <a href="" class="btn btn-success btn-circle mr-1">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </form>
-                                        <form action="" method="post">
-                                            @csrf
-                                            <a href="" class="btn btn-danger btn-circle mr-1">
-                                                <i class="fas fa-times"></i>
-                                            </a>
-                                        </form>
+                                        @if ($reimbursement->status == 'Pending')
+                                            <form action="{{ route('reimbursements.approved', $reimbursement->id) }}" method="post" id="approveReimbursementForm-{{ $reimbursement->id }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="btn btn-success btn-circle mr-1" onclick="confirmApprovedReimbursement({{ $reimbursement->id }})">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('reimbursements.rejected', $reimbursement->id) }}" method="post" id="rejectReimbursementForm-{{ $reimbursement->id }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="reason" id="rejectReason-{{ $reimbursement->id }}">
+                                                <button type="button" class="btn btn-danger btn-circle mr-1" onclick="confirmRejectReimbursement({{ $reimbursement->id }})">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                         <a href="{{ route('reimbursements.show', $reimbursement->id) }}" class="btn btn-info btn-circle mr-1">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -113,5 +119,111 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
+
+    $(document).ready(function() {
+
+        // Export Filtered
+        $('#printFiltered').on('click', function(e) {
+            e.preventDefault();
+            handleExport('filtered');
+        });
+
+        // Export All
+        $('#exportAll').on('click', function(e) {
+            e.preventDefault();
+            handleExport('all');
+        });
+
+        // Export Pending
+        $('#exportPending').on('click', function(e) {
+            e.preventDefault();
+            handleExport('Pending');
+        });
+
+        // Export Approved
+        $('#exportApproved').on('click', function(e) {
+            e.preventDefault();
+            handleExport('Approved');
+        });
+
+        function handleExport(type) {
+            const userName = $('#userName').val() || '';
+            const startDate = $('#startDate').val() || '';
+            const endDate = $('#endDate').val() || '';
+
+            // Membuat URL dengan parameter
+            const baseUrl = '{{ route("vehicles-reimbursements.exportExcel") }}';
+            const params = new URLSearchParams({
+                user_name: userName,
+                start_date: startDate,
+                end_date: endDate,
+                export_type: type
+            });
+
+            // Debug: menampilkan URL final
+            const finalUrl = `${baseUrl}?${params.toString()}`;
+
+            // Redirect ke URL export
+            window.location.href = finalUrl;
+        }
+    });
+
+    function confirmApprovedReimbursement(id) {
+        Swal.fire({
+            title: 'Approve Reimbursement',
+            text: "You want approve this reimbursements!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Approve it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#approveReimbursementForm-' + id).submit();
+            }
+        })
+    }
+
+    function confirmRejectReimbursement(id) {
+        Swal.fire({
+            title: 'Reject Reimbursement',
+            text: 'Please provide a reason for rejection:',
+            input: 'text',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Reason is required!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Action if confirmed and send data
+                $('#rejectReason-' + id).val(result.value);
+                document.getElementById('rejectReimbursementForm-' + id).submit();
+            } else if (result.isDismissed) {
+                // Action if dismissed
+                Swal.fire('You cancelled the input.', '', 'info');
+            }
+        });
+    }
+
+    function confirmDeleteReimbursement(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want delete this reimbursements!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#destroyReimbursementForm-' + id).submit();
+            }
+        })
+    }
 </script>
 @endpush

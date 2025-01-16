@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('category_id')->constrained('tickets_categories')->onDelete('restrict');
             $table->foreignId('assigned_id')->constrained('departments')->onDelete('restrict');
-            $table->foreignId('fixed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('user_by')->nullable()->constrained('users')->onDelete('set null');
             $table->string('code', 50)->unique();
             $table->string('title', 100);
             $table->longText('description')->nullable();
@@ -36,6 +36,7 @@ return new class extends Migration
             $table->longText('solution')->nullable();
             $table->string('attachment')->nullable();
             $table->date('closed_date')->nullable();
+            $table->string('reason')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

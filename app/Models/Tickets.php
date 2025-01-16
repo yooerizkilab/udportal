@@ -20,7 +20,7 @@ class Tickets extends Model
         'user_id',
         'category_id',
         'assigned_id',
-        'fixed_by',
+        'user_by',
         'code',
         'title',
         'description',
@@ -29,6 +29,7 @@ class Tickets extends Model
         'solution',
         'attachment',
         'closed_date',
+        'reason',
     ];
 
     public function getBadgeClassAttribute()
@@ -58,7 +59,7 @@ class Tickets extends Model
 
     public function fixed()
     {
-        return $this->belongsTo(User::class, 'fixed_by', 'id');
+        return $this->belongsTo(User::class, 'user_by', 'id');
     }
 
     public function comments()

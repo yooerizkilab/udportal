@@ -293,7 +293,7 @@ class TicketingController extends Controller
         ]);
 
         $data = [
-            'fixed_by' => auth()->user()->id,
+            'user_by' => auth()->user()->id,
             'solution' => $request->solution,
             'attachment' => $request->attachment,
             'close_date' => now(),
@@ -319,17 +319,17 @@ class TicketingController extends Controller
     {
         // Validation request
         $request->validate([
-            'resason' => 'required|string',
+            'reason' => 'required|string',
         ]);
 
         DB::beginTransaction();
         try {
             $ticket = Tickets::findOrFail($id);
             $ticket->update([
-                'fixed_by' => auth()->user()->id,
-                'solution' => $request->resason,
+                'user_by' => auth()->user()->id,
+                'reason' => $request->reason,
                 'status' => 'Cancelled',
-                'close_date' => now(),
+                'closed_date' => now(),
             ]);
             DB::commit();
             return redirect()->back()->with('success', 'Ticket ' . $ticket->code . ' cancled successfully');

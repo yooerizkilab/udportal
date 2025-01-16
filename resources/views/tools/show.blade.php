@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mt-4 mb-3">
-                            <img src="https://media.dinomarket.com/docs/imgTD/2022-10/_SMine_1666942949879_281022141030_ll.jpg" 
+                            <img src="{{ asset('storage/tools/photo/' . $tools->photo) }}" 
                                 class="img-fluid rounded shadow-sm w-100">
                         </div>
                     </div>

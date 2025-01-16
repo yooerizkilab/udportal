@@ -388,7 +388,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('tools.update', ':id') }}" method="post" id="updateToolsForm">
+                    <form action="{{ route('tools.update', ':id') }}" method="post" id="updateToolsForm" enctype="multipart/form-data">
                         @csrf
                         @method('PUT') 
                         <div class="form-group">

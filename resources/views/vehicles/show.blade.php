@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mt-4 mb-3">
-                            <img src="https://auto2000.co.id/berita-dan-tips/_next/image?url=https%3A%2F%2Fastradigitaldigiroomuat.blob.core.windows.net%2Fstorage-uat-001%2Fmobil-mpv-adalah.jpg&w=3840&q=75" 
+                            <img src="{{ asset('storage/vehicle/Photo/' . $vehicle->photo) }}" 
                                 class="img-fluid rounded shadow-sm border border-primary w-100">
                         </div>
                     </div>

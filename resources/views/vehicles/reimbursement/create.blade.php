@@ -34,7 +34,7 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
                         <tr>
-                            <th>No</th>
+                            <th width="5%">No</th>
                             <th>Name Vehicle</th>
                             <th>Date</th>
                             <th>Type</th>
@@ -48,7 +48,7 @@
                     <tbody>
                         @forelse ($reimbursements as $reimbursement)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $reimbursement->Vehicle->model }}</td>
                                 <td>{{ date('d M Y', strtotime($reimbursement->date_recorded)) }}</td>
                                 <td>{!! $reimbursement->typeName !!}</td>
@@ -61,9 +61,11 @@
                                         <a href="{{ route('reimbursements.show', $reimbursement->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal" data-target="#editReimbursementModal">
-                                            <i class="fas fa-pencil"></i>
-                                        </button>
+                                        @if ($reimbursement->status == 'Pending')
+                                            <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal" data-target="#editReimbursementModal">
+                                                <i class="fas fa-pencil"></i>
+                                            </button>
+                                        @endif
                                         <form action="{{ route('reimbursements.destroy', $reimbursement->id) }}" method="post" id="destroyReimbursementForm-{{ $reimbursement->id }}">
                                             @csrf
                                             @method('DELETE')
@@ -97,7 +99,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{ route('reimbursements.store') }}" method="post" id="claimParkingForm" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="code">Code Vehicle</label>
@@ -122,14 +124,14 @@
                         <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" placeholder="Notes (optional)" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="attachment">Attachment</label>
-                        <input type="file" name="attachment" id="attachment" class="form-control @error('attachment') is-invalid @enderror">
+                        <label for="receipt">Receipt</label>
+                        <input type="file" name="receipt" id="receipt" class="form-control @error('receipt') is-invalid @enderror">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
-                <button class="btn btn-primary" type="button"><i class="fas fa-check"></i> Claim</button>
+                <button class="btn btn-primary" type="button" onclick="confirmClaimParking()"><i class="fas fa-check"></i> Claim</button>
             </div>
         </div>
     </div>
@@ -146,7 +148,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{ route('reimbursements.store') }}" method="post" id="claimTollForm" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="code">Code Vehicle</label>
@@ -178,7 +180,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
-                <button class="btn btn-primary" type="button"><i class="fas fa-check"></i> Claim</button>
+                <button class="btn btn-primary" type="button" onclick="confirmClaimToll()"><i class="fas fa-check"></i> Claim</button>
             </div>
         </div>
     </div>
@@ -195,7 +197,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="" method="post">
+                <form action="{{ route('reimbursements.store') }}" method="post" id="claimBBMForm" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="code">Code Vehicle</label>
@@ -264,7 +266,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
-                <button class="btn btn-primary" type="button"><i class="fas fa-check"></i> Claim</button>
+                <button class="btn btn-primary" type="button" onclick="confirmClaimBBM()"><i class="fas fa-check"></i> Claim</button>
             </div>
         </div>
     </div>
@@ -281,5 +283,69 @@
     $(document).ready(function() {
         $('#dataTable').DataTable();
     });
+
+    function confirmClaimParking() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want claim this parking!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Claim it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#claimParkingForm').submit();
+            }
+        })
+    }
+
+    function confirmClaimBBM() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want claim this BBM!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Claim it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#claimBBMForm').submit();
+            }
+        })
+    }
+    
+    function confirmClaimToll() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want claim this toll!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Claim it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#claimTollForm').submit();
+            }
+        })
+    }
+
+    function confirmDeleteReimbursement(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want delete this reimbursements!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, Delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#destroyReimbursementForm-' + id).submit();
+            }
+        })
+    }
 </script>
 @endpush

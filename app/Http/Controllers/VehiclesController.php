@@ -70,7 +70,7 @@ class VehiclesController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '-' . $photo->getClientOriginalName();
-            $photo->move(public_path('img/vehicles'), $photoFile);
+            $photo->storeAs('public/vehicle/Photo', $photoFile);
         }
 
         $data = [
@@ -174,7 +174,7 @@ class VehiclesController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '-' . $photo->getClientOriginalName();
-            $photo->move(public_path('img/vehicles'), $photoFile);
+            $photo->storeAs('public/vehicle/Photo', $photoFile);
         }
 
         $data = [

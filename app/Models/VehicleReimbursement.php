@@ -16,15 +16,19 @@ class VehicleReimbursement extends Model
 
     protected $fillable = [
         'vehicle_id',
-        'data_recorded',
+        'date_recorded',
+        'user_by',
         'fuel',
         'amount',
         'price',
         'first_mileage',
         'last_mileage',
+        'attachment_mileage',
+        'attachment_receipt',
         'notes',
         'status',
         'type',
+        'reason',
     ];
 
     public function getStatusNameAttribute()
@@ -52,5 +56,10 @@ class VehicleReimbursement extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_by', 'id');
     }
 }

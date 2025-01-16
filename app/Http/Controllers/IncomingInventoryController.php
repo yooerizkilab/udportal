@@ -72,11 +72,11 @@ class IncomingInventoryController extends Controller
             $code = 'PO-00001';
         }
 
+        $file = null;
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filename = $code . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/incomings/attachments'), $filename);
-            $request->merge(['file' => $filename]);
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/incomings/file', $filename);
         }
 
         DB::beginTransaction();

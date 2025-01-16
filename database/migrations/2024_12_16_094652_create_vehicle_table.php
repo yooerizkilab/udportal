@@ -102,6 +102,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('vehicle_id');
             $table->date('date_recorded');
+            $table->unsignedBigInteger('user_by')->nullable();
             $table->string('fuel', 50)->nullable();
             $table->decimal('amount', 15, 2)->nullable();
             $table->decimal('price', 15, 2);
@@ -110,12 +111,14 @@ return new class extends Migration
             $table->string('attachment_mileage')->nullable();
             $table->string('attachment_receipt');
             $table->longText('notes')->nullable();
+            $table->string('reason')->nullable();
             $table->enum('status', ['Approved', 'Pending', 'Rejected'])->default('Pending');
             $table->enum('type', ['Refueling', 'Parking', 'E-Toll']);
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('vehicle_id')->references('id')->on('vehicle');
+            $table->foreign('user_by')->references('id')->on('users');
         });
     }
 

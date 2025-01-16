@@ -205,7 +205,7 @@
                 </div>
                 <div class="card-body">
                     <p class="text-gray-800 mb-0">
-                        {!! $tickets->solution !!}
+                        {!! $tickets->reason !!}
                     </p>
                 </div>
             </div>

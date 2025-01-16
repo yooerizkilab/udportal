@@ -60,6 +60,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('vehicles', 'VehiclesController');
         Route::post('assign/{id}', 'VehiclesController@assign')->name('vehicles.assign');
         Route::resource('reimbursements', 'VehicleReimbursementController');
+        Route::patch('reimbursements/approved/{id}', 'VehicleReimbursementController@approved')->name('reimbursements.approved');
+        Route::patch('reimbursements/rejected/{id}', 'VehicleReimbursementController@rejected')->name('reimbursements.rejected');
+        Route::get('export-excel', 'VehicleReimbursementController@exportExcel')->name('vehicles-reimbursements.exportExcel');
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::patch('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         Route::patch('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
