@@ -93,7 +93,7 @@ class DepartmentSeeder extends Seeder
                 'description' => 'Description for Department Purchasing',
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
         ]);
     }
 }

@@ -38,6 +38,7 @@ class WarehouseController extends Controller
             'company_id' => 'required|exists:companies,id',
             'branch_id' => 'required|exists:branches,id',
             'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
             'phone' => 'required|numeric',
             'address' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
@@ -47,8 +48,9 @@ class WarehouseController extends Controller
         $data = [
             'company_id' => $request->company_id,
             'branch_id' => $request->branch_id,
-            'code' => 'W' . str_pad(Warehouses::count() + 1, 3, '0', STR_PAD_LEFT),
+            'code' => 'WHRS' . str_pad(Warehouses::count() + 1, 4, '0', STR_PAD_LEFT),
             'name' => $request->name,
+            'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
             'description' => $request->description,

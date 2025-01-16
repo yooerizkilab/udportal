@@ -24,19 +24,13 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Phone</th>
+                        {{-- <th>#</th> --}}
+                        <th>Card Code</th>
+                        <th>Card Name</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($bussinesPartners['value'] as $bussinesPartner)
-                    <tr>
-                        <td>{{ $bussinesPartner->['CardCode'] }}</td>
-                        <td>{{ $bussinesPartner->['CardName'] }}</td>
-                        <td>{{ $bussinesPartner->['Phone1'] }}</td>
-                    </tr>
-                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -51,8 +45,28 @@
 <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable();
+    $(document).ready(function () {
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('bussines-master.index') }}',  // URL ke controller yang memanggil API
+                type: 'GET',
+                data: function(d) {
+                    // Mengirimkan parameter tambahan ke server
+                    d.search = d.search.value;  // Mengirimkan nilai pencarian (jika ada)
+                }
+            },
+            columns: [
+                { data: 'CardCode' },
+                { data: 'CardName' },
+                {
+                    data: 'action',  // Kolom aksi untuk tombol detail
+                    orderable: false,  // Tidak bisa disortir
+                    searchable: false  // Tidak bisa dicari
+                }
+            ]
+        });
     });
 </script>
 @endpush

@@ -14,6 +14,7 @@ use App\Models\IncomingSupplier;
 use App\Models\TicketsCategories;
 use App\Models\Tools;
 use App\Models\ToolsMaintenance;
+use App\Models\Vehicle;
 use App\Models\VehicleTransaction;
 use App\Models\Warehouses;
 use Illuminate\Database\Seeder;
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             VehicleTypesSeeder::class,
             VehicleSeeder::class,
+            VehicleReimbursementSeeder::class,
             ToolsCategorieSeeder::class,
             ToolsSeeder::class,
             ToolsMaintenanceSeeder::class,
@@ -55,9 +57,6 @@ class DatabaseSeeder extends Seeder
             IncomingShipmentsSeeder::class,
             IncomingInventorySeeder::class,
             CostBidsSeeder::class,
-            // CostBidsVendorSeeder::class,
-            // CostBidsItemsSeeder::class,
-            // CostBidsAnalysisSeeder::class
         ]);
     }
 }

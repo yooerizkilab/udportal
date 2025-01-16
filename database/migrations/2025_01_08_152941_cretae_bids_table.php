@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('project_name');
             $table->date('document_date')->DBdefault(DB::raw('CURRENT_DATE'));
             $table->date('bid_date');
+            $table->longText('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

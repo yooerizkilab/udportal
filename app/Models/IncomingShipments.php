@@ -18,10 +18,24 @@ class IncomingShipments extends Model
         'code',
         'branch_id',
         'supplier_id',
-        'drop_site_id',
+        'warehouse_id',
+        'drop_site',
+        'phone_drop_site',
+        'email_drop_site',
         'eta',
+        'notes',
+        'attachment',
         'status',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function ($update) {
+            if ($update->eta <= now()->toDateString()) {
+                $update->status = 'Approved';
+            }
+        });
+    }
 
     public function getStatusNameAttribute()
     {
@@ -52,6 +66,6 @@ class IncomingShipments extends Model
 
     public function drop()
     {
-        return $this->belongsTo(Warehouses::class, 'drop_site_id', 'id');
+        return $this->belongsTo(Warehouses::class, 'warehouse_id', 'id');
     }
 }

@@ -41,11 +41,19 @@
                         </tr>
                         <tr>
                             <td>Warehouses / Drop Site</td>
-                            <td>: {{ $incomings->drop->name ?? '-' }}</td>
+                            <td>: {{ $incomings->drop->name ?? '-' }} / {{ $incomings->drop_site ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Notes</td>
+                            <td>: {{ $incomings->notes ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Status</td>
                             <td>: {!! $incomings->statusName ?? '-' !!}</td>
+                        </tr>
+                        <tr>
+                            <td>Attachment</td>
+                            <td>: <a href="{{ asset('uploads/incomings/' . $incomings->attachment) }}" target="_blank">{{ $incomings->attachment ?? '-' }}</a></td>
                         </tr>
                     </table>
                 </div>

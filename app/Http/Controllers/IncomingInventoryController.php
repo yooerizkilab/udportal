@@ -49,9 +49,14 @@ class IncomingInventoryController extends Controller
     {
         $request->validate([
             'branch_id' => 'required|exists:branches,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
             'supplier_id' => 'required|exists:incoming_suppliers,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+            'drop_site' => 'nullable|string',
+            'phone_drop_site' => 'nullable|string',
+            'email_drop_site' => 'nullable|string',
             'eta' => 'required|date',
+            'notes' => 'nullable|string',
+            'file' => 'nullable|mimes:pdf,max:2048',
             'items' => 'required|array',
             'items.*' => 'required',
             'items.*.item_name' => 'required|string',
@@ -61,10 +66,17 @@ class IncomingInventoryController extends Controller
         // Create default code for incoming ex: PO-001
         $lastCode = IncomingShipments::lockForUpdate()->max('code');
         if ($lastCode) {
-            $number = (int) substr($lastCode, 3);
-            $code = 'PO-' . str_pad($number + 1, 3, '0', STR_PAD_LEFT);
+            $number = (int) substr($lastCode, 5);
+            $code = 'PO-' . str_pad($number + 1, 5, '0', STR_PAD_LEFT);
         } else {
-            $code = 'PO-001';
+            $code = 'PO-00001';
+        }
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = $code . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/incomings/attachments'), $filename);
+            $request->merge(['file' => $filename]);
         }
 
         DB::beginTransaction();
@@ -73,8 +85,12 @@ class IncomingInventoryController extends Controller
                 'code' => $code,
                 'branch_id' => $request->branch_id,
                 'supplier_id' => $request->supplier_id,
+                'warehouse_id' => $request->warehouse_id,
+                'drop_site' => $request->drop_site,
+                'phone_drop_site' => $request->phone_drop_site,
                 'eta' => $request->eta,
-                'drop_site_id' => $request->warehouse_id,
+                'notes' => $request->notes,
+                'attachment' => $request->file,
             ]);
 
             foreach ($request->items as $item) {
@@ -121,26 +137,43 @@ class IncomingInventoryController extends Controller
     {
         $request->validate([
             'branch_id' => 'required|exists:branches,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
             'supplier_id' => 'required|exists:incoming_suppliers,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+            'drop_site' => 'nullable|string',
+            'phone_drop_site' => 'nullable|string',
+            'email_drop_site' => 'nullable|string',
             'eta' => 'required|date',
+            'notes' => 'nullable|string',
+            'file' => 'nullable|mimes:pdf',
             'items' => 'required|array',
             'items.*' => 'required',
             'items.*.item_name' => 'required|string',
             'items.*.quantity' => 'required|string',
         ]);
 
+        // Cek apakah ada file baru atau tidak
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = $id . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/incomings/attachments'), $filename);
+            $request->merge(['file' => $filename]);
+        }
+
         DB::beginTransaction();
         try {
             // Temukan data transaksi
             $incoming = IncomingShipments::findOrFail($id);
-
             // Update data transaksi
             $incoming->update([
                 'branch_id' => $request->branch_id,
                 'supplier_id' => $request->supplier_id,
                 'eta' => $request->eta,
-                'drop_site_id' => $request->warehouse_id,
+                'warehouse_id' => $request->warehouse_id,
+                'drop_site' => $request->drop_site,
+                'phone_drop_site' => $request->phone_drop_site,
+                'email_drop_site' => $request->email_drop_site,
+                'notes' => $request->notes,
+                'attachment' => $request->file
             ]);
 
             // Ambil item yang ada di database untuk transaksi ini
@@ -204,6 +237,6 @@ class IncomingInventoryController extends Controller
     {
         $incomings = IncomingShipments::with('item', 'branch', 'drop', 'supplier')->findOrFail($id);
         $pdf = PDF::loadView('incomings.inventory.pdf', compact('incomings'));
-        return $pdf->stream('incomings.pdf');
+        return $pdf->stream('incomings-' . $incomings->code . '.pdf');
     }
 }

@@ -74,6 +74,7 @@
                                             data-companies="{{ $warehouse->company_id }}"
                                             data-branch="{{ $warehouse->branch_id }}"
                                             data-name="{{ $warehouse->name }}"
+                                            data-email="{{ $warehouse->email }}"
                                             data-phone="{{ $warehouse->phone }}"
                                             data-address="{{ $warehouse->address }}"
                                             data-description="{{ $warehouse->description }}"
@@ -105,10 +106,10 @@
 
     <!-- Add Warehouse Modal-->
     <div class="modal fade" id="addWarehousesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
-                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="exampleModalLabel">Add Warehouse</h4>
+                    <h4 class="modal-title text-white font-weight-bold mx-auto" id="exampleModalLabel">Create Warehouse</h4>
                     <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -116,11 +117,70 @@
                 <div class="modal-body">
                     <form action="{{ route('warehouses.store') }}" method="post" id="addWarehouseForm">
                         @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="company_id">Company</label>
+                                    <select name="company_id" class="form-control" id="company_id">
+                                        <option value="" disabled selected>--Select Company--</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="branch_id">Branch</label>
+                                    <select name="branch_id" class="form-control" id="branch_id">
+                                        <option value="" disabled selected>--Select Branch--</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type Warehouse</label>
+                            <select name="type" class="form-control" id="type">
+                                <option value="" disabled selected>--Select Type--</option>
+                                <option value="Warehouse">Warehouse</option>
+                                <option value="Raw Material">Raw Material</option>
+                                <option value="Finished Goods">Finished Goods</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name Warehouse</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name Warehouse" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="Phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" placeholder="Address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" cols="30" rows="3" class="form-control" placeholder="Description (optional)"></textarea>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmAddWarehouse()"><i class="fas fa-check"></i> Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmAddWarehouse()"><i class="fas fa-check"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -128,7 +188,7 @@
 
     <!-- Edit Warehouse Modal-->
     <div class="modal fade" id="editWarehouseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary d-flex justify-content-center align-items-center">
                     <h4 class="modal-title text-white font-weight-bold mx-auto" id="exampleModalLabel">Update Warehouse</h4>
@@ -140,6 +200,73 @@
                     <form action="{{ route('warehouses.update', ':id') }}" method="post" id="editWarehouseForm">
                         @csrf
                         @method('PUT')
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="" disabled selected>--Select Status--</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="company_id">Company</label>
+                                    <select name="company_id" class="form-control" id="company_id">
+                                        <option value="" disabled selected>--Select Company--</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="branch_id">Branch</label>
+                                    <select name="branch_id" class="form-control" id="branch_id">
+                                        <option value="" disabled selected>--Select Branch--</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type Warehouse</label>
+                            <select name="type" class="form-control" id="type">
+                                <option value="" disabled selected>--Select Type--</option>
+                                <option value="Warehouse">Warehouse</option>
+                                <option value="Raw Material">Raw Material</option>
+                                <option value="Finished Goods">Finished Goods</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name Warehouse</label>
+                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name Warehouse" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="Phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea name="address" id="address" cols="30" rows="3" class="form-control" placeholder="Address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" cols="30" rows="3" class="form-control" placeholder="Description (optional)"></textarea>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -180,20 +307,24 @@
     $('#editWarehouseModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        var company_id = button.data('company_id');
+        var company_id = button.data('companies');
+        var branch_id = button.data('branch');
         var name = button.data('name');
-        var description = button.data('description');
         var phone = button.data('phone');
+        var email = button.data('email');
         var address = button.data('address');
+        var description = button.data('description');
         var type = button.data('type');
         var status = button.data('status');
 
         var modal = $(this);
-        modal.find('#id').val(id).trigger('change');
+        modal.find('#id').val(id);
         modal.find('#company_id').val(company_id).trigger('change');
+        modal.find('#branch_id').val(branch_id).trigger('change');
         modal.find('#name').val(name);
-        modal.find('#description').val(description);
         modal.find('#phone').val(phone);
+        modal.find('#email').val(email);
+        modal.find('#description').val(description);
         modal.find('#address').val(address);
         modal.find('#type').val(type).trigger('change');
         modal.find('#status').val(status).trigger('change');

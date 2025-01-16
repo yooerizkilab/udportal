@@ -19,6 +19,7 @@ class CostBidsSeeder extends Seeder
             'project_name' => 'Wika Cibubur',
             'document_date' => '2025-01-10',
             'bid_date' => '2025-01-12',
+            'notes' => 'This is a notes',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

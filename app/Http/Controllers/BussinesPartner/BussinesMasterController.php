@@ -5,6 +5,7 @@ namespace App\Http\Controllers\BussinesPartner;
 use App\Http\Controllers\Controller;
 use App\Services\SAPServices;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class BussinesMasterController extends Controller
 {
@@ -22,17 +23,25 @@ class BussinesMasterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->sapServices->connect();
 
-        $bussinesPartners = $this->sapServices->get('BusinessPartners');
-        $bussinesMaster = collect($bussinesPartners);
-        return $bussinesMaster;
+        // Siapkan parameter untuk filter, top (limit), dan skip (offset)
+        $params = [
+            '$select' => 'CardCode,CardName, CardType',
+            '$filter' => 'CardType eq \'C\'',
+        ];
 
-        // Kirim data ke view
-        return view('bussinesPartner.bussinesMaster.index', compact('bussinesPartners'));
+        // Ambil data Business Partners dengan parameter filter, pagination, dan pencarian
+        $response = $this->sapServices->get('BusinessPartners', $params);
+
+        return $response;
+
+        // Kirim data ke view untuk pertama kali load halaman (non-AJAX)
+        return view('bussinesPartner.bussinesMaster.index');
     }
+
 
 
     /**

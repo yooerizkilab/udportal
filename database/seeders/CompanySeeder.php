@@ -15,11 +15,11 @@ class CompanySeeder extends Seeder
     {
         Company::insert([
             [
-                'code' => 'C001',
-                'name' => 'Utomodeck Metal Works',
-                'email' => 'companya@example.com',
-                'address' => 'Jl Hayam Wuruk Glodok Harco Bl D/82, Dki Jakarta',
-                'phone' => '62227272262',
+                'code' => 'C00001',
+                'name' => 'PT Utomodeck Metal Works',
+                'email' => 'info@utomodeck.com',
+                'address' => 'Jl. Basuki Rahmat No.149, Embong Kaliasin, Kec. Genteng, Surabaya, Jawa Timur 60271',
+                'phone' => '(031) 534 4356',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

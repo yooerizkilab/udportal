@@ -51,9 +51,9 @@ class SendNotifications extends Command
         // 30 days, 21 days, 14 days, 7 days, 3 days, 0 days
         $intervals = [30, 21, 14, 7, 3, 0];
 
-        $this->contractNotifications($intervals);
+        // $this->contractNotifications($intervals);
 
-        $this->vehicleTaxNotifications($intervals);
+        // $this->vehicleTaxNotifications($intervals);
 
         $this->incomingInventoryPlanNotifications($intervals);
 
@@ -216,8 +216,10 @@ class SendNotifications extends Command
         foreach ($interval as $interval) {
             $targetDate = now()->addDays($interval);
             $incomings = IncomingShipments::with('branch', 'supplier', 'item', 'drop')
-                ->whereDate('eta', '=', $targetDate)
-                ->orWhere('eta', '<', now())
+                ->where(function ($query) use ($targetDate) {
+                    $query->whereDate('eta', '=', $targetDate)
+                        ->orWhere('eta', '<', now());
+                })
                 ->get();
 
             if ($incomings->isEmpty()) {
@@ -225,32 +227,56 @@ class SendNotifications extends Command
                 continue;
             }
 
-            $formatDate = Carbon::parse($incomings->eta)->format('d F Y');
-            $phone = '62895341341001';
-            $name = 'John Doe';
-            $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
-            $body = [
-                [
-                    'key' => '1',
-                    'value_text' => $incomings->branch->name,
-                    'value' => 'name',
-                ],
-                [
-                    'key' => '2',
-                    'value_text' => $incomings->supplier->name,
-                    'value' => 'company',
-                ],
-                [
-                    'key' => '3',
-                    'value_text' => $formatDate,
-                    'value' => 'expired',
-                ],
-            ];
-            try {
-                $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
-                Log::info("Notification sent for contract {$incomings->id}: {$response}");
-            } catch (\Exception $e) {
-                Log::error("Error sending notification for contract {$incomings->id}: {$e->getMessage()}");
+            foreach ($incomings as $incoming) {
+                $incomingItem = $incoming->item->name ?? 'Unknown Item Name';
+                $incomingQty = $incoming->quantity ?? 0;
+                $incomingDrop = $incoming->phone_drop_site ?? 'Unknown Drop Site Phone';
+                $incomingWh = $incoming->drop->phone ?? 'Unknown Drop Warehouse Phone';
+                $branchName = $incoming->branch->name ?? 'Unknown Branch';
+                $branchPhone = $incoming->branch->phone ?? 'Unknown Phone';
+                $supplierName = $incoming->supplier->name ?? 'Unknown Supplier';
+                $formatDate = Carbon::parse($incoming->eta)->format('d F Y');
+
+                // Send Notification Phone Number
+                $phone = [
+                    '62895341341000', // direction
+                    '62895341341001', // Purchasing
+                    '62895341341002', // Finance
+                    '62895341341003', // Warehouse
+                    $branchPhone,     // Branch
+                    $incomingWh,      // Drop Warehouse
+                    $incomingDrop,    // Drop Site
+                ];
+                foreach ($phone as $number) {
+                    $phone = $number;
+                    $name = 'PT Utomodeck Metal Works';
+                    $templateId = 'a61a84b8-2e50-4590-a1a8-cdf3c5c2ddba';
+                    $body = [
+                        [
+                            'key' => '1',
+                            'value_text' => $branchName,
+                            'value' => 'name',
+                        ],
+                        [
+                            'key' => '2',
+                            'value_text' => $supplierName,
+                            'value' => 'company',
+                        ],
+                        [
+                            'key' => '3',
+                            'value_text' => $formatDate,
+                            'value' => 'expired',
+                        ],
+                    ];
+                    try {
+                        $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
+                        if ($response['status'] !== 'success') {
+                            // 
+                        }
+                    } catch (\Exception $e) {
+                        // hendle the exception
+                    }
+                }
             }
         }
     }

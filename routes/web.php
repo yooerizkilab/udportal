@@ -59,6 +59,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('types', 'VehicleTypeController');
         Route::resource('vehicles', 'VehiclesController');
         Route::post('assign/{id}', 'VehiclesController@assign')->name('vehicles.assign');
+        Route::resource('reimbursements', 'VehicleReimbursementController');
         Route::resource('vehicles-maintenances', 'VehicleMaintenanceController');
         Route::patch('vehicles-maintenances/completed/{id}', 'VehicleMaintenanceController@completeMaintenance')->name('vehicles-maintenances.completeMaintenance');
         Route::patch('vehicles-maintenances/cenceled/{id}', 'VehicleMaintenanceController@cancelMaintenance')->name('vehicles-maintenances.cancelMaintenance');
@@ -77,6 +78,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Bids Management Development
     Route::group(['prefix' => 'bids'], function () {
         Route::resource('bids-analysis', 'CostBidsAnalysisController');
+        Route::get('bids-analysis-export-detail/{id}', 'CostBidsAnalysisController@exportPdf')->name('bids-analysis.exportPdf');
     });
 
     // Settings Management development

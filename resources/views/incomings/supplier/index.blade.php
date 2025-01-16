@@ -15,64 +15,66 @@
 
 <!-- List Incoming Inventory -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-        <h4 class="m-0 font-weight-bold text-primary">List Incoming Supplier</h4>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSupplierModal">
-            <i class="fas fa-truck-arrow-right"></i>
-            Add Supplier
-        </button>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead class="thead-light">
-                    <tr>
-                        <th width="5%">No</th>
-                        <th>Name Supplier</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th class="text-center" width="15%">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($suppliers as $supplier)
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
+            <h4 class="m-0 font-weight-bold text-primary">List Incoming Supplier</h4>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSupplierModal">
+                <i class="fas fa-truck-arrow-right"></i>
+                Add Supplier
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $supplier->name }}</td>
-                            <td>{{ $supplier->phone }}</td>
-                            <td>{{ $supplier->email }}</td>
-                            <td>{{ $supplier->address }}</td>
-                            <td class="text-center">
-                                <div class="d-inline-flex">
-                                    <a href="{{ route('incomings-supplier.show', $supplier->id) }}" class="btn btn-info btn-circle mr-2"><i class="fas fa-eye"></i></a>
-                                    <button class="btn btn-warning btn-circle mr-2"
-                                        data-toggle="modal"
-                                        data-id="{{ $supplier->id }}"
-                                        data-name="{{ $supplier->name }}"
-                                        data-phone="{{ $supplier->phone }}"
-                                        data-email="{{ $supplier->email }}"
-                                        data-address="{{ $supplier->address }}"
-                                        data-target="#editSupplierModal">
-                                        <i class="fas fa-pencil"></i>
-                                    </button>
-                                    <form action="{{ route('incomings-supplier.destroy', $supplier->id) }}" method="POST" id="deleteSupplierForm-{{ $supplier->id }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteSupplier({{ $supplier->id }})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td> 
-                        </tr>  
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center">No Data</td>
+                            <th width="5%">No</th>
+                            <th>Name Supplier</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th class="text-center" width="15%">Action</th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse ($suppliers as $supplier)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $supplier->name }}</td>
+                                <td>{{ $supplier->phone }}</td>
+                                <td>{{ $supplier->email }}</td>
+                                <td>{{ $supplier->address }}</td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex">
+                                        <a href="{{ route('incomings-supplier.show', $supplier->id) }}" class="btn btn-info btn-circle mr-2"><i class="fas fa-eye"></i></a>
+                                        <button class="btn btn-warning btn-circle mr-2"
+                                            data-toggle="modal"
+                                            data-id="{{ $supplier->id }}"
+                                            data-name="{{ $supplier->name }}"
+                                            data-phone="{{ $supplier->phone }}"
+                                            data-email="{{ $supplier->email }}"
+                                            data-address="{{ $supplier->address }}"
+                                            data-target="#editSupplierModal">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <form action="{{ route('incomings-supplier.destroy', $supplier->id) }}" method="POST" id="deleteSupplierForm-{{ $supplier->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteSupplier({{ $supplier->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td> 
+                            </tr>  
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">No Data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -96,11 +98,11 @@
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Supplier</label>
-                        <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="Phone Supplier">
+                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Supplier">
                     </div>
                     <div class="form-group">
                         <label for="email">Email Supplier</label>
-                        <input type="text" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Supplier">
+                        <input type="text" name="email" id="email" class="form-control" placeholder="Email Supplier">
                     </div>
                     <div class="form-group">
                         <label for="address">Addres Supplier</label>
@@ -136,11 +138,11 @@
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Supplier</label>
-                        <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="Phone Supplier">
+                        <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Supplier">
                     </div>
                     <div class="form-group">
                         <label for="email">Email Supplier</label>
-                        <input type="text" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Supplier">
+                        <input type="text" name="email" id="email" class="form-control" placeholder="Email Supplier">
                     </div>
                     <div class="form-group">
                         <label for="address">Addres Supplier</label>

@@ -22,9 +22,4 @@ class TicketsCategories extends Model
     {
         return $this->hasMany(Tickets::class, 'category_id', 'id');
     }
-
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 }

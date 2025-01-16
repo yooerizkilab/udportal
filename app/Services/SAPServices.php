@@ -118,17 +118,38 @@ class SAPServices
         return [
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'odata.maxpagesize=10'
+            'Prefer' => 'odata.maxpagesize=20'
         ];
     }
 
     protected function handleRequest(callable $request)
     {
+        $allData = [];
         try {
+            // Ambil respons pertama
             $response = $request();
-            return json_decode($response->getBody()->getContents(), true);
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            // Gabungkan data dari respons pertama
+            $allData = array_merge($allData, $data['value']);
+
+            // Jika ada lebih banyak data, ambil halaman berikutnya
+            while (isset($data['@odata.nextLink'])) {
+                $nextLink = $data['@odata.nextLink'];
+
+                // Ambil data dari nextLink
+                $response = $this->client->get($nextLink, [
+                    'headers' => $this->getDefaultHeaders()
+                ]);
+                $data = json_decode($response->getBody()->getContents(), true);
+
+                // Gabungkan data lebih lanjut
+                $allData = array_merge($allData, $data['value']);
+            }
+
+            return $allData;
         } catch (RequestException $e) {
-            // Jika session expired, coba authenticate ulang
+            // Menangani error seperti sebelumnya
             if ($e->getResponse() && $e->getResponse()->getStatusCode() === 401) {
                 Cache::forget($this->getCacheKey());
                 $this->authenticate();
@@ -141,7 +162,6 @@ class SAPServices
                 'user_id' => Auth::id(),
                 'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null
             ]);
-
             throw new \Exception('SAP API request gagal: ' . $e->getMessage());
         }
     }

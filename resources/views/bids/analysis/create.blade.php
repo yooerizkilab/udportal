@@ -14,84 +14,86 @@
 
 <!-- List Bids Analysis -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-        <h6 class="m-0 font-weight-bold text-primary">Create Bids Analysis</h6>
-        <a href="{{ route('bids-analysis.index') }}" class="btn btn-primary btn-md mr-2">
-            <i class="fas fa-reply"></i> 
-            Back
-        </a>
-    </div>
-    <div class="card-body">
-        <form action="{{ route('bids-analysis.store') }}" method="POST" id="bidForm">
-            @csrf
-            <!-- Bid Information -->
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Project Name</label>
-                        <input type="text" class="form-control" name="project_name" required>
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
+            <h4 class="m-0 font-weight-bold text-primary">Create Bids Analysis</h4>
+            <a href="{{ route('bids-analysis.index') }}" class="btn btn-primary btn-md mr-2">
+                <i class="fas fa-reply"></i> 
+                Back
+            </a>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('bids-analysis.store') }}" method="POST" id="bidForm">
+                @csrf
+                <!-- Bid Information -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" class="form-control" name="project_name" value="{{ old('project_name') }}" placeholder="Project Name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" class="form-control" name="bid_date" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Number of Vendors Bids</label>
+                            <select class="form-control" id="vendorCount" name="vendor_count">
+                                <option value="2" selected>Bids 2 Vendors</option>
+                                <option value="3">Bids 3 Vendors</option>
+                                <option value="4">Bids 4 Vendors</option>
+                                <option value="5">Bids 5 Vendors</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" class="form-control" name="bid_date" value="{{ date('Y-m-d') }}" required>
+    
+                <!-- Vendor Names -->
+                <div class="row mb-4" id="vendorNamesContainer">
+                    <!-- Vendor name inputs will be dynamically added here -->
+                </div>
+    
+                <!-- Items Table -->
+                <div class="table-responsive mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="font-weight-bold">Items</h6>
+                        <button type="button" class="btn btn-primary btn-sm m-1" id="addItem">
+                            <i class="fas fa-cart-arrow-down mr-1"></i> Add Item
+                        </button>
                     </div>
+                    <table class="table table-bordered" id="bidsTable">
+                        <thead>
+                            <tr id="headerRow">
+                                <th rowspan="2" class="align-middle">No</th>
+                                <th rowspan="2" class="align-middle">Description</th>
+                                <th rowspan="2" class="align-middle">QTY</th>
+                                <th rowspan="2" class="align-middle">UOM</th>
+                                <!-- Vendor columns will be added dynamically -->
+                                <th rowspan="2" class="align-middle">Action</th>
+                            </tr>
+                            <tr id="subHeaderRow">
+                                <!-- Price/Unit and Total columns will be added dynamically -->
+                            </tr>
+                        </thead>
+                        <tbody id="itemsContainer">
+                            <!-- Item rows will be added here -->
+                        </tbody>
+                        <tfoot id="tableFooter">
+                            <!-- Footer rows will be added dynamically -->
+                        </tfoot>
+                    </table>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Number of Vendors</label>
-                        <select class="form-control" id="vendorCount" name="vendor_count">
-                            <option value="2">2 Vendors</option>
-                            <option value="3" selected>3 Vendors</option>
-                            <option value="4">4 Vendors</option>
-                            <option value="5">5 Vendors</option>
-                        </select>
-                    </div>
-                </div>
+            </form>
+            <div class="float-right">
+                <button type="button" class="btn btn-primary" onclick="confirmAddAnalysis()">
+                    <i class="fas fa-save"></i> Save
+                </button>
             </div>
-
-            <!-- Vendor Names -->
-            <div class="row mb-4" id="vendorNamesContainer">
-                <!-- Vendor name inputs will be dynamically added here -->
-            </div>
-
-            <!-- Items Table -->
-            <div class="table-responsive mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="font-weight-bold">Items</h6>
-                    <button type="button" class="btn btn-primary btn-sm m-1" id="addItem">
-                        <i class="fas fa-plus-circle mr-1"></i> Add Item
-                    </button>
-                </div>
-                <table class="table table-bordered" id="bidsTable">
-                    <thead>
-                        <tr id="headerRow">
-                            <th rowspan="2" class="align-middle">No</th>
-                            <th rowspan="2" class="align-middle">Description</th>
-                            <th rowspan="2" class="align-middle">QTY</th>
-                            <th rowspan="2" class="align-middle">UOM</th>
-                            <!-- Vendor columns will be added dynamically -->
-                            <th rowspan="2" class="align-middle">Action</th>
-                        </tr>
-                        <tr id="subHeaderRow">
-                            <!-- Price/Unit and Total columns will be added dynamically -->
-                        </tr>
-                    </thead>
-                    <tbody id="itemsContainer">
-                        <!-- Item rows will be added here -->
-                    </tbody>
-                    <tfoot id="tableFooter">
-                        <!-- Footer rows will be added dynamically -->
-                    </tfoot>
-                </table>
-            </div>
-        </form>
-        <div class="float-right">
-            <button type="button" class="btn btn-primary" onclick="confirmAddAnalysis()">
-                <i class="fas fa-save"></i> Submit
-            </button>
         </div>
     </div>
 </div>
@@ -121,18 +123,21 @@
                             <input type="text" class="form-control vendor-name" 
                                 name="vendor_names[]" 
                                 data-vendor-index="${i}"
+                                placeholder="Vendor ${i + 1} Name"
                                 required>
                         </div>
                         <div class="form-group">
                             <label>Vendor ${i + 1} Email</label>
                             <input type="email" class="form-control" 
                                 name="vendor_emails[]"
+                                placeholder="Vendor ${i + 1} Email"
                                 required>
                         </div>
                         <div class="form-group">
                             <label>Vendor ${i + 1} Phone</label>
                             <input type="text" class="form-control" 
                                 name="vendor_phones[]"
+                                placeholder="Vendor ${i + 1} Phone"
                                 required>
                         </div>
                     </div>`;
@@ -202,7 +207,7 @@
                 footerHtml += `
                     <td colspan="2">
                         <input type="number" class="form-control form-control-sm" 
-                            name="vendor${vendor.index}_discount">
+                            name="vendor${vendor.index}_discount" placeholder="Discount (%)">
                     </td>`;
             });
             
@@ -216,7 +221,7 @@
             vendors.forEach(vendor => {
                 footerHtml += `
                     <td colspan="2" id="vendor${vendor.index}-final-total">
-                        <input type="hidden" name="vendor${vendor.index}_final_total" value="0">
+                        <input type="hidden" name="vendor${vendor.index}_final_total" value="0" >
                     </td>`;
             });
             
@@ -231,7 +236,7 @@
                 footerHtml += `
                     <td colspan="2">
                         <input type="text" class="form-control form-control-sm" 
-                            name="terms_of_payment_vendor${vendor.index}">
+                            name="terms_of_payment_vendor${vendor.index}" placeholder="Terms of Payment (Days)">
                     </td>`;
             });
             
@@ -246,7 +251,7 @@
                 footerHtml += `
                     <td colspan="2">
                         <input type="text" class="form-control form-control-sm" 
-                            name="lead_time_vendor${vendor.index}">
+                            name="lead_time_vendor${vendor.index}" placeholder="Lead Time (Days)">
                     </td>`;
             });
             
@@ -268,17 +273,17 @@
                     <td>${index + 1}</td>
                     <td>
                         <input type="text" class="form-control form-control-sm" 
-                            name="items[${index}][description]" required>
+                            name="items[${index}][description]" placeholder="Item Description" required>
                     </td>
                     <td>
                         <input type="number" class="form-control form-control-sm quantity" 
-                            name="items[${index}][quantity]" required>
+                            name="items[${index}][quantity]" placeholder="Quantity" required>
                     </td>
                     <td>
                         <select class="form-control form-control-sm" name="items[${index}][uom]" required>
                             <option value="PCS">PCS</option>
                             <option value="UNIT">UNIT</option>
-                            <option value="set">Set</option>
+                            <option value="SET">SET</option>
                         </select>
                     </td>`;
             
@@ -286,7 +291,7 @@
                 rowHtml += `
                     <td>
                         <input type="number" class="form-control form-control-sm price vendor${vendor.index}-price" 
-                            name="items[${index}][vendor${vendor.index}_price]" required>
+                            name="items[${index}][vendor${vendor.index}_price]" placeholder="Rp" required>
                     </td>
                     <td class="vendor${vendor.index}-total">0</td>`;
             });

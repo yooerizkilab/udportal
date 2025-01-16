@@ -1,0 +1,117 @@
+@extends('layouts.admin', [
+    'title' => 'Vehicles Reimbursements'
+])
+
+@push('css')
+<!-- Custom styles for this page -->
+<link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+@endpush
+
+@section('main-content')
+<h1 class="h3 mb-4 text-gray-800">Vehicles Reimbursements Management</h1>
+<p class="mb-4">
+    This page is used to manage vehicles reimbursements.
+</p>
+
+<!-- List Vehicles reimbursements -->
+<div class="card shadow mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
+            <h4 class="m-0 font-weight-bold text-primary">List Vehicles Reimbursements</h4>
+            <div class="d-flex align-items-center flex-wrap">
+                <select name="type" class="form-control mr-2 mb-2 w-auto" id="exportName">
+                    <option value="" disabled selected>--Select Users--</option>
+                    @foreach ($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->full_name }}</option>
+                    @endforeach
+                </select>
+                <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
+                <span class="mx-2">to</span>
+                <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>
+                <!-- Tombol dropdown Print Filter -->
+                <button type="button" class="btn btn-secondary btn-md ml-2 mb-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-file-export fa-md white-50"></i> Export Filter
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" id="exportAll">Export All</a>
+                    <a class="dropdown-item" href="#" id="exportPending">Export Pending</a>
+                    <a class="dropdown-item" href="#" id="exportApproved">Export Approved</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>No</th>
+                            <th>Name Vehicle</th>
+                            <th>Name User Reimbursements</th>
+                            <th>Date Reimbursements</th>
+                            <th>Type</th>
+                            <th>Fuel</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th class="text-center" width="15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($reimbursements as $reimbursement)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $reimbursement->vehicle->code }} - {{ $reimbursement->vehicle->model }}</td>
+                                <td>{{ $reimbursement->vehicle->assigned->last()->employe->full_name ?? '-' }}</td>
+                                <td>{{ date('d M Y', strtotime($reimbursement->date_recorded)) }}</td>
+                                <td>{!! $reimbursement->typeName !!}</td>
+                                <td>{{ $reimbursement->fuel ?? '-' }}</td>
+                                <td>{{ $reimbursement->amount ?? '- ' }} Liter</td>
+                                <td>Rp {{ number_format($reimbursement->price, 2) }}</td>
+                                <td>{!! $reimbursement->statusName !!}</td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex">
+                                        <form action="" method="post">
+                                            @csrf
+                                            <a href="" class="btn btn-success btn-circle mr-1">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        </form>
+                                        <form action="" method="post">
+                                            @csrf
+                                            <a href="" class="btn btn-danger btn-circle mr-1">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </form>
+                                        <a href="{{ route('reimbursements.show', $reimbursement->id) }}" class="btn btn-info btn-circle mr-1">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <form action="{{ route('reimbursements.destroy', $reimbursement->id) }}" method="post" id="destroyReimbursementForm-{{ $reimbursement->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteReimbursement({{ $reimbursement->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>       
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>  
+    </div>
+</div>
+
+@endsection
+
+@push('scripts')
+<!-- Page level plugins -->
+<script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable();
+    });
+</script>
+@endpush

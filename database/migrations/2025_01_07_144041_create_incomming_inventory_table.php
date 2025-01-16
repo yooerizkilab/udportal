@@ -28,8 +28,13 @@ return new class extends Migration
             $table->string('code', 50);
             $table->foreignId('branch_id')->constrained('branches')->onDelete('restrict'); // Relasi ke tabel branches
             $table->foreignId('supplier_id')->constrained('incoming_suppliers')->onDelete('restrict'); // Relasi ke tabel incoming_suppliers
-            $table->foreignId('drop_site_id')->constrained('warehouses')->onDelete('restrict'); // Relasi ke tabel warehouses dengan nama kolom drop_site_id
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->onDelete('restrict'); // Relasi ke tabel warehouses
+            $table->string('drop_site', 50)->nullable();
+            $table->string('phone_drop_site', 20)->nullable();
+            $table->string('email_drop_site', 50)->nullable();
             $table->date('eta');
+            $table->longText('notes')->nullable();
+            $table->string('attachment', 50)->nullable();
             $table->enum('status', ['On Progress', 'Approved', 'Rejected', 'Received'])->default('On Progress');
             $table->timestamps();
             $table->softDeletes();

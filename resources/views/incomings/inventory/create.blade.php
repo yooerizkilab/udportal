@@ -5,6 +5,7 @@
 @push('css')
 <!-- Custom styles for this page -->
 <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
 @section('main-content')
@@ -15,79 +16,109 @@
 
 <!-- Create Incoming Inventory -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
-        <h4 class="m-0 font-weight-bold text-primary">Create Incoming Inventory</h4>
-        <a href="{{ route('incomings-inventory.index') }}" class="btn btn-primary btn-md mr-2">
-            <i class="fas fa-reply"></i> 
-            Back
-        </a>
-    </div>
-    <div class="card-body">
-        <form action="{{ route('incomings-inventory.store') }}" method="post" id="addIncomingInventoryForm">
-            @csrf
-            <div class="form-group">
-                <label for="branch_id">Branch</label>
-                <select name="branch_id" id="branch_id" class="form-control">
-                    <option value="" disabled selected>Select Branch</option>
-                    @foreach ($branches as $branch)
-                        <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="supplier_id">Supplier</label>
-                    <select name="supplier_id" id="supplier_id" class="form-control">
-                        <option value="" disabled selected>Select Supplier</option>
-                        @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="warehouse_id">Warehouse / Drop Site</label>
-                    <select name="warehouse_id" id="warehouse_id" class="form-control">
-                        <option value="" disabled selected>Select Warehouse</option>
-                        @foreach ($warehouses as $warehouse)
-                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="eta">Date</label>
-                    <input type="date" name="eta" id="eta" class="form-control" required>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="items-table">
-                                <thead class="bg-primary text-white">
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th>Items</th>
-                                        <th width="20%">Quantity</th>
-                                        <th width="10%" class="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>        
-                                </tbody>
-                            </table>
+    <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
+            <h4 class="m-0 font-weight-bold text-primary">Create Incoming Inventory</h4>
+            <a href="{{ route('incomings-inventory.index') }}" class="btn btn-primary btn-md mr-2">
+                <i class="fas fa-reply"></i> 
+                Back
+            </a>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('incomings-inventory.store') }}" method="post" id="addIncomingInventoryForm">
+                @csrf
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="branch_id">Branch</label>
+                            <select name="branch_id" id="branch_id" class="form-control @error('branch_id') is-invalid @enderror">
+                                <option value="" disabled selected>--Select Branch--</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <button type="button" class="btn btn-info mt-2" id="add-rows">
-                            <i class="fas fa-plus-circle"></i> Add Items
-                        </button>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for="supplier_id">Supplier</label>
+                            <select name="supplier_id" id="supplier_id" class="form-control @error('supplier_id') is-invalid @enderror">
+                                <option value="" disabled selected>--Select Supplier--</option>
+                                @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="eta">Date</label>
+                        <input type="date" name="eta" id="eta" class="form-control @error('eta') is-invalid @enderror" required>
                     </div>
                 </div>
-            </div>
-        </form>
-    </div>
-    <div class="text-right my-3 mr-3">
-        <button type="button" class="btn btn-success" onclick="confirmAddIncomingInventory()">
-            <i class="fas fa-truck-moving"></i> Create Incoming Inventory
-        </button>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="warehouse_id">Warehouse</label>
+                        <select name="warehouse_id" id="warehouse_id" class="form-control">
+                            <option value="" disabled selected>--Select Warehouse--</option>
+                            @foreach ($warehouses as $warehouse)
+                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="drop_id">Drop Site</label>
+                        <input type="text" name="drop_site" id="drop_site" class="form-control" placeholder="Drop Site">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="email_drop_id">Email Drop Site</label>
+                        <input type="text" name="email_drop_site" id="email_drop_site" class="form-control" placeholder="Email Drop Site">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="phone_drop_site">Phone Drop Site</label>
+                        <input type="number" name="phone_drop_site" id="phone_drop_site" class="form-control" placeholder="Phone Drop Site">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="note">Notes</label>
+                    <textarea name="notes" id="notes" class="form-control" cols="30" rows="5" placeholder="Notes (optional)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file">File</label>
+                    <input type="file" name="file" id="file" class="form-control">
+                </div>
+                
+                <hr>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="items-table">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Items</th>
+                                            <th width="20%">Quantity</th>
+                                            <th width="10%" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>        
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-info mt-2" id="add-rows">
+                                <i class="fas fa-plus-circle"></i> Add Items
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-right my-3 mr-3">
+            <button type="button" class="btn btn-success" onclick="confirmAddIncomingInventory()">
+                <i class="fas fa-truck-moving"></i> Create Incoming Inventory
+            </button>
+        </div>
     </div>
 </div>
 
@@ -99,7 +130,7 @@
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#items-table').DataTable({});
+        $('#items-table').DataTable();
     });
 
     function confirmAddIncomingInventory() {

@@ -101,7 +101,6 @@
         </div>
     </div>
     <div class="row">
-        @can('comment ticket')
         @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled' && $tickets->status == 'In Progress')
         <!-- Comments Section -->
         <div class="col-lg-5">
@@ -157,7 +156,6 @@
             </div>
         </div>
         @endif
-        @endcan
 
         @if ($tickets->status == 'Closed')
         <!-- Solved ticket Section --> 
@@ -198,7 +196,7 @@
                 <div class="card-header py-3 bg-gradient-danger text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold">
-                            <i class="fas fa-ticket-alt mr-2"></i>Cancelled Ticket by {{ $tickets->fixed->fullName }}
+                            <i class="fas fa-ticket-alt mr-2"></i>Cancelled Ticket by {{ $tickets->fixed->fullName ?? 'Unassigned' }}
                         </h6>
                         <span class="badge badge-light text-dark">
                             {{ Carbon\Carbon::parse($tickets->cancelled_at)->diffForHumans() }}
@@ -213,8 +211,6 @@
             </div>
         </div>
         @endif
-
-        
     </div>
 
     <!-- Solved ticket -->

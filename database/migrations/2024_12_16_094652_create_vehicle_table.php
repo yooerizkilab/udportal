@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('license_plate', 20)->nullable();
             $table->string('transmission', 50)->nullable();
             $table->string('fuel', 50)->nullable();
+            $table->string('mileage', 100)->nullable();
             $table->year('year')->nullable();
             $table->date('tax_year')->nullable();
             $table->date('tax_five_year')->nullable();
@@ -96,6 +97,26 @@ return new class extends Migration
             $table->foreign('vehicle_id')->references('id')->on('vehicle');
             $table->foreign('user_id')->references('id')->on('users');
         });
+
+        Schema::create('vehicle_reimbursement', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('vehicle_id');
+            $table->date('date_recorded');
+            $table->string('fuel', 50)->nullable();
+            $table->decimal('amount', 15, 2)->nullable();
+            $table->decimal('price', 15, 2);
+            $table->string('first_mileage', 100)->nullable();
+            $table->string('last_mileage', 100)->nullable();
+            $table->string('attachment_mileage')->nullable();
+            $table->string('attachment_receipt');
+            $table->longText('notes')->nullable();
+            $table->enum('status', ['Approved', 'Pending', 'Rejected'])->default('Pending');
+            $table->enum('type', ['Refueling', 'Parking', 'E-Toll']);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('vehicle_id')->references('id')->on('vehicle');
+        });
     }
 
     /**
@@ -103,6 +124,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('vehicle_reimbursement');
         Schema::dropIfExists('vehicle_assignment');
         Schema::dropIfExists('vehicle_insurance_policy');
         Schema::dropIfExists('vehicle_maintenance_record');

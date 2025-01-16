@@ -139,6 +139,7 @@ class UserSeeder extends Seeder
                 'update ticket',
                 'delete ticket',
             ],
+            'Admin Branch' => [], // Define specific permissions here if needed
             'Admin IT' => [], // Define specific permissions here if needed
             'User' => [], // Define specific permissions here if needed
         ];
@@ -150,6 +151,7 @@ class UserSeeder extends Seeder
 
         // Create users
         $users = [
+            // Superadmin
             [
                 'name' => 'Super',
                 'username' => 'superadmin',
@@ -158,6 +160,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'Superadmin',
             ],
+            // Admin Department
             [
                 'name' => 'Admin',
                 'username' => 'adminlegal',
@@ -173,6 +176,23 @@ class UserSeeder extends Seeder
                 'email' => 'adminga@example.com',
                 'password' => Hash::make('password'),
                 'role' => 'Admin GA',
+            ],
+            // Admin Branch
+            [
+                'name' => 'Admin',
+                'username' => 'adminbranch1',
+                'last_name' => 'Branch 1',
+                'email' => 'adminbranch@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'Admin Branch',
+            ],
+            [
+                'name' => 'Admin',
+                'username' => 'adminbranch2',
+                'last_name' => 'Branch 2',
+                'email' => 'adminbranch2@example.com',
+                'password' => Hash::make('password'),
+                'role' => 'Admin Branch',
             ],
         ];
 
