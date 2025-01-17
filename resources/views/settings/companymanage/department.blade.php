@@ -37,10 +37,12 @@
                     {{-- <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Department
                     </button> --}}
+                    @can('create departments')
                     <!-- Tombol Add Users -->
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addDepartmentsModal">
                         <i class="fas fa-building-user fa-md white-50"></i> Add Department
                     </button>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -63,9 +65,12 @@
                                     <td>{{ $department->name }}</td>
                                     <td>{{ $department->description }}</td>
                                     <td class="text-center d-flex">
+                                        @can('show departments')
                                         <a href="{{ route('departments.show', $department->id) }}" class="btn btn-info btn-circle mr-1">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('update departments')
                                         <button type="button" class="btn btn-warning btn-circle mr-1"
                                             data-toggle="modal"
                                             data-id="{{ $department->id }}"
@@ -75,11 +80,14 @@
                                             data-target="#editDepartmentsModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
+                                        @endcan
+                                        @can('delete departments')
                                         <form action="{{ route('departments.destroy', $department->id) }}" method="POST" id="deleteDepartmentsForm-{{ $department->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteDepartment({{ $department->id }})"><i class="fas fa-trash"></i></button>
                                         </form>
+                                        @endcan
                                     </td> 
                                 </tr>                               
                             @empty

@@ -38,9 +38,11 @@
                         <i class="fas fa-file-import fa-md white-50"></i> Import Branches
                     </button> --}}
                     <!-- Tombol Add Users -->
+                    @can('create warehouses')
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addWarehousesModal">
                         <i class="fas fa-warehouse fa-md white-50"></i> Add Warehouse
                     </button>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -65,9 +67,12 @@
                                     <td>{!! $warehouse->typeName !!}</td>
                                     <td>{!! $warehouse->statusName !!}</td>
                                     <td class="text-center d-flex">
+                                        @can('show warehouses')
                                         <a href="{{ route('warehouses.show', $warehouse->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('update warehouses')
                                         <button class="btn btn-warning mr-1 btn-circle"
                                             data-toggle="modal"
                                             data-id="{{ $warehouse->id }}"
@@ -83,6 +88,8 @@
                                             data-target="#editWarehouseModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
+                                        @endcan
+                                        @can('delete warehouses')
                                         <form action="{{ route('warehouses.destroy', $warehouse->id) }}" method="POST" id="deleteWarehouseForm-{{ $warehouse->id }}">
                                             @csrf
                                             @method('DELETE')
@@ -90,6 +97,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty

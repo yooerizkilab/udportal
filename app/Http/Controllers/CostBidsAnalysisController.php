@@ -12,6 +12,16 @@ use App\Models\CostBidsAnalysis;
 
 class CostBidsAnalysisController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view bids analysis', ['only' => ['index']]);
+        $this->middleware('permission:show bids analysis', ['only' => ['show']]);
+        $this->middleware('permission:create bids analysis', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update bids analysis', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:print bids analysis', ['only' => ['exportPdf']]);
+        $this->middleware('permission:delete bids analysis', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */

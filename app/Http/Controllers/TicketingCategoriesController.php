@@ -9,6 +9,18 @@ use App\Models\TicketsCategories;
 class TicketingCategoriesController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view ticketing categories', ['only' => ['index']]);
+        $this->middleware('permission:create ticketing categories', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update ticketing categories', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete ticketing categories', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

@@ -18,6 +18,14 @@ class VehicleReimbursementController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view vehicle reimbursements', ['only' => ['index']]);
+        $this->middleware('permission:show vehicle reimbursements', ['only' => ['show']]);
+        $this->middleware('permission:create vehicle reimbursements', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle reimbursements', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:approved vehicle reimbursements', ['only' => ['approved']]);
+        $this->middleware('permission:rejected vehicle reimbursements', ['only' => ['rejected']]);
+        $this->middleware('permission:export vehicle reimbursements', ['only' => ['exportExcel']]);
+        $this->middleware('permission:delete vehicle reimbursements', ['only' => ['destroy']]);
     }
 
     /**
@@ -60,7 +68,7 @@ class VehicleReimbursementController extends Controller
             'price' => 'required|numeric',
             'notes' => 'nullable|string',
             'attachment_mileage' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-            'receipt' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         // Simpan file jika ada
@@ -111,7 +119,7 @@ class VehicleReimbursementController extends Controller
      */
     public function show(string $id)
     {
-        $reimbursement = VehicleReimbursement::with('vehicle.assigned.employe', 'user')->find($id);
+        $reimbursement = VehicleReimbursement::with('vehicle.assigned.employe', 'user', 'approvedBy', 'rejectedBy')->find($id);
         return view('vehicles.reimbursement.show', compact('reimbursement'));
     }
 
@@ -128,7 +136,62 @@ class VehicleReimbursementController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'code' => 'required|string|exists:vehicle,code',
+            'date' => 'required|date',
+            'type' => 'required|string|in:Refueling,Parking,E-Toll',
+            'first_mileage' => 'nullable|numeric',
+            'last_mileage' => 'nullable|numeric',
+            'fuel' => 'nullable|string|in:Pertalite,Pertamax,Pertamax Turbo,Solar,Dex,Dex Lite,Shell Super,Shell V-Power,Shell V-Power Diesel',
+            'amount' => 'nullable|numeric',
+            'price' => 'required|numeric',
+            'notes' => 'nullable|string',
+            'attachment_mileage' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        // Simpan file jika ada
+        $mileageFile = null;
+        $receiptFile = null;
+
+        if ($request->hasFile('attachment_mileage')) {
+            $attachment_mileage = $request->file('attachment_mileage');
+            $mileageFile = time() . '.' . $attachment_mileage->getClientOriginalExtension();
+            $attachment_mileage->storeAs('public/vehicle/reimbursements/mileage', $mileageFile);
+        }
+
+        if ($request->hasFile('receipt')) {
+            $receipt = $request->file('receipt');
+            $receiptFile = time() . '.' . $receipt->getClientOriginalExtension();
+            $receipt->storeAs('public/vehicle/reimbursements/receipt', $receiptFile);
+        }
+
+        DB::beginTransaction();
+        try {
+            $getVehicle = Vehicle::where('code', $request->code)->first();
+            $reimbursement = VehicleReimbursement::find($id);
+            $reimbursement->update([
+                'vehicle_id' => $getVehicle->id,
+                'date_recorded' => $request->date,
+                'user_by' => auth()->user()->id,
+                'fuel' => $request->fuel,
+                'amount' => $request->amount,
+                'price' => $request->price,
+                'first_mileage' => $request->first_mileage,
+                'last_mileage' => $request->last_mileage,
+                'attachment_mileage' => $mileageFile,
+                'attachment_receipt' => $receiptFile,
+                'notes' => $request->notes,
+                'status' => 'Pending',
+                'type' => $request->type,
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Reimbursement ' . $getVehicle->brand . ' Updated Successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -154,8 +217,9 @@ class VehicleReimbursementController extends Controller
         try {
             $reimbursement = VehicleReimbursement::find($request->id);
             $reimbursement->update([
-                'user_by' => auth()->user()->id,
-                'status' => 'Approved'
+                'approved_by' => auth()->user()->id,
+                'status' => 'Approved',
+                'approved_at' => now()
             ]);
             DB::commit();
             return redirect()->back()->with('success', 'Reimbursement ' . $reimbursement->vehicle->brand . ' Approved Successfully');
@@ -171,9 +235,10 @@ class VehicleReimbursementController extends Controller
         try {
             $reimbursement = VehicleReimbursement::find($request->id);
             $reimbursement->update([
-                'user_by' => auth()->user()->id,
+                'rejected_by' => auth()->user()->id,
                 'reason' => $request->reason,
-                'status' => 'Rejected'
+                'status' => 'Rejected',
+                'rejected_at' => now()
             ]);
             DB::commit();
             return redirect()->back()->with('success', 'Reimbursement ' . $reimbursement->vehicle->brand . ' Rejected Successfully');
@@ -185,6 +250,11 @@ class VehicleReimbursementController extends Controller
 
     public function exportExcel(Request $request)
     {
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+
         $fileName = 'reimbursements_' . date('Y-m-d') . '.xlsx';
 
         // Validate dates if provided
@@ -194,7 +264,6 @@ class VehicleReimbursementController extends Controller
                 'end_date' => 'date|after_or_equal:start_date'
             ]);
         }
-
 
         try {
             return Excel::download(new ReimbursementsExport($request), $fileName);

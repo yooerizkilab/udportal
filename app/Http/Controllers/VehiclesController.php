@@ -13,11 +13,16 @@ use App\Models\VehicleAssignment;
 
 class VehiclesController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('permission:view vehicle', ['only' => ['index']]);
+        $this->middleware('permission:show vehicle', ['only' => ['show']]);
         $this->middleware('permission:create vehicle', ['only' => ['create', 'store']]);
+        $this->middleware('permission:assign vehicle', ['only' => ['assign']]);
         $this->middleware('permission:update vehicle', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete vehicle', ['only' => ['destroy']]);
     }
@@ -70,7 +75,7 @@ class VehiclesController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '-' . $photo->getClientOriginalName();
-            $photo->storeAs('public/vehicle/Photo', $photoFile);
+            $photo->storeAs('public/vehicle/photo', $photoFile);
         }
 
         $data = [
@@ -174,7 +179,7 @@ class VehiclesController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '-' . $photo->getClientOriginalName();
-            $photo->storeAs('public/vehicle/Photo', $photoFile);
+            $photo->storeAs('public/vehicle/photo', $photoFile);
         }
 
         $data = [

@@ -42,7 +42,7 @@
                             <th>Amount</th>
                             <th>Price</th>
                             <th>Status</th>
-                            <th class="text-center" width="15%">Action</th>
+                            <th class="text-center" width="10%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,14 +58,12 @@
                                 <td>{!! $reimbursement->statusName !!}</td>
                                 <td class="text-center">
                                     <div class="d-inline-flex">
+                                        @can('show vehicle reimbursements')
                                         <a href="{{ route('reimbursements.show', $reimbursement->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        @if ($reimbursement->status == 'Pending')
-                                            <button type="button" class="btn btn-warning mr-1 btn-circle" data-toggle="modal" data-target="#editReimbursementModal">
-                                                <i class="fas fa-pencil"></i>
-                                            </button>
-                                        @endif
+                                        @endcan
+                                        @can('delete vehicle reimbursements')
                                         <form action="{{ route('reimbursements.destroy', $reimbursement->id) }}" method="post" id="destroyReimbursementForm-{{ $reimbursement->id }}">
                                             @csrf
                                             @method('DELETE')
@@ -73,6 +71,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -92,9 +91,9 @@
 <div class="modal fade" id="claimParkingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Claim Parking</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header bg-gradient-primary d-flex justify-content-center">
+                <h4 class="modal-title font-weight-bold text-white mx-auto" id="exampleModalLabel">Claim Parking</h4>
+                <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -141,9 +140,9 @@
 <div class="modal fade" id="claimTollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Claim Toll</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header bg-gradient-primary d-flex justify-content-center">
+                <h4 class="modal-title font-weight-bold text-white mx-auto" id="exampleModalLabel">Claim Toll</h4>
+                <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -173,8 +172,8 @@
                         <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror" placeholder="Notes (optional)" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="attachment">Attachment</label>
-                        <input type="file" name="attachment" id="attachment" class="form-control @error('attachment') is-invalid @enderror">
+                        <label for="receipt">Receipt</label>
+                        <input type="file" name="receipt" id="receipt" class="form-control @error('receipt') is-invalid @enderror">
                     </div>
                 </form>
             </div>
@@ -190,9 +189,9 @@
 <div class="modal fade" id="claimBBMModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Claim BBM</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <div class="modal-header bg-gradient-primary d-flex justify-content-center">
+                <h4 class="modal-title font-weight-bold text-white mx-auto" id="exampleModalLabel">Claim BBM</h4>
+                <button class="close position-absolute" type="button" data-dismiss="modal" aria-label="Close" style="right: 15px; top: 15px;">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>

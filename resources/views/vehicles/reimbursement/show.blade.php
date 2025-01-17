@@ -33,55 +33,77 @@
     </div>
     <div class="card-body">
         <div class="row">
+            <!-- Vehicle Photo -->
             <div class="col-md-4">
                 <div class="mt-4 mb-3">
-                    <img src="https://auto2000.co.id/berita-dan-tips/_next/image?url=https%3A%2F%2Fastradigitaldigiroomuat.blob.core.windows.net%2Fstorage-uat-001%2Fmobil-mpv-adalah.jpg&w=3840&q=75" 
-                        class="img-fluid rounded shadow-sm border border-primary w-100">
+                    <img 
+                        src="{{ asset('storage/vehicle/Photo/' . ($reimbursement->vehicle->photo ?? 'default.jpg')) }}" 
+                        class="img-fluid rounded shadow-sm border border-primary w-100" 
+                        alt="Vehicle Photo">
                 </div>
             </div>
+        
+            <!-- Vehicle Details -->
             <div class="col-md-8">
+                <!-- Approval Status -->
                 <div class="text-left mb-4">
-                    <h3 class="font-weight-bold text-primary">Approved By: {{ $reimbursement->user->fullName ?? 'Un Approved' }}</h3>
+                    @if($reimbursement->approved_by)
+                        <h3 class="font-weight-bold text-success">
+                            Approved By: {{ optional($reimbursement->approvedBy)->fullName ?? '-' }} / 
+                            {{ $reimbursement->approved_at ? date('d F Y', strtotime($reimbursement->approved_at)) : '-' }}
+                        </h3>
+                    @elseif($reimbursement->rejected_by)
+                        <h3 class="font-weight-bold text-danger">
+                            Rejected By: {{ optional($reimbursement->rejectedBy)->fullName ?? '-' }} / 
+                            {{ $reimbursement->rejected_at ? date('d F Y', strtotime($reimbursement->rejected_at)) : '-' }}
+                        </h3>
+                    @else
+                        <h3 class="font-weight-bold text-warning">Pending Approval</h3>
+                    @endif
                 </div>
+        
+                <!-- Vehicle Name -->
+                <h3 class="font-weight-bold text-primary">
+                    Vehicle Name: {{ $reimbursement->vehicle->model ?? '-' }}
+                </h3>
+        
+                <!-- Vehicle Information -->
                 <div class="row">
+                    <!-- Left Column -->
                     <div class="col-md-6">
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Type</span>
-                            {!! $reimbursement->typeName !!}
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Status</span>
-                            {!! $reimbursement->statusName !!}
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Fuel</span>
-                            <span>{{ $reimbursement->fuel ?? '-' }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Date</span>
-                            <span>{{ date('d F Y', strtotime($reimbursement->date_recorded)) }}</span>
-                        </div>
+                        @foreach ([
+                            'Type' => $reimbursement->typeName ?? '-',
+                            'Status' => $reimbursement->statusName ?? '-',
+                            'Fuel' => $reimbursement->fuel ?? '-',
+                            'Date' => date('d F Y', strtotime($reimbursement->date_recorded ?? now()))
+                        ] as $label => $value)
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span class="font-weight-bold text-muted">{{ $label }}</span>
+                                <span>{!! $value !!}</span>
+                            </div>
+                        @endforeach
                     </div>
+        
+                    <!-- Right Column -->
                     <div class="col-md-6">
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">First Mileage</span>
-                            <span>{{ $reimbursement->first_mileage ?? '-' }} Mileage</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Last Mileage</span>
-                            <span>{{ $reimbursement->last_mileage ?? '-' }} Mileage</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Amount</span>
-                            <span>{{ $reimbursement->amount ?? '-' }} Liter</span>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
-                            <span class="font-weight-bold text-muted">Price</span>
-                            <span class="font-weight-bold text-primary">Rp {{ number_format($reimbursement->price,2) }}</span>
-                        </div>
+                        @foreach ([
+                            'First Mileage' => ($reimbursement->first_mileage ?? '-') . ' Mileage',
+                            'Last Mileage' => ($reimbursement->last_mileage ?? '-') . ' Mileage',
+                            'Amount' => ($reimbursement->amount ?? '-') . ' Liter',
+                            'Price' => 'Rp ' . number_format($reimbursement->price ?? 0, 2)
+                        ] as $label => $value)
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span class="font-weight-bold text-muted">{{ $label }}</span>
+                                <span class="{{ $label === 'Price' ? 'font-weight-bold text-primary' : '' }}">
+                                    {{ $value }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-                <h5 class="text-warning" >Notes: {{ $reimbursement->notes ?? '-' }}</h5>
+        
+                <!-- Notes and Reason -->
+                <h5 class="text-warning">Notes: {{ $reimbursement->notes ?? '-' }}</h5>
                 <h5 class="text-danger mb-3">Reason: {{ $reimbursement->reason ?? '-' }}</h5>
             </div>
         </div>

@@ -9,6 +9,19 @@ use App\Models\IncomingSupplier;
 class IncomingSupplierController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view incoming suppliers', ['only' => ['index']]);
+        $this->middleware('permission:show incoming suppliers', ['only' => ['show']]);
+        $this->middleware('permission:create incoming suppliers', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update incoming suppliers', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete incoming suppliers', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

@@ -19,6 +19,7 @@
             <h4 class="m-0 font-weight-bold text-white">Create Project</h4>
         </div>
         <div class="card-body">
+            @can('create projects')
             <form action="{{ route('projects.store') }}" method="post" id="addProjectForm">
                 @csrf
                 <div class="row">
@@ -61,6 +62,7 @@
                     <i class="fas fa-check"></i> Save Project
                 </button>
             </div>
+            @endcan
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead class="thead-light">
@@ -84,17 +86,20 @@
                                 <td>{{ $project->ppic }}</td>
                                 <td>{{ $project->address }}</td>
                                 <td class="text-center d-flex justify-content-center">
+                                    @can('update projects')
                                     <button type="button" class="btn btn-warning btn-circle mr-2" data-toggle="modal"
-                                    data-id="{{ $project->id }}"
-                                    data-name="{{ $project->name }}"
-                                    data-phone="{{ $project->phone }}"
-                                    data-email="{{ $project->email }}"
-                                    data-ppic="{{ $project->ppic }}"
-                                    data-address="{{ $project->address }}"
-                                    data-description="{{ $project->description }}"
-                                    data-target="#updateProjectModal">
+                                        data-id="{{ $project->id }}"
+                                        data-name="{{ $project->name }}"
+                                        data-phone="{{ $project->phone }}"
+                                        data-email="{{ $project->email }}"
+                                        data-ppic="{{ $project->ppic }}"
+                                        data-address="{{ $project->address }}"
+                                        data-description="{{ $project->description }}"
+                                        data-target="#updateProjectModal">
                                         <i class="fas fa-pen"></i>
                                     </button>
+                                    @endcan
+                                    @can('delete projects')
                                     <form action="{{ route('projects.destroy', $project->id) }}" method="post" id="deleteProjectForm{{ $project->id }}">
                                         @csrf
                                         @method('DELETE')
@@ -102,6 +107,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

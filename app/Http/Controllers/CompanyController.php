@@ -11,6 +11,11 @@ class CompanyController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view companies', ['only' => ['index']]);
+        $this->middleware('permission:show companies', ['only' => ['show']]);
+        $this->middleware('permission:create companies', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update companies', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete companies', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.

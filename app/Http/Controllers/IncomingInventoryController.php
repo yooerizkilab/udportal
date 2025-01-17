@@ -19,6 +19,12 @@ class IncomingInventoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view incoming plan', ['only' => ['index']]);
+        $this->middleware('permission:show incoming plan', ['only' => ['show']]);
+        $this->middleware('permission:create incoming plan', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update incoming plan', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:print incoming plan', ['only' => ['printPdf']]);
+        $this->middleware('permission:delete incoming plan', ['only' => ['destroy']]);
     }
 
     /**

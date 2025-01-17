@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\DB;
 class DepartmentController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view departments', ['only' => ['index']]);
+        $this->middleware('permission:show departments', ['only' => ['show']]);
+        $this->middleware('permission:create departments', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update departments', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete departments', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -43,7 +56,7 @@ class DepartmentController extends Controller
         // create a new department
         $data = [
             'company_id' => $request->company_id,
-            'code' => 'D' . str_pad(Department::count() + 1, 3, '0', STR_PAD_LEFT),
+            'code' => 'D' . str_pad(Department::count() + 1, 4, '0', STR_PAD_LEFT),
             'name' => $request->name,
             'description' => $request->description,
         ];

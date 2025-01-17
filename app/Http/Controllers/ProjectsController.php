@@ -9,6 +9,18 @@ use App\Models\Projects;
 class ProjectsController extends Controller
 {
     /**
+     * Create a new controller instance. 
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view projects', ['only' => ['index']]);
+        $this->middleware('permission:create projects', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update projects', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete projects', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()

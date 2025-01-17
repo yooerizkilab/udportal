@@ -11,6 +11,19 @@ use App\Models\Warehouses;
 class WarehouseController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view warehouses', ['only' => ['index']]);
+        $this->middleware('permission:show warehouses', ['only' => ['show']]);
+        $this->middleware('permission:create warehouses', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update warehouses', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete warehouses', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -73,7 +86,7 @@ class WarehouseController extends Controller
      */
     public function show(string $id)
     {
-        $warehouses = Warehouses::findOrFail($id);
+        $warehouses = Warehouses::with('company', 'branch')->findOrFail($id);
         return view('settings.companymanage.warehouseshow', compact('warehouses'));
     }
 

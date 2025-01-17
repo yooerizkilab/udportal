@@ -223,13 +223,13 @@ class SendNotifications extends Command
                 ->get();
 
             if ($incomings->isEmpty()) {
-                Log::info("No incoming shipments found for interval: {$interval}");
+                Log::info("No incomings found for interval: {$interval}");
                 continue;
             }
 
             foreach ($incomings as $incoming) {
-                $incomingItem = $incoming->item->name ?? 'Unknown Item Name';
-                $incomingQty = $incoming->quantity ?? 0;
+                $incomingFile = $incoming->attachment ?? 'Unknown Attachment';
+                $incomingEmail = $incoming->email_drop_site ?? 'Unknown Drop Site Email';
                 $incomingDrop = $incoming->phone_drop_site ?? 'Unknown Drop Site Phone';
                 $incomingWh = $incoming->drop->phone ?? 'Unknown Drop Warehouse Phone';
                 $branchName = $incoming->branch->name ?? 'Unknown Branch';
@@ -271,10 +271,11 @@ class SendNotifications extends Command
                     try {
                         $response = $this->qontakServices->sendMessage($phone, $name, $templateId, $body);
                         if ($response['status'] !== 'success') {
-                            // 
+                            Log::error("Failed to send notification for incoming ID {$incoming->id}: ", $response);
                         }
                     } catch (\Exception $e) {
                         // hendle the exception
+                        return $e->getMessage();
                     }
                 }
             }

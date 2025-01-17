@@ -16,10 +16,12 @@ class VehicleInsuranceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view vehicle insurance', ['only' => ['index']]);
-        $this->middleware('permission:create vehicle insurance', ['only' => ['store']]);
-        $this->middleware('permission:update vehicle insurance', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:delete vehicle insurance', ['only' => ['destroy']]);
+        $this->middleware('permission:view vehicle insurances', ['only' => ['index']]);
+        $this->middleware('permission:show vehicle insurances', ['only' => ['show']]);
+        $this->middleware('permission:create vehicle insurances', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle insurances', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:print vehicle insurances', ['only' => ['exportPdf']]);
+        $this->middleware('permission:delete vehicle insurances', ['only' => ['destroy']]);
     }
 
     /**

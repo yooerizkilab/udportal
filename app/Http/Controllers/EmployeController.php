@@ -8,6 +8,19 @@ use Illuminate\Http\Request;
 class EmployeController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view employees', ['only' => ['index']]);
+        $this->middleware('permission:show employees', ['only' => ['show']]);
+        $this->middleware('permission:create employees', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update employees', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete employees', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -37,7 +50,7 @@ class EmployeController extends Controller
      */
     public function show(string $id)
     {
-        $employees = Employe::find($id);
+        $employees = Employe::with('company', 'branch', 'department', 'user')->findOrFail($id);
         return view('settings.companymanage.employeshow', compact('employees'));
     }
 

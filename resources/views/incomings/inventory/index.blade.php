@@ -18,10 +18,12 @@
     <div class="card border-left-primary shadow h-100 py-2">
         <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
             <h4 class="m-0 font-weight-bold text-primary">List Incoming Inventory</h4>
+            @can('create incoming plan')
             <a href="{{ route('incomings-inventory.create') }}" class="btn btn-primary btn-md mr-2">
                 <i class="fas fa-tent-arrows-down"></i> 
                 Add Inventory
             </a>
+            @endcan
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -46,11 +48,22 @@
                             <td class="text-center">{!! $incoming->statusName !!}</td>
                             <td class="text-center">
                                 <div class="d-inline-flex">
-                                    <a href="{{ route('incomings-inventory.exportPdf', $incoming->id) }}" class="btn btn-success btn-circle mr-1"><i class="fas fa-print"></i></a>
-                                    <a href="{{ route('incomings-inventory.show', $incoming->id) }}" class="btn btn-info btn-circle mr-1"><i class="fas fa-eye"></i></a>
+                                    @can('print incoming plan')
+                                    <a href="{{ route('incomings-inventory.exportPdf', $incoming->id) }}" class="btn btn-success btn-circle mr-1">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    @endcan
+                                    @can('show incoming plan')
+                                    <a href="{{ route('incomings-inventory.show', $incoming->id) }}" class="btn btn-info btn-circle mr-1">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @endcan
+                                    @can('update incoming plan')
                                     <a href="{{ route('incomings-inventory.edit', $incoming->id) }}" class="btn btn-warning btn-circle mr-1">
                                         <i class="fas fa-pencil"></i>
                                     </a>
+                                    @endcan
+                                    @can('delete incoming plan')
                                     <form action="{{ route('incomings-inventory.destroy', $incoming->id) }}" method="post" id="destroyIncomingForm-{{ $incoming->id }}">
                                         @csrf
                                         @method('DELETE')
@@ -58,6 +71,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

@@ -9,12 +9,22 @@ use App\Models\ToolsTransaction;
 use App\Models\ToolsShipments;
 use App\Models\Tools;
 use App\Models\Projects;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ToolsTransactionController extends Controller
 {
+    /**
+     * Create a new controller instance. 
+     */
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view tools transaction', ['only' => ['index']]);
+        $this->middleware('permission:show tools transaction', ['only' => ['show']]);
+        $this->middleware('permission:print tools transaction', ['only' => ['generateDN']]);
+        $this->middleware('permission:create tools transaction', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update tools transaction', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete tools transaction', ['only' => ['destroy']]);
     }
 
     /**
@@ -49,8 +59,6 @@ class ToolsTransactionController extends Controller
      */
     public function store(Request $request)
     {
-
-        // return $request->all();
         // Validate the form data
         $request->validate([
             'type_delivery' => 'required|string|in:Delivery Note,Transfer,Return',
@@ -302,7 +310,13 @@ class ToolsTransactionController extends Controller
     public function generateDN(String $id)
     {
         $deliveryNote = ToolsTransaction::with(['user', 'tools.tool', 'sourceTransactions', 'destinationTransactions'])->findOrFail($id);
-        $pdf = Pdf::loadView('tools.transaction.dn', compact('deliveryNote'));
+        $qrcodeData = "Document Code: " . $deliveryNote->document_code . "\n" .
+            "Document Date: " . $deliveryNote->document_date . "\n" .
+            "Created By : " . $deliveryNote->user->fullName . "\n";
+        $qrcode = QrCode::generate($qrcodeData);
+        $qrCodeDataUri = 'data:image/png;base64,' . base64_encode($qrcode);
+
+        $pdf = Pdf::loadView('tools.transaction.dn', compact('deliveryNote', 'qrCodeDataUri'));
 
         // Return the PDF stream
         if ($deliveryNote->first()->type === 'Delivery Note') {

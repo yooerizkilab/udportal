@@ -20,33 +20,11 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="m-0 font-weight-bold text-primary">List Vehicles</h4>
                 <div class="d-flex align-items-center flex-wrap">
-                    <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
-                    <span class="mx-2">to</span>
-                    <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    <!-- Tombol PDF dengan AJAX -->
-                    {{-- <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2 mb-2">
-                        <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button> --}}
-                    <!-- Tombol Excel dengan AJAX -->
-                    <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2 mb-2">
-                        <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
-                    </button>
-                    <!-- Dropdown Filter -->
-                    {{-- <div class="dropdown ml-2 mb-2">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-filter fa-md white-50"></i> Filter
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div> --}}
-                    @can('create vehicle')
                     <!-- Tombol Import Data -->
-                    <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importVehiclesModal">
+                    @can('create vehicles')
+                    {{-- <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importVehiclesModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Vehicles
-                    </button>
+                    </button> --}}
                     <!-- Tombol Add Users -->
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addVehiclesModal">
                         <i class="fas fa-truck-fast fa-md white-50"></i> Add Vehicles
@@ -85,15 +63,20 @@
                                     <td>{!! $vehicle->badgeClass !!}</td>
                                     <td>
                                         <div class="d-inline-flex">
+                                            @can('show vehicles')
                                             <a href="{{ route('vehicles.show', $vehicle->id) }}" class="btn btn-info mr-1 btn-circle">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            @endcan
+                                            @can('assign vehicles')
                                             <button type="button" class="btn btn-primary mr-1 btn-circle"  
                                                 data-toggle="modal"
                                                 data-id="{{ $vehicle->id }}"
                                                 data-target="#assignVehiclesModal">
                                                 <i class="fas fa-users"></i>
                                             </button>
+                                            @endcan
+                                            @can('update vehicles')
                                             <button type="button" class="btn btn-warning mr-1 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $vehicle->id }}"
@@ -118,6 +101,8 @@
                                                 data-target="#updateVehiclesModal">
                                                 <i class="fas fa-pencil"></i>
                                             </button>
+                                            @endcan
+                                            @can('delete vehicles')
                                             <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="post" id="deleteVehiclesForm" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -125,6 +110,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -140,6 +126,7 @@
         </div>
     </div>
 
+    @can('view vehicle types')
     <div class="card shadow mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -167,6 +154,7 @@
                                     <td>{{ $vehiclesType->description }}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
+                                            @can('update vehicle types')
                                             <button type="button" class="btn btn-warning mr-2 btn-circle"
                                                 data-toggle="modal"
                                                 data-id="{{ $vehiclesType->id }}"
@@ -175,6 +163,8 @@
                                                 data-target="#editVehiclesTypeModal">
                                                 <i class="fas fa-pencil"></i>
                                             </button>
+                                            @endcan
+                                            @can('delete vehicle types')
                                             <form action="{{ route('types.destroy', $vehiclesType->id) }}" method="post" id="deleteVehiclesTypeForm" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -182,6 +172,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -196,6 +187,7 @@
             </div>
         </div>
     </div>
+    @endcan
 
     <!-- Modal Add Vehicles -->
     <div class="modal fade" id="addVehiclesModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">

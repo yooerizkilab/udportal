@@ -92,11 +92,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('warehouses', 'WarehouseController');
         Route::resource('employees', 'EmployeController');
         Route::resource('users', 'UsersController');
-        Route::post('users/exportPdf', 'UsersController@exportPDF')->name('users.exportPdf');
-        Route::post('users/exportExcel', 'UsersController@exportExcel')->name('users.exportExcel');
-        Route::post('users/importUsers', 'UsersController@importUsers')->name('users.importUsers');
         Route::resource('roles', 'RolesController');
-        Route::patch('roles/assignPermissions', 'RolesController@assignPermissions')->name('roles.assignPermissions');
+        Route::patch('assignPermissions', 'RolesController@assignPermissions')->name('assign-roles-permissions');
         Route::resource('permissions', 'PermissionsController');
     });
 

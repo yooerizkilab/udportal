@@ -23,18 +23,24 @@
                     </h4>
                     <div class="d-flex align-items-center flex-wrap">
                         @if($tickets->status == 'Open')
+                        @can('canceled ticketing')
                         <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#cancelModal">
                             <i class="fas fa-window-close"></i>
                             Cancelled
                         </button>
                         @endif
+
                         @if ($tickets->status != 'Closed' && $tickets->status != 'Cancelled')
+                        @can('solved ticketing')
                         <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-id="{{ $tickets->id }}" data-target="#solvedModal">
                             <i class="fas fa-check-circle"></i>
                             Solved Ticket
                         </button>
+                        @endcan
                         @endif
+
                         @if ($tickets->status == 'Open')
+                        @can('handle ticketing')
                         <form action="{{ route('ticketing.handle', $tickets->id) }}" method="post" id="handleTicketForm{{ $tickets->id }}">
                             @csrf
                             @method('PATCH')
@@ -42,7 +48,9 @@
                                 <i class="fas fa-handshake"></i> Handle Tickets
                             </button>
                         </form>
+                        @endcan
                         @endif
+
                         @if(Auth::user()->hasRole('Superadmin'))
                         <a href="{{ route('ticketing.index') }}" class="btn btn-light">
                             <i class="fas fa-reply"></i> Back
@@ -138,6 +146,7 @@
                     </div>
 
                     <!-- Add Comment Form -->
+                    @can('comment ticketing')
                     <form action="{{ route('ticketing.comment', $tickets->id) }}" method="POST" class="mt-4">
                         @csrf
                         @method('POST')
@@ -152,6 +161,7 @@
                             <i class="fas fa-paper-plane mr-1"></i>Submit Comment
                         </button>
                     </form>
+                    @endcan
                 </div>
             </div>
         </div>

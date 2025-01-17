@@ -17,7 +17,8 @@ class RolesController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:view roles', ['only' => ['index']]);
-        $this->middleware('permission:create roles', ['only' => ['create', 'store', 'assignPermissions']]);
+        $this->middleware('permission:create roles', ['only' => ['create', 'store']]);
+        $this->middleware('permission:assign roles', ['only' => ['assignPermissions']]);
         $this->middleware('permission:update roles', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete roles', ['only' => ['destroy']]);
     }
@@ -37,7 +38,7 @@ class RolesController extends Controller
      */
     public function create()
     {
-        //
+        return view();
     }
 
     /**
@@ -45,7 +46,6 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        //Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -70,7 +70,7 @@ class RolesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view();
     }
 
     /**
@@ -78,7 +78,7 @@ class RolesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view();
     }
 
     /**
@@ -86,7 +86,6 @@ class RolesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -131,16 +130,16 @@ class RolesController extends Controller
      * */
     public function assignPermissions(Request $request)
     {
-        // Validasi input
+        // return $request->all();
         $request->validate([
-            'role' => 'required|exists:roles,id',
+            'role_id' => 'required|exists:roles,id',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ]);
 
         DB::beginTransaction();
         try {
-            $role = Role::findOrFail($request->role);
+            $role = Role::findOrFail($request->role_id);
             $permissions = Permission::whereIn('id', $request->permissions)->get();
             $role->syncPermissions($permissions);
             DB::commit();

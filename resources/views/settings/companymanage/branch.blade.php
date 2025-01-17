@@ -38,9 +38,11 @@
                         <i class="fas fa-file-import fa-md white-50"></i> Import Branches
                     </button> --}}
                     <!-- Tombol Add Users -->
+                    @can('create branches')
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addBranchesModal">
                         <i class="fas fa-shop fa-md white-50"></i> Add Branches
                     </button>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -67,9 +69,12 @@
                                     <td>{{ $branch->type }}</td>
                                     <td>{!! $branch->activeBranch !!}</td>
                                     <td class="text-center d-flex">
+                                        @can('show branches')
                                         <a href="{{ route('branches.show', $branch->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('update branches')
                                         <button class="btn btn-warning mr-1 btn-circle"
                                             data-toggle="modal"
                                             data-id="{{ $branch->id }}"
@@ -84,11 +89,14 @@
                                             data-target="#editBranchesModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
+                                        @endcan
+                                        @can('delete branches')
                                         <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" id="deleteBranchesForm-{{ $branch->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteBranches({{ $branch->id }})"><i class="fas fa-trash"></i></button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty

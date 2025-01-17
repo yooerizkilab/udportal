@@ -11,12 +11,15 @@ use App\Models\Projects;
 
 class ToolsController extends Controller
 {
-
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('permission:view tools', ['only' => ['index']]);
-        $this->middleware('permission:create tools', ['only' => ['create', 'store', 'importTools', 'transfer']]);
+        $this->middleware('permission:show tools', ['only' => ['show']]);
+        $this->middleware('permission:create tools', ['only' => ['create', 'store']]);
         $this->middleware('permission:update tools', ['only' => ['edit', 'update']]);
         $this->middleware('permission:delete tools', ['only' => ['destroy']]);
     }
@@ -86,7 +89,7 @@ class ToolsController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '.' . $photo->getClientOriginalExtension();
-            $photo->storeAs('public/tools/thoto', $photoFile);
+            $photo->storeAs('public/tools/photo', $photoFile);
         }
 
         $tools = [
@@ -222,7 +225,7 @@ class ToolsController extends Controller
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = time() . '.' . $photo->getClientOriginalExtension();
-            $photo->storeAs('public/Tools/Photo', $photoFile);
+            $photo->storeAs('public/tools/photo', $photoFile);
         }
 
         $data = [

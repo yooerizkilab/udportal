@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use DOMDocument;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Tickets;
 use App\Models\TicketsCategories;
 use App\Models\Department;
@@ -18,14 +18,15 @@ class TicketingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view ticket', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create ticket', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update ticket', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:delete ticket', ['only' => ['destroy']]);
-        $this->middleware('permission:comment ticket', ['only' => ['comment']]);
-        $this->middleware('permission:handle ticket', ['only' => ['hendle']]);
-        $this->middleware('permission:solved ticket', ['only' => ['solved']]);
-        $this->middleware('permission:cancel ticket', ['only' => ['canceled']]);
+        $this->middleware('permission:view ticketing', ['only' => ['index']]);
+        $this->middleware('permission:show ticketing', ['only' => ['show']]);
+        $this->middleware('permission:create ticketing', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update ticketing', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:handle ticketing', ['only' => ['handle']]);
+        $this->middleware('permission:comment ticketing', ['only' => ['comment']]);
+        $this->middleware('permission:solved ticketing', ['only' => ['solved']]);
+        $this->middleware('permission:cenceled ticketing', ['only' => ['cenceled']]);
+        $this->middleware('permission:delete ticketing', ['only' => ['destroy']]);
     }
 
     /**
@@ -97,20 +98,7 @@ class TicketingController extends Controller
             'description' => 'required',
         ]);
 
-        $dom = new \DomDocument();
-        $dom->loadHtml($request->description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $images = $dom->getElementsByTagName('img');
-        foreach ($images as $image) {
-            $data = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-            $imageName = "/upload/tickets/" . time() . '.png';
-            file_put_contents(public_path($imageName), $data);
-            $image->removeAttribute('src');
-            $image->setAttribute('src', $imageName);
-        }
-
-        $request->merge([
-            'description' => $dom->saveHTML(),
-        ]);
+        $description = $this->processDescriptionImages($request->description);
 
         // Generate code Ticket EX: Ticket-00001
         $code = 'Ticket-' . str_pad(Tickets::count() + 1, 5, '0', STR_PAD_LEFT);
@@ -122,7 +110,7 @@ class TicketingController extends Controller
             'assigned_id' => $request->assignee_to,
             'code' => $code,
             'title' => $request->title,
-            'description' => $request->description, // From summernote
+            'description' => $description,
             'priority' => $request->priority,
         ];
 
@@ -159,45 +147,39 @@ class TicketingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'category_id' => 'required|exists:tickets_categories,id',
-            'assignee_to' => 'required|exists:departments,id',
-            'title' => 'required|string|max:100',
-            'priority' => 'required|string|in:Low,Medium,High',
-            'description' => 'required',
-        ]);
-
-        $ticket = Tickets::findOrFail($id);
-
-        $dom = new \DomDocument();
-        $dom->loadHtml($request->description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $images = $dom->getElementsByTagName('img');
-        foreach ($images as $image) {
-            $data = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-            $imageName = "/upload/tickets/" . time() . '.png';
-            file_put_contents(public_path($imageName), $data);
-            $image->removeAttribute('src');
-            $image->setAttribute('src', $imageName);
-        }
-
-        $request->merge([
-            'description' => $dom->saveHTML(),
-        ]);
-
-        $data = [
-            'category_id' => $request->category_id,
-            'assigned_id' => $request->assignee_to,
-            'title' => $request->title,
-            'description' => $request->description,
-            'priority' => $request->priority,
-        ];
-
-        DB::beginTransaction();
         try {
-            $ticket->update($data); // Update data
-            $ticket = Tickets::findOrFail($id); // Ambil data ulang untuk memastikan objek
+            // Validate request data
+            $request->validate([
+                'category_id' => 'required|exists:tickets_categories,id',
+                'assignee_to' => 'required|exists:departments,id',
+                'title' => 'required|string|max:100',
+                'priority' => 'required|string|in:Low,Medium,High',
+                'description' => 'required|string',
+            ]);
+
+            // Find ticket or throw 404
+            $ticket = Tickets::findOrFail($id);
+
+            // Process description HTML and handle images
+            $description = $this->processDescriptionImages($request->description);
+
+            // Prepare update data
+            $data = [
+                'category_id' => $request->category_id,
+                'assigned_id' => $request->assignee_to,
+                'title' => $request->title,
+                'priority' => $request->priority,
+                'description' => $description,
+                'updated_at' => now(),
+            ];
+
+            DB::beginTransaction();
+
+            // Update ticket
+            $ticket->update($data);
+            // Log the ticket update
             DB::commit();
-            return redirect()->back()->with('success', 'Ticket ' . $ticket->code . ' updated successfully');
+            return redirect()->back()->with('success', "Ticket {$ticket->code} updated successfully");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
@@ -277,19 +259,11 @@ class TicketingController extends Controller
             'attachment' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         ]);
 
-        $dom = new \DomDocument();
-        $dom->loadHtml($request->solution, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        $images = $dom->getElementsByTagName('img');
-        foreach ($images as $image) {
-            $data = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-            $imageName = "/upload/tickets/solution/" . time() . '.png';
-            file_put_contents(public_path($imageName), $data);
-            $image->removeAttribute('src');
-            $image->setAttribute('src', $imageName);
-        }
+        // Process description HTML and handle images
+        $attachment = $this->processDescriptionImages($request->attachment);
 
         $request->merge([
-            'solution' => $dom->saveHTML(),
+            'solution' => $attachment
         ]);
 
         $data = [
@@ -337,5 +311,58 @@ class TicketingController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Process HTML description and handle embedded images
+     *
+     * @param string $description
+     * @return string
+     */
+    private function processDescriptionImages(string $description): string
+    {
+        // Configure DOMDocument
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $dom->loadHtml($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $images = $dom->getElementsByTagName('img');
+
+        // Process each image
+        foreach ($images as $image) {
+            $imageSource = $image->getAttribute('src');
+
+            // Skip if not base64 encoded
+            if (!str_contains($imageSource, 'base64,')) {
+                continue;
+            }
+
+            try {
+                // Extract and decode base64 image
+                $base64Data = explode(',', explode(';', $imageSource)[1])[1];
+                $imageData = base64_decode($base64Data);
+
+                if ($imageData === false) {
+                    continue;
+                }
+
+                // Generate unique filename
+                $filename = 'tickets/attachment/' . time() . '.png';
+
+                // Store image
+                Storage::disk('public')->put($filename, $imageData);
+
+                // Update image source
+                $image->removeAttribute('src');
+                $image->setAttribute('src', Storage::url($filename));
+            } catch (\Exception $e) {
+                // Handle image processing error
+                return $e->getMessage();
+                continue;
+            }
+        }
+
+        return $dom->saveHTML();
     }
 }

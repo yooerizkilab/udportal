@@ -10,6 +10,19 @@ use App\Models\Company;
 class BranchController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view branches', ['only' => ['index']]);
+        $this->middleware('permission:show branches', ['only' => ['show']]);
+        $this->middleware('permission:create branches', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update branches', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete branches', ['only' => ['destroy']]);
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -46,10 +59,11 @@ class BranchController extends Controller
         ]);
 
         // store the photo
+        $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
-            $photo->move(public_path('img/branch'), $photoFile);
+            $photo->storeAs('public/branch/photo', $photoFile);
         }
 
         // create a new branch
@@ -114,10 +128,11 @@ class BranchController extends Controller
         ]);
 
         // store the photo
+        $photoFile = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $photoFile = $request->name . '-' . '.' . $photo->getClientOriginalExtension();
-            $photo->move(public_path('img/branch'), $photoFile);
+            $photo->storeAs('public/branch/photo', $photoFile);
         }
 
         // update the branch

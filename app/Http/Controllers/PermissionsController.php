@@ -8,7 +8,9 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
-
+    /**
+     * Create a new controller instance. 
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -23,7 +25,7 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-        //
+        return view();
     }
 
     /**
@@ -31,7 +33,7 @@ class PermissionsController extends Controller
      */
     public function create()
     {
-        //
+        return view();
     }
 
     /**
@@ -39,7 +41,6 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -64,7 +65,7 @@ class PermissionsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view();
     }
 
     /**
@@ -72,7 +73,7 @@ class PermissionsController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view();
     }
 
     /**
@@ -80,7 +81,6 @@ class PermissionsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
         ]);

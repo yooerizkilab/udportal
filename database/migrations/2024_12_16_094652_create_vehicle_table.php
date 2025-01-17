@@ -104,7 +104,7 @@ return new class extends Migration
             $table->date('date_recorded');
             $table->unsignedBigInteger('user_by')->nullable();
             $table->string('fuel', 50)->nullable();
-            $table->decimal('amount', 15, 2)->nullable();
+            $table->string('amount', 100)->nullable();
             $table->decimal('price', 15, 2);
             $table->string('first_mileage', 100)->nullable();
             $table->string('last_mileage', 100)->nullable();
@@ -113,6 +113,10 @@ return new class extends Migration
             $table->longText('notes')->nullable();
             $table->string('reason')->nullable();
             $table->enum('status', ['Approved', 'Pending', 'Rejected'])->default('Pending');
+            $table->date('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->date('rejected_at')->nullable();
+            $table->foreignId('rejected_by')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('type', ['Refueling', 'Parking', 'E-Toll']);
             $table->timestamps();
             $table->softDeletes();

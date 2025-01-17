@@ -22,8 +22,9 @@ class ContractController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('permission:view contracts', ['only' => ['index', 'show']]);
-        $this->middleware('permission:create contracts', ['only' => ['create', 'store']]);
-        $this->middleware('permission:edit contracts', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:create contracts', ['only' => ['create', 'store', 'importContract']]);
+        $this->middleware('permission:update contracts', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:print contracts', ['only' => ['export', 'exportExcel']]);
         $this->middleware('permission:delete contracts', ['only' => ['destroy']]);
     }
 
@@ -180,6 +181,9 @@ class ContractController extends Controller
         }
     }
 
+    /**
+     * Export the specified resource to PDF. 
+     */
     public function export($id)
     {
         $contract = Contract::findOrFail($id);
@@ -188,6 +192,9 @@ class ContractController extends Controller
         return $pdf->stream($newFilename);
     }
 
+    /**
+     * Export the specified resource to Excel. 
+     */
     public function exportExcel(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -201,14 +208,25 @@ class ContractController extends Controller
         return Excel::download(new ContractExport($startDate, $endDate), 'all-contracts-' . date('d-m-Y') . '.xlsx');
     }
 
+    /**
+     * Import the specified resource from Excel. 
+     */
     public function importContract(Request $request)
     {
+        $request->validate([
+            'file' => 'required|mimes:csv,xlsx, xls',
+        ]);
+
         $file = $request->file('file');
+
         if (!$file) {
             return redirect()->back()->with('error', 'File not found.');
         }
-        Excel::import(new ContractImport, $file);
-
-        return redirect()->back()->with('success', 'Data berhasil diimport.');
+        try {
+            Excel::import(new ContractImport, $file);
+            return redirect()->back()->with('success', 'Data kontrak berhasil diimport.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

@@ -21,6 +21,7 @@
         <div class="card-body">
             <div class="row">
                 <!-- form add vehicle insurance -->
+                @can('create vehicle insurances')
                 <div class="col-4">
                     <form action="{{ route('insurances.store') }}" method="POST" id="addInsurancesForm">
                         @csrf
@@ -59,6 +60,7 @@
                         </button>
                     </div>
                 </div>
+                @endcan
                 <!--- List Car Insurance --->
                 <div class="col-8">
                     <div class="table-responsive">
@@ -89,12 +91,17 @@
                                         <td><span class="badge badge-{{ $insurance->status == 'Active' ? 'success' : 'danger' }}">{{ $insurance->status }}</span></td>
                                         <td class="text-center">
                                             <div class="d-inline-flex">
+                                                @can('print vehicle insurances')
                                                 <a href="{{ route('insurances.exportPdf', $insurance->id) }}" class="btn btn-sm btn-success mr-1 btn-circle">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                @endcan
+                                                @can('show vehicle insurances')
                                                 <a href="{{ route('insurances.show', $insurance->id) }}" class="btn btn-sm btn-info mr-1 btn-circle">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @endcan
+                                                @can('update vehicle insurances')
                                                 <button type="button" class="btn btn-sm btn-warning mr-1 btn-circle"
                                                     data-toggle="modal"
                                                     data-id="{{ $insurance->id }}"
@@ -108,6 +115,8 @@
                                                     data-target="#updateInsurancesModal">
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
+                                                @endcan
+                                                @can('delete vehicle insurances')
                                                 <form action="{{ route('insurances.destroy', $insurance->id) }}" method="post" id="deleteInsurancesForm-{{ $insurance->id }}">
                                                     @csrf
                                                     @method('delete')
@@ -115,6 +124,7 @@
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>

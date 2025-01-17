@@ -173,19 +173,20 @@
     <div class="container">
         <div class="header">
             <div class="company-logo">
-                <!-- Logo placeholder -->
-                <div style="width: 150px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">LOGO</div>
+                <div style="width: 50px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">
+                    <img src="{{ public_path('companies/compenies.jpg') }}" alt="" width="100%" height="100%">
+                </div>
             </div>
             <div class="document-title">
                 <h1>DELIVERY NOTE</h1>
                 <p>Document Number: {{ $deliveryNote->document_code }}</p>
             </div>
             <div class="qr-code">
-                <!-- QR Code placeholder -->
-                <div style="width: 50px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">QR</div>
+                <div style="width: 50px; height: 50px; border: 1px solid #ccc; text-align: center; line-height: 50px;">
+                    <img src="{{ $qrCodeDataUri }}" alt="QR Code" width="100%" height="100%">
+                </div>
             </div>
         </div>
-
         <table class="doc-info">
             <tr>
                 <td class="label">Document Date</td>

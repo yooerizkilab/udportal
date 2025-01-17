@@ -18,7 +18,12 @@
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h4 class="m-0 font-weight-bold text-primary">Delivery Note & Transfer</h4>
-                <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-md"><i class="fas fa-truck-moving"></i> Add Delivery Note</a>
+                @can('create tools transactions')
+                <a href="{{ route('transactions.create') }}" class="btn btn-primary btn-md">
+                    <i class="fas fa-truck-moving"></i> 
+                    Add Delivery Note
+                </a>
+                @endcan
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -43,11 +48,22 @@
                                     <td>{!! $transaction->statusName !!}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
-                                            <a href="{{ route('transactions.generateDN', $transaction->id) }}" class="btn btn-success btn-circle mr-2"><i class="fas fa-print"></i></a>
-                                            <a href="{{ route('transactions.show', $transaction->id) }}" class="btn btn-info btn-circle mr-2"><i class="fas fa-eye"></i></a>
+                                            @can('print tools transactions')
+                                            <a href="{{ route('transactions.generateDN', $transaction->id) }}" class="btn btn-success btn-circle mr-2">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+                                            @endcan
+                                            @can('show tools transactions')
+                                            <a href="{{ route('transactions.show', $transaction->id) }}" class="btn btn-info btn-circle mr-2">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            @endcan
+                                            @can('update tools transactions')
                                             @if($transaction->delivery_date > date('Y-m-d'))
                                             <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-warning btn-circle mr-2"><i class="fas fa-pencil"></i></a>
                                             @endif
+                                            @endcan
+                                            @can('delete tools transactions')
                                             <form action="{{ route('transactions.destroy', $transaction->id) }}" method="post" id="deleteDeliveryNoteForm-{{ $transaction->id }}">
                                                 @csrf
                                                 @method('DELETE')
@@ -55,6 +71,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

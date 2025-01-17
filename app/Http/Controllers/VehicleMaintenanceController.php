@@ -10,15 +10,19 @@ use App\Models\VehicleMaintenance;
 
 class VehicleMaintenanceController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view vehicle maintenance', ['only' => ['index']]);
-        $this->middleware('permission:create vehicle maintenance', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update vehicle maintenance', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:complete vehicle maintenance', ['only' => ['completeMaintenance']]);
-        $this->middleware('permission:cancel vehicle maintenance', ['only' => ['cancelMaintenance']]);
-        $this->middleware('permission:delete vehicle maintenance', ['only' => ['destroy']]);
+        $this->middleware('permission:view vehicle maintenances', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle maintenances', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle maintenances', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:complete vehicle maintenances', ['only' => ['completeMaintenance']]);
+        $this->middleware('permission:cancel vehicle maintenances', ['only' => ['cancelMaintenance']]);
+        $this->middleware('permission:print vehicle maintenances', ['only' => ['printMaintenance']]);
+        $this->middleware('permission:delete vehicle maintenances', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.

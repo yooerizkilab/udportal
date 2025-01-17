@@ -83,11 +83,8 @@
     </div>
     @endif
 
-    {{--  get session --}}
-    <h4>SESSION : {{ session('company_db') }}</h4>
-
     <!-- Content may profile photo end decription for Users -->
-    {{-- <div class="row">
+    <div class="row">
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-gradient-primary text-white">
@@ -97,10 +94,7 @@
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <div class="profile-photo-container mb-3">
-                                <img src="https://randomuser.me/api/portraits/men/47.jpg" 
-                                    alt="Profile Photo" 
-                                    class="rounded-circle img-thumbnail"
-                                    style="width: 200px; height: 200px; object-fit: cover;">
+                                <img src="{{ asset('storage/employees/photo/' . auth()->user()->employe->photo) }}" alt="Profile Photo" class="rounded-circle img-thumbnail"style="width: 200px; height: 200px; object-fit: cover;">
                             </div>
                         </div> 
                         <div class="col-md-8">
@@ -132,7 +126,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
     
 @endsection
 

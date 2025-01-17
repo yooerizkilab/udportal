@@ -20,26 +20,15 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="m-0 font-weight-bold text-primary">List Contracts</h4>
                 <div class="d-flex align-items-center flex-wrap">
+                    @can('print contracts')
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    {{-- <button type="button" onclick="exportPDF()" class="btn btn-info btn-md ml-2 mb-2">
-                        <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button> --}}
                     <button type="button" onclick="exportExcel()" class="btn btn-success btn-md ml-2 mb-2">
                         <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                     </button>
-                    <!-- Dropdown Filter -->
-                    {{-- <div class="dropdown ml-2 mb-2">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-filter fa-md white-50"></i> Print Filter
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">Status Kontrak</a>
-                            <a class="dropdown-item" href="">Status Proyek</a>
-                            <a class="dropdown-item" href="">Status</a>
-                        </div>
-                    </div> --}}
+                    @endcan
+                    @can('create contracts')
                     <!-- Tombol Import Data Contracts -->
                     <button type="button" class="btn btn-warning btn-md ml-2 mb-2" data-toggle="modal" data-target="#importContractsModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Contracts
@@ -48,6 +37,7 @@
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addContractsModal">
                         <i class="fas fa-file-contract fa-md white-50"></i> Add Contracts
                     </button>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -79,12 +69,17 @@
                                     <td>{{ $contract->masa_berlaku }}</td>
                                     <td class="text-center">
                                         <div class="d-inline-flex">
+                                            @can('view contracts')
                                             <a href="{{ route('contract.show', $contract->id) }}" class="btn btn-info mr-2 btn-circle">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            @endcan
+                                            @can('print contracts')
                                             <a href="{{ route('contract.export', $contract->id) }}" class="btn btn-success btn-circle mr-2">
                                                 <i class="fas fa-download"></i>
                                             </a>
+                                            @endcan
+                                            @can('update contracts')
                                             <button type="button" class="btn btn-warning btn-circle mr-2" data-toggle="modal"
                                                 data-id="{{ $contract->id }}"
                                                 data-code="{{ $contract->code }}"
@@ -115,6 +110,8 @@
                                                 data-target="#editContractsModal">
                                                 <i class="fas fa-pencil"></i>
                                             </button>
+                                            @endcan
+                                            @can('delete contracts')
                                             <form action="{{ route('contract.destroy', $contract->id) }}" method="post" id="deleteContractsForm-{{ $contract->id }}" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -122,6 +119,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>   

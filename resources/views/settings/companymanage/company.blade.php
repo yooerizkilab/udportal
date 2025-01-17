@@ -38,9 +38,11 @@
                         <i class="fas fa-file-import fa-md white-50"></i> Import Companies
                     </button> --}}
                     <!-- Tombol Add Users -->
+                    @can('create companies')
                     <button type="button" class="btn btn-primary btn-md ml-2 mb-2" data-toggle="modal" data-target="#addCompaniesModal">
                         <i class="fas fa-building fa-md white-50"></i> Add Companies
                     </button>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -63,9 +65,12 @@
                                     <td>{{ $company->name }}</td>
                                     <td>{{ $company->address }}</td>
                                     <td class="text-center d-flex">
+                                        @can('show companies')
                                         <a href="{{ route('companies.show', $company->id) }}" class="btn btn-info mr-1 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('update companies')
                                         <button class="btn btn-warning mr-1 btn-circle"
                                             data-toggle="modal"
                                             data-id="{{ $company->id }}"
@@ -79,11 +84,14 @@
                                             data-target="#editCompaniesModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
+                                        @endcan
+                                        @can('delete companies')
                                         <form action="{{ route('companies.destroy', $company->id) }}" method="POST" id="deleteCompaniesForm-{{ $company->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-circle" onclick="deleteCompanies({{ $company->id }})" ><i class="fas fa-trash"></i></button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty
@@ -112,25 +120,17 @@
                     <form action="{{ route('companies.store') }}" method="POST" id="addCompaniesForm">
                         @csrf
                         <div class="form-group">
-                            <label for="company">Company</label>
-                            <input type="text" name="company" class="form-control" id="company" placeholder="Company" required>
+                            <label for="name">Company</label>
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Company" required>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" class="form-control" id="name" placeholder="Name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" name="email" class="form-control" id="email" placeholder="Email">
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
                                     <input type="text" name="phone" class="form-control" id="phone" placeholder="Phone">
@@ -170,25 +170,17 @@
                         @csrf
                         @method('PUT')
                         <div class="form-group">
-                            <label for="company">Company</label>
-                            <input type="text" name="company" class="form-control" id="company" placeholder="Company" required>
+                            <label for="name">Company</label>
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Company" required>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" class="form-control" id="name" placeholder="Name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" name="email" class="form-control" id="email" placeholder="Email">
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
                                     <input type="text" name="phone" class="form-control" id="phone" placeholder="Phone">

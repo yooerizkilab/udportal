@@ -20,6 +20,7 @@
             <h4 class="m-0 font-weight-bold text-white">{{ __('Create Ticket Category & List Ticket Category') }}</h4>
         </div>
         <div class="card-body">
+            @can('create ticketing categories')
             <form action="{{ route('ticketing-categories.store') }}" method="POST" id="addTicketCategoryForm">
                 @csrf
                 <div class="row">
@@ -42,7 +43,7 @@
                     <i class="fas fa-receipt"></i> Save
                 </button>
             </div>
-            
+            @endcan
             <!-- Table -->
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -62,6 +63,7 @@
                                 <td>{{ $category->description }}</td>
                                 <td class="text-center">
                                     <div class="d-inline-flex">
+                                        @can('update ticketing categories')
                                         <button type="button" class="btn btn-warning btn-circle mr-2" 
                                             data-toggle="modal"
                                             data-target="#updateModal"
@@ -70,13 +72,16 @@
                                             data-description="{{ $category->description }}">
                                             <i class="fas fa-pencil-alt"></i>
                                         </button>
+                                        @endcan
+                                        @can('delete ticketing categories')
                                         <form action="{{ route('ticketing-categories.destroy', $category->id) }}" method="POST" class="d-inline" id="deleteTicketCategoryForm-{{ $category->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-circle" onclick="confirmDeleteTicketCategory({{ $category->id }})">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                        </form>                                        
+                                        </form>
+                                        @endcan                                    
                                     </div>
                                 </td>
                             </tr>

@@ -37,9 +37,11 @@
                         <i class="fas fa-file-import fa-md white-50"></i> Import Employess
                     </button> --}}
                     <!-- Tombol Add Users -->
+                    @can('create users')
                     <a href="{{ route('users.index') }}" class="btn btn-primary btn-md ml-2 mb-2">
                         <i class="fas fa-address-card fa-md white-50"></i> Add Employess
                     </a>
+                    @endcan
                 </div>
             </div> 
             <div class="card-body">
@@ -74,7 +76,9 @@
                                     <td>{{ $employee->age }}</td>
                                     <td>{!! $employee->activeUsers !!}</td>
                                     <td class="text-center">
+                                        @can('show employees')
                                         <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-circle"><i class="fas fa-eye"></i></a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty

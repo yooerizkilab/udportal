@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\Company;
@@ -83,11 +82,11 @@ class UsersController extends Controller
         $code = 'EMP' . $randomString  . str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT);
 
         // Upload photo
+        $fileName = null;
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $fileName = $request->first_name . '-' . $request->last_name . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/users'), $fileName);
-            $request->merge(['photo' => $fileName]);
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/employees/photo', $fileName);
         }
 
         // Users
@@ -115,7 +114,7 @@ class UsersController extends Controller
             'address' => $request->address,
             'position' => $request->position,
             'age' => $request->age,
-            'photo' => $request->photo
+            'photo' => $fileName
         ];
 
         // Insert into database
@@ -138,7 +137,8 @@ class UsersController extends Controller
      */
     public function show(string $id)
     {
-        $users = User::with('employe')->findOrFail($id);
+        $users = User::with('employe.company', 'employe.department', 'employe.branch')->findOrFail($id);
+        // return $users;
         return view('settings.usersmanagement.showuser', compact('users'));
     }
 
@@ -160,32 +160,30 @@ class UsersController extends Controller
 
         // Validasi input
         $request->validate([
-            'nik' => 'required|string|max:16|unique:employe,nik,' . $users->employe->id,
+            'nik' => 'required|string|max:16|unique:employees,nik,' . $users->employe->id,
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $users->id,
-            'email' => 'required|string|email|max:255|unique:users,email,' . $users->id,
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $users->id,
             'password' => 'nullable|string|min:8|confirmed',
             'roles' => 'required|exists:roles,id',
-            'phone' => 'required|numeric|unique:employe,phone,' . $users->employe->id,
-            'gender' => 'required|in:Male,Female',
-            'age' => 'required|integer|min:0',
-            'position' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'company_id' => 'required|exists:company,id',
-            'department_id' => 'required|exists:department,id',
-            'branch_id' => 'required|exists:branch,id',
+            'phone' => 'nullable|numeric|unique:employees,phone,' . $users->employe->id,
+            'gender' => 'nullable|in:Male,Female',
+            'age' => 'nullable|integer|min:0',
+            'position' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'company_id' => 'nullable|exists:companies,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Jika photo diubah maka hapus photo lama
+        $fileName = null;
         if ($request->hasFile('photo')) {
-            if ($users->employe->photo) {
-                Storage::disk('public')->delete('uploads/users/' . $users->employe->photo);
-            }
-            $fileName = $request->first_name . '-' . $request->last_name . '.' . $request->file('photo')->getClientOriginalExtension();
-            $request->file('photo')->storeAs('uploads/users', $fileName, 'public');
-            $request->merge(['photo' => $fileName]);
+            $file = $request->file('photo');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/employees/photo', $fileName);
         }
 
         // Jika password tidak diubah, gunakan password lama
@@ -211,8 +209,8 @@ class UsersController extends Controller
             'address',
             'position',
             'age',
-            'photo'
         ]);
+        $employeUpdate['photo'] = $fileName;
         $employeUpdate['full_name'] = $request->first_name . ' ' . $request->last_name;
 
         // Update data to database
@@ -248,24 +246,6 @@ class UsersController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
-    }
-
-    public function exportPdf(Request $request)
-    {
-        // Validate the request
-        $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-        ]);
-
-        // Get the start date and end date
-        $startDate = request('start_date');
-        $endDate = request('end_date');
-
-        $users = User::whereBetween('created_at', [$startDate, $endDate])->get();
-
-        // $pdf = PDF::loadView('settings.usersmanagement.pdf', compact('users'));
-        // return $pdf->stream('users.pdf');
     }
 
     public function exportExcel(Request $request)

@@ -8,14 +8,18 @@ use App\Models\VehicleType;
 
 class VehicleTypeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view vehicle categories', ['only' => ['index']]);
-        $this->middleware('permission:create vehicle categories', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update vehicle categories', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:delete vehicle categories', ['only' => ['destroy']]);
+        $this->middleware('permission:view vehicle types', ['only' => ['index']]);
+        $this->middleware('permission:create vehicle types', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update vehicle types', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete vehicle types', ['only' => ['destroy']]);
     }
+
     /**
      * Display a listing of the resource.
      */

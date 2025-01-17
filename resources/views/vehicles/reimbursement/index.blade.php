@@ -19,6 +19,7 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
             <h4 class="m-0 font-weight-bold text-primary">List Vehicles Reimbursements</h4>
             <div class="d-flex align-items-center flex-wrap">
+                @can('export vehicle reimbursements')
                 <select name="user_name" class="form-control mr-2 mb-2 w-auto" id="userName">
                     <option value="" disabled selected>--Select Users--</option>
                     @foreach ($users as $user)
@@ -38,6 +39,7 @@
                     <a class="dropdown-item" href="#" id="exportApproved">Export Approved</a>
                     <a class="dropdown-item" href="#" id="printFiltered">Export Filtered</a>
                 </div>
+                @endcan
             </div>
         </div>
         <div class="card-body">
@@ -72,6 +74,7 @@
                                 <td class="text-center">
                                     <div class="d-inline-flex">
                                         @if ($reimbursement->status == 'Pending')
+                                            @can('approved vehicle reimbursements')
                                             <form action="{{ route('reimbursements.approved', $reimbursement->id) }}" method="post" id="approveReimbursementForm-{{ $reimbursement->id }}">
                                                 @csrf
                                                 @method('PATCH')
@@ -79,6 +82,8 @@
                                                     <i class="fas fa-check"></i>
                                                 </button>
                                             </form>
+                                            @endcan
+                                            @can('rejected vehicle reimbursements')
                                             <form action="{{ route('reimbursements.rejected', $reimbursement->id) }}" method="post" id="rejectReimbursementForm-{{ $reimbursement->id }}">
                                                 @csrf
                                                 @method('PATCH')
@@ -87,10 +92,14 @@
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         @endif
+                                        @can('show vehicle reimbursements')
                                         <a href="{{ route('reimbursements.show', $reimbursement->id) }}" class="btn btn-info btn-circle mr-1">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        @can('delete vehicle reimbursements')
                                         <form action="{{ route('reimbursements.destroy', $reimbursement->id) }}" method="post" id="destroyReimbursementForm-{{ $reimbursement->id }}">
                                             @csrf
                                             @method('DELETE')
@@ -98,6 +107,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>       

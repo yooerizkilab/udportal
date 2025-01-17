@@ -16,12 +16,14 @@ class ToolsMaintenanceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:view tools maintenance', ['only' => ['index']]);
-        $this->middleware('permission:create tools maintenance', ['only' => ['create', 'store']]);
-        $this->middleware('permission:update tools maintenance', ['only' => ['edit', 'update']]);
-        // $this->middleware('permission:complete tools maintenance', ['only' => ['completeMaintenance']]);
-        // $this->middleware('permission:cancel tools maintenance', ['only' => ['cancelMaintenance']]);
-        $this->middleware('permission:delete tools maintenance', ['only' => ['destroy']]);
+        $this->middleware('permission:view tools maintenances', ['only' => ['index']]);
+        $this->middleware('permission:show tools maintenances', ['only' => ['show']]);
+        $this->middleware('permission:create tools maintenances', ['only' => ['create', 'store']]);
+        $this->middleware('permission:update tools maintenances', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:complete tools maintenances', ['only' => ['completeMaintenance']]);
+        $this->middleware('permission:cancel tools maintenances', ['only' => ['cancelMaintenance']]);
+        $this->middleware('permission:print tools maintenances', ['only' => ['printMaintenance']]);
+        $this->middleware('permission:delete tools maintenances', ['only' => ['destroy']]);
     }
 
     /**

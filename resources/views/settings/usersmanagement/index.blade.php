@@ -19,19 +19,16 @@
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap">
                 <h4 class="m-0 font-weight-bold text-primary">List Users</h4>
-                <div class="d-flex align-items-center flex-wrap">
+                <div class="d-flex align-items-center flex-p">
                     <input type="date" id="startDate" name="start_date" class="form-control mr-2 mb-2 w-auto" required>
                     <span class="mx-2">to</span>
                     <input type="date" id="endDate" name="end_date" class="form-control mx-2 mb-2 w-auto" required>   
-                    <!-- Tombol PDF dengan AJAX -->
-                    {{-- <button type="button" onclick="printPDF()" class="btn btn-info btn-md ml-2">
-                        <i class="fas fa-file-pdf fa-md white-50"></i> Print PDF
-                    </button> --}}
                     <!-- Tombol Excel dengan AJAX -->
                     <button type="button" onclick="printExcel()" class="btn btn-success btn-md ml-2">
                         <i class="fas fa-file-excel fa-md white-50"></i> Print Excel
                     </button>
                     
+                    @can('create users')
                     <!-- Tombol Import Data -->
                     <button type="button" class="btn btn-warning btn-md ml-2" data-toggle="modal" data-target="#importModal">
                         <i class="fas fa-file-import fa-md white-50"></i> Import Users
@@ -40,6 +37,7 @@
                     <button type="button" class="btn btn-primary btn-md ml-2" data-toggle="modal" data-target="#addUsersModal">
                         <i class="fas fa-user-tie fa-md white-50"></i> Add Users
                     </button>
+                    @endcan
                 </div>
             </div>    
             <div class="card-body">
@@ -48,6 +46,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th width="5%">No</th>
+                                <th>Full Name</th>
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -59,13 +58,16 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->fullName }}</td>
+                                    <td>{{ $user->username }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td><span class="badge badge-{{ $user->badgeClass }}">{{ $user->getRoleNames()[0] }}</span></td>
                                     <td class="text-center d-flex justify-content-center">
+                                        @can('show users')
                                         <a href="{{ route('users.show', $user->id) }}" class="btn btn-info mr-2 btn-circle">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        @if ($user->id !== auth()->user()->id)
+                                        @endcan
+                                        @can('update users')
                                         <button type="button" class="btn btn-warning mr-2 btn-circle"
                                             data-id="{{ $user->id }}"
                                             data-name="{{ $user->name }}"
@@ -86,13 +88,17 @@
                                             data-toggle="modal" data-target="#editUsersModal">
                                             <i class="fas fa-pencil"></i>
                                         </button>
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="post" id="deleteUsersForm" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-circle">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @endcan
+                                        @if ($user->id !== auth()->user()->id)
+                                            @can('delete users')
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="post" id="deleteUsersForm" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmUsersDelete()" class="btn btn-danger btn-circle">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
                                         @endif
                                     </td>
                                 </tr>                        
@@ -119,7 +125,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('users.store') }}" method="post" id="addUsersForm">
+                    <form action="{{ route('users.store') }}" method="post" id="addUsersForm" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="nik">Nik</label>
@@ -245,7 +251,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('users.update', ':id') }}" method="post" id="editUsersForm">
+                    <form action="{{ route('users.update', ':id') }}" method="post" id="editUsersForm" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="form-group">

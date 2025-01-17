@@ -21,6 +21,7 @@
         <div class="card-body">
             <div class="row">
                 <!-- form add vehicle maintenances -->
+                @can('create vehicle maintenances')
                 <div class="col-4"> 
                     <form action="{{ route('vehicles-maintenances.store') }}" method="POST" id="addMaintenancesForm">
                         @csrf
@@ -53,6 +54,7 @@
                         <button type="button" class="btn btn-primary" onclick="confirmAddMaintenances()"><i class="fas fa-check"></i> Save</button>
                     </div>
                 </div>
+                @endcan
                 <!--- List Car Maintenances --->
                 <div class="col-8">
                     <div class="table-responsive">
@@ -81,13 +83,18 @@
                                         <td>{!! $maintenance->statusName !!}</td>
                                         <td class="text-center">
                                             <div class="d-inline-flex">
+                                                @can('print vehicle maintenances')
                                                 <a href="{{ route('vehicles-maintenances.exportPdf', $maintenance->id) }}" class="btn btn-sm btn-info mr-1 btn-circle">
                                                     <i class="fas fa-download"></i>
                                                 </a>
+                                                @endcan
+                                                @can('show vehicle maintenances')
                                                 <a href="{{ route('vehicles-maintenances.show', $maintenance->id) }}" class="btn btn-sm btn-primary mr-1 btn-circle">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @endcan
                                                 @if ($maintenance->status != 'Completed' && $maintenance->status != 'Cancelled')
+                                                @can('complete vehicle maintenances')
                                                 <form action="{{ route('vehicles-maintenances.completeMaintenance', $maintenance->id) }}" method="POST" id="completeMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
                                                     @method('PATCH')
@@ -95,6 +102,8 @@
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </form>
+                                                @endcan
+                                                @can('cancel vehicle maintenances')
                                                 <form action="{{ route('vehicles-maintenances.cancelMaintenance', $maintenance->id) }}" method="POST" id="cancelledMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
                                                     @method('PATCH')
@@ -102,6 +111,8 @@
                                                         <i class="fas fa-times"></i>
                                                     </button>
                                                 </form>
+                                                @endcan
+                                                @can('update vehicle maintenances')
                                                 <button type="button" class="btn btn-sm btn-warning mr-1 btn-circle"
                                                     data-toggle="modal"
                                                     data-id="{{ $maintenance->id }}"
@@ -114,7 +125,9 @@
                                                     data-target="#updateMaintenancesModal">
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
+                                                @endcan
                                                 @endif
+                                                @can('delete vehicle maintenances')
                                                 <form action="{{ route('vehicles-maintenances.destroy', $maintenance->id) }}" method="POST" id="deleteMaintenancesForm-{{ $maintenance->id }}">
                                                     @csrf
                                                     @method('DELETE')
@@ -122,6 +135,7 @@
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>

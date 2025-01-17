@@ -9,16 +9,35 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
+    /*
+     * Create a new controller instance.
+     */
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:view profile', ['only' => ['index']]);
+        $this->middleware('permission:update profile', ['only' => ['update']]);
     }
 
+    /*
+     * Display a listing of the resource.
+     */
     public function index()
     {
         return view('profile');
     }
 
+    /*
+     * Show the form for editing the specified resource.
+     */
+    public function edit()
+    {
+        return view('profile');
+    }
+
+    /*
+     * Update the specified resource in storage.
+     */
     public function update(Request $request)
     {
         $request->validate([

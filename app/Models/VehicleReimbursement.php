@@ -27,6 +27,10 @@ class VehicleReimbursement extends Model
         'attachment_receipt',
         'notes',
         'status',
+        'approved_by',
+        'approved_at',
+        'rejected_by',
+        'rejected_at',
         'type',
         'reason',
     ];
@@ -61,5 +65,15 @@ class VehicleReimbursement extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_by', 'id');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by', 'id');
+    }
+
+    public function rejectedBy()
+    {
+        return $this->belongsTo(User::class, 'rejected_by', 'id');
     }
 }

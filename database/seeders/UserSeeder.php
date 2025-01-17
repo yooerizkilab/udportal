@@ -21,62 +21,180 @@ class UserSeeder extends Seeder
 
         // Define permissions
         $permissions = [
+
+            // Manage Users
+            'view users',
+            'show users',
+            'create users',
+            'update users',
+            'delete users',
+
             'view roles',
+            'show roles',
             'create roles',
+            'assign roles',
             'update roles',
             'delete roles',
+
             'view permissions',
             'create permissions',
             'update permissions',
             'delete permissions',
-            'view users',
-            'create users',
-            'update users',
-            'delete users',
+
+            // Manage Companies
+            'view companies',
+            'show companies',
+            'create companies',
+            'update companies',
+            'delete companies',
+
+            // Manage Branches
+            'view branches',
+            'show branches',
+            'create branches',
+            'update branches',
+            'delete branches',
+
+            // Manage Departments
+            'view departments',
+            'show departments',
+            'create departments',
+            'update departments',
+            'delete departments',
+
+            // Manage Warehouses
+            'view warehouses',
+            'show warehouses',
+            'create warehouses',
+            'update warehouses',
+            'delete warehouses',
+
+            // Manage Employees
+            'view employees',
+            'show employees',
+            'create employees',
+            'update employees',
+            'delete employees',
+
+            // Manage Tickets
+            'view ticketing categories',
+            'create ticketing categories',
+            'update ticketing categories',
+            'delete ticketing categories',
+
+            'view ticketing',
+            'show ticketing',
+            'create ticketing',
+            'update ticketing',
+            'handle ticketing',
+            'comment ticketing',
+            'solved ticketing',
+            'cenceled ticketing',
+            'delete ticketing',
+
+            // Manage Contracts
             'view contracts',
+            'show contracts',
             'create contracts',
             'update contracts',
+            'print contracts',
             'delete contracts',
-            'view tools',
-            'create tools',
-            'update tools',
-            'delete tools',
+
+            // Manage Tools
             'view tools categories',
             'create tools categories',
             'update tools categories',
             'delete tools categories',
-            'view tools ownership',
-            'create tools ownership',
-            'update tools ownership',
-            'delete tools ownership',
-            'view tools transaction',
-            'create tools transaction',
-            'update tools transaction',
-            'delete tools transaction',
-            'view tools maintenance',
-            'create tools maintenance',
-            'update tools maintenance',
-            'delete tools maintenance',
-            'view vehicle',
-            'create vehicle',
-            'update vehicle',
-            'delete vehicle',
-            'view vehicle maintenance',
-            'create vehicle maintenance',
-            'update vehicle maintenance',
-            'delete vehicle maintenance',
-            'view vehicle insurance',
-            'create vehicle insurance',
-            'update vehicle insurance',
-            'delete vehicle insurance',
-            'view vehicle transaction',
-            'create vehicle transaction',
-            'update vehicle transaction',
-            'delete vehicle transaction',
-            'view ticket',
-            'create ticket',
-            'update ticket',
-            'delete ticket',
+
+            'view tools',
+            'show tools',
+            'create tools',
+            'update tools',
+            'delete tools',
+
+            'view projects',
+            'show projects',
+            'create projects',
+            'update projects',
+            'delete projects',
+
+            'view tools transactions',
+            'show tools transactions',
+            'print tools transactions',
+            'create tools transactions',
+            'update tools transactions',
+            'delete tools transactions',
+
+            'view tools maintenances',
+            'show tools maintenances',
+            'create tools maintenances',
+            'update tools maintenances',
+            'complete tools maintenances',
+            'cancel tools maintenances',
+            'delete tools maintenances',
+
+            // Manage Vehicles
+            'view vehicle types',
+            'create vehicle types',
+            'update vehicle types',
+            'delete vehicle types',
+
+            'view vehicles',
+            'show vehicles',
+            'create vehicles',
+            'update vehicles',
+            'delete vehicles',
+
+            'view vehicle maintenances',
+            'show vehicle maintenances',
+            'create vehicle maintenances',
+            'update vehicle maintenances',
+            'complete vehicle maintenances',
+            'cancel vehicle maintenances',
+            'print vehicle maintenances',
+            'delete vehicle maintenances',
+
+            'view vehicle insurances',
+            'show vehicle insurances',
+            'create vehicle insurances',
+            'update vehicle insurances',
+            'print vehicle insurances',
+            'delete vehicle insurances',
+
+            'view vehicle reimbursements',
+            'show vehicle reimbursements',
+            'create vehicle reimbursements',
+            'update vehicle reimbursements',
+            'approved vehicle reimbursements',
+            'rejected vehicle reimbursements',
+            'export vehicle reimbursements',
+            'delete vehicle reimbursements',
+
+            // Manage Incoming
+            'view incoming suppliers',
+            'show incoming suppliers',
+            'create incoming suppliers',
+            'update incoming suppliers',
+            'delete incoming suppliers',
+
+            'view incoming plan',
+            'show incoming plan',
+            'create incoming plan',
+            'update incoming plan',
+            'print incoming plan',
+            'delete incoming plan',
+
+            // Manage Cost Bids Analysis
+            'view bids analysis',
+            'show bids analysis',
+            'create bids analysis',
+            'update bids analysis',
+            'print bids analysis',
+            'delete bids analysis',
+
+            // users
+            'view profile',
+            'update profile',
         ];
 
         // Create or update permissions
@@ -86,61 +204,12 @@ class UserSeeder extends Seeder
 
         // Create roles
         $rolesPermissions = [
-            'Superadmin' => Permission::all(),
-            'Admin Legal' => [
-                'view contracts',
-                'create contracts',
-                'update contracts',
-                'delete contracts',
-                'view ticket',
-                'create ticket',
-                'update ticket',
-                'delete ticket',
-            ],
-            'Admin GA' => [
-                'view tools',
-                'create tools',
-                'update tools',
-                'delete tools',
-                'view tools categories',
-                'create tools categories',
-                'update tools categories',
-                'delete tools categories',
-                'view tools ownership',
-                'create tools ownership',
-                'update tools ownership',
-                'delete tools ownership',
-                'view tools transaction',
-                'create tools transaction',
-                'update tools transaction',
-                'delete tools transaction',
-                'view tools maintenance',
-                'create tools maintenance',
-                'update tools maintenance',
-                'delete tools maintenance',
-                'view vehicle',
-                'create vehicle',
-                'update vehicle',
-                'delete vehicle',
-                'view vehicle maintenance',
-                'create vehicle maintenance',
-                'update vehicle maintenance',
-                'delete vehicle maintenance',
-                'view vehicle insurance',
-                'create vehicle insurance',
-                'update vehicle insurance',
-                'delete vehicle insurance',
-                'view vehicle transaction',
-                'create vehicle transaction',
-                'update vehicle transaction',
-                'delete vehicle transaction',
-                'view ticket',
-                'create ticket',
-                'update ticket',
-                'delete ticket',
-            ],
+            'Superadmin' => Permission::all(), // Assign all permissions to Superadmin
+            'Admin Legal' => [], // Define specific permissions here if needed
+            'Admin GA' => [], // Define specific permissions here if needed
             'Admin Branch' => [], // Define specific permissions here if needed
             'Admin IT' => [], // Define specific permissions here if needed
+            'Staff' => [], // Define specific permissions here if needed
             'User' => [], // Define specific permissions here if needed
         ];
 

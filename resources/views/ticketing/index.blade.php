@@ -87,9 +87,11 @@
     <div class="card shadow mb-4 mt-4">
         <div class="card-header py-3 d-flex bg-gradient-primary align-items-center justify-content-between">
             <h4 class="m-0 font-weight-bold text-white">All Tickets</h4>
+            @can('create ticketing')
             <a href="{{ route('ticketing.create') }}" class="btn btn-success"> <i class="fas fa-plus-circle"></i>
                 Create Ticket
             </a>
+            @endcan
         </div>
         <div class="card-body">
             <div class="row">
@@ -102,7 +104,9 @@
                                     <div class="d-flex justify-content-between">
                                         <!-- Ticket Code -->
                                         <div class="text-xs font-weight-bold text-uppercase mb-2">
+                                            @can('show ticketing')
                                             <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-primary text-800">{{ $ticket->code }}</a>
+                                            @endcan
                                         </div> 
                                         <!-- Ticket Priority -->
                                         <p class="mb-0">
@@ -113,7 +117,9 @@
                                     </div>
                                     <!-- Ticket Title -->
                                     <h5 class="font-weight-bold text-gray-800 mb-1">
+                                        @can('show ticketing')
                                         <a href="{{ route('ticketing.show', $ticket->id) }}" class="text-dark text-800">{{ strlen($ticket->title) > 5 ? substr($ticket->title, 0, 5) . '...' : $ticket->title }}</a>
+                                        @endcan
                                     </h5> 
                                     <!-- User Name -->
                                     <p class="text-gray-700 mb-1">
@@ -135,9 +141,11 @@
                                     <p class="text-muted small mb-2">
                                         {{ $ticket->created_at->diffForHumans() }}
                                     </p>
+                                    @can('show ticketing')
                                     <a href="{{ route('ticketing.show', $ticket->id) }}" class="btn btn-{{ $ticket->badgeClass }} btn-sm" aria-label="View Ticket">
                                         <i class="fas fa-receipt fa-lg text-gray-300"></i>
                                     </a>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

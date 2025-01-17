@@ -38,7 +38,7 @@
                             <select name="assignee_to" id="assignee_to" class="form-control">
                                 <option value="" disabled selected>--Select Department--</option>
                                 @foreach ($departments as $department)
-                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                    <option value="{{ $department->id }}" {{ $department->name == 'IT' ? 'selected' : '' }}>{{ $department->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -89,9 +89,12 @@
                                         <td><span class="badge badge-{{ $ticket->badgeClass }}">{{ $ticket->status }}</span></td>
                                         <td class="text-center">
                                             <div class="d-inline-flex">
+                                                @can('show ticketing')
                                                 <a href="{{ route('ticketing.show', $ticket->id) }}" class="btn btn-info btn-circle mr-2">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @endcan
+                                                @can('update ticketing')
                                                 @if ($ticket->status != 'Closed' && $ticket->status == 'Open')
                                                 <button type="button" class="btn btn-warning btn-circle mr-2"
                                                     data-toggle="modal" 
@@ -105,6 +108,8 @@
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
                                                 @endif
+                                                @endcan
+                                                @can('delete ticketing')
                                                 @if ($ticket->status == 'Open')
                                                 <form action="{{ route('ticketing.destroy', $ticket->id) }}" method="POST" id="deleteTicketForm{{ $ticket->id }}">
                                                     @csrf
@@ -114,6 +119,7 @@
                                                     </button>
                                                 </form>
                                                 @endif
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
