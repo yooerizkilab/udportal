@@ -176,6 +176,12 @@
         </div>
     </li> --}}
 
+    <hr class="sidebar-divider">
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Settings
+    </div>
+
     <!-- Nav Item - Companies Management Collapse Menu -->
     @can('view companies')
     <li class="nav-item {{ request()->routeIs(['companies.*', 'branches.*', 'warehouses.*','departments.*', 'employees.*']) ? 'active' : '' }}">
