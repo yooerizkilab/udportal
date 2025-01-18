@@ -26,11 +26,14 @@ class BussinesMasterController extends Controller
     public function index(Request $request)
     {
         $this->sapServices->connect();
-
-        // Siapkan parameter untuk filter, top (limit), dan skip (offset)
+        $start = $request->input('start', 20);
+        $length = $request->input('length', 30);
+        // Siapkan parameter untuk filter
         $params = [
             '$select' => 'CardCode,CardName, CardType',
             '$filter' => 'CardType eq \'C\'',
+            '$skip' => $start,
+            '$top' => $length
         ];
 
         // Ambil data Business Partners dengan parameter filter, pagination, dan pencarian

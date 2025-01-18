@@ -157,7 +157,7 @@
     @endcan
 
     <!-- Nav Item - Business Master Collapse Menu -->
-    {{-- <li class="nav-item ">
+    <li class="nav-item ">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBusiness"
             aria-expanded="true" aria-controls="collapseBusiness">
             <i class="fas fa-fw fa-users"></i>
@@ -174,7 +174,7 @@
                 <a class="collapse-item" href="">{{ __('Business Partner Report') }}</a>
             </div>
         </div>
-    </li> --}}
+    </li>
 
     <hr class="sidebar-divider">
     <!-- Heading -->
