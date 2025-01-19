@@ -26,26 +26,41 @@ class BussinesMasterController extends Controller
     public function index(Request $request)
     {
         $this->sapServices->connect();
-        $start = $request->input('start', 20);
-        $length = $request->input('length', 30);
-        // Siapkan parameter untuk filter
-        $params = [
-            '$select' => 'CardCode,CardName, CardType',
-            '$filter' => 'CardType eq \'C\'',
-            '$skip' => $start,
-            '$top' => $length
-        ];
 
-        // Ambil data Business Partners dengan parameter filter, pagination, dan pencarian
-        $response = $this->sapServices->get('BusinessPartners', $params);
+        // Business Partners
+        // $params = [
+        //     '$select' => 'CardCode,CardName,CardType',
+        //     '$orderby' => 'CardCode asc',
+        //     '$skip' => 0,
+        //     '$top' => 500,
+        // ];
 
-        return $response;
+        // $businessPartners = $this->sapServices->get('BusinessPartners', $params);
 
-        // Kirim data ke view untuk pertama kali load halaman (non-AJAX)
-        return view('bussinesPartner.bussinesMaster.index');
+        // Items
+        // $params = [
+        //     '$select' => 'ItemCode, ItemName, ItemsGroupCode, SalesVATGroup, PurchaseVATGroup, ItemType, ItemClass, MaterialType, CreateDate',
+        //     '$orderby' => 'CreateDate asc',
+        //     '$skip' => 0,
+        //     '$top' => 10
+        // ];
+        // $items = $this->sapServices->get('Items', $params);
+
+        // SO
+        // $params = [
+        //     // '$orderby' => 'DocEntry asc',
+        //     '$skip' => 0,
+        //     '$top' => 10
+        // ];
+
+        // $orders = $this->sapServices->get('Orders', $params);
+
+        // return $businessPartners;
+        // return $items;
+        // return $orders;
+
+        return view('bussinesPartner.bussinesMaster.index', compact('businessPartners'));
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -68,7 +83,16 @@ class BussinesMasterController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $this->sapServices->connect();
+        $params = [
+            '$select' => 'CardCode,CardName,CardType,CreditLimit,MaxCommitment,Currency,Cellular,Country,CardForeignName,DebitorAccount,BPAddresses',
+        ];
+
+        $businessPartners = $this->sapServices->getById('BusinessPartners', $id, $params);
+
+        return $businessPartners;
+
+        return view('bussinesPartner.bussinesMaster.show', compact('businessPartners'));
     }
 
     /**

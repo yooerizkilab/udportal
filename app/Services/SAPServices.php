@@ -118,7 +118,7 @@ class SAPServices
         return [
             'Cookie' => "B1SESSION={$this->sessionId}",
             'Content-Type' => 'application/json',
-            'Prefer' => 'odata.maxpagesize=10'
+            'Prefer' => 'odata.maxpagesize=500'
         ];
     }
 
@@ -131,7 +131,10 @@ class SAPServices
             $data = json_decode($response->getBody()->getContents(), true);
 
             // Gabungkan data dari respons pertama
-            $allData = array_merge($allData, $data['value']);
+            if (isset($data['value']))
+                $allData = $data['value'];
+            else
+                $allData = $data;
 
             // Jika ada lebih banyak data, ambil halaman berikutnya
             while (isset($data['@odata.nextLink'])) {

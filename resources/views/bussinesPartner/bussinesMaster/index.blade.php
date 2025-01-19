@@ -22,15 +22,33 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
+                <thead class="thead-light">
                     <tr>
-                        {{-- <th>#</th> --}}
                         <th>Card Code</th>
                         <th>Card Name</th>
+                        <th>Card Type</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($businessPartners as $businessPartner)
+                        <tr>
+                            <td>{{ $businessPartner['CardCode'] }}</td>
+                            <td>{{ $businessPartner['CardName'] }}</td>
+                            <td>{{ $businessPartner['CardType'] }}</td>
+                            <td class="text-center">
+                                <div class="d-inline-flex">
+                                    <a href="{{ route('bussines-master.show', $businessPartner['CardCode']) }}" class="btn btn-info btn-circle mr-2">
+                                        <i class="fas fa-fw fa-eye"></i>
+                                    </a>
+                                </div> 
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="text-center">No data available</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -46,27 +64,7 @@
 <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 <script>
     $(document).ready(function () {
-        $('#dataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '{{ route('bussines-master.index') }}',  // URL ke controller yang memanggil API
-                type: 'GET',
-                data: function(d) {
-                    // Mengirimkan parameter tambahan ke server
-                    d.search = d.search.value;  // Mengirimkan nilai pencarian (jika ada)
-                }
-            },
-            columns: [
-                { data: 'CardCode' },
-                { data: 'CardName' },
-                {
-                    data: 'action',  // Kolom aksi untuk tombol detail
-                    orderable: false,  // Tidak bisa disortir
-                    searchable: false  // Tidak bisa dicari
-                }
-            ]
-        });
+        $('#dataTable').DataTable();
     });
 </script>
 @endpush
